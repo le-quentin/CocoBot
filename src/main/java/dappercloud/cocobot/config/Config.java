@@ -9,6 +9,18 @@ import java.io.InputStream;
 
 public class Config {
 
+    private static Config instance = null;
+
+    private Config() {
+    }
+
+    public static Config get() {
+        if (instance == null) {
+            instance = new Config();
+        }
+        return instance;
+    }
+
     private Secrets secrets;
 
     public void readFromResources() throws IOException {

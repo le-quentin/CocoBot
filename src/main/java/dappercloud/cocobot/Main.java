@@ -11,7 +11,7 @@ import java.io.IOException;
 public final class Main {
     public static void main(final String[] args) {
 
-        final Config config = new Config();
+        final Config config = Config.get();
         try {
             config.readFromResources();
         } catch(IOException ex) {

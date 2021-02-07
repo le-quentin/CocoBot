@@ -10,7 +10,7 @@ class ConfigIntTest {
 
     @Test
     void shouldGetSecretsFromConfig() throws IOException {
-        Config config = new Config();
+        Config config = Config.get();
         config.readFromResources();
 
         assertThat(config.getSecrets()).isNotNull();
