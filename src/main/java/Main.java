@@ -8,7 +8,9 @@ public final class Main {
         final String token = args[0];
         final DiscordClient client = DiscordClient.create(token);
         final GatewayDiscordClient gateway = client.login().block();
-        final CocoBot coco = new CocoBot();
+
+        final MessageClient messageClient = new MessageClient();
+        final CocoBot coco = new CocoBot(messageClient);
 
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
             final Message message = event.getMessage();

@@ -1,7 +1,13 @@
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.channel.MessageChannel;
 
 public class CocoBot {
+
+    private final MessageClient messageClient;
+
+    public CocoBot(MessageClient messageClient) {
+        this.messageClient = messageClient;
+    }
+
     public void handleMessage(Message message) {
         if (message.getContent().startsWith("c/")) {
             handleCommand(message);
@@ -11,12 +17,11 @@ public class CocoBot {
     }
 
     private void handleCommand(Message message) {
-        final MessageChannel channel = message.getChannel().block();
         if ("c/me".equals(message.getContent())) {
-            channel.createMessage("Message rigolo").block();
+            messageClient.replyToMessage(message, "Message rigolo");
         }
         else {
-            channel.createMessage("Je ne connais pas cette commande").block();
+            messageClient.replyToMessage(message, "Je ne connais pas cette commande");
         }
     }
 

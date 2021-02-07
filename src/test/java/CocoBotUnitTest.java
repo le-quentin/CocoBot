@@ -1,8 +1,10 @@
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.channel.MessageChannel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -10,65 +12,59 @@ import java.io.PrintStream;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CocoBotUnitTest {
 
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
-    private MessageChannel channel;
+    @Mock
+    private MessageClient messageClient;
+
+    @InjectMocks
+    private CocoBot coco;
 
     @BeforeEach
     public void setUp() {
         System.setOut(new PrintStream(outputStreamCaptor));
-        channel = mockChannel();
     }
 
     @Test
     void shouldNotHandleMessageWithoutMessage() {
-        assertThatThrownBy(() -> new CocoBot().handleMessage(null))
+        assertThatThrownBy(() -> coco.handleMessage(null))
                 .isExactlyInstanceOf(NullPointerException.class);
     }
 
     @Test
     void shouldHandleMessageWithCommand() {
-        Message message = mockMessageInChannelWithContent(channel, "c/me");
-        CocoBot coco = new CocoBot();
+        Message message = mockMessageWithContent("c/me");
 
         coco.handleMessage(message);
 
-        verify(channel).createMessage("Message rigolo");
+        verify(messageClient).replyToMessage(message, "Message rigolo");
     }
 
     @Test
     void shouldHandleMessageWithUnknownCommand() {
-        Message message = mockMessageInChannelWithContent(channel, "c/unknown");
-        CocoBot coco = new CocoBot();
+        Message message = mockMessageWithContent("c/unknown");
 
         coco.handleMessage(message);
 
-        verify(channel).createMessage("Je ne connais pas cette commande");
+        verify(messageClient).replyToMessage(message, "Je ne connais pas cette commande");
     }
 
     @Test
     void shouldHandleMessageWithNonCommandMessage() {
-        Message message = mockMessageInChannelWithContent(channel, "Random message");
-        CocoBot coco = new CocoBot();
+        Message message = mockMessageWithContent("Random message");
 
         coco.handleMessage(message);
 
         assertThat(outputStreamCaptor.toString()).contains("Parsing message: Random message");
-        verifyNoInteractions(channel);
+        verifyNoInteractions(messageClient);
     }
 
-    private MessageChannel mockChannel() {
-        MessageChannel channel = mock(MessageChannel.class);
-        when(channel.createMessage(anyString())).thenReturn(Mono.just(mock(Message.class)));
-        return channel;
-    }
-
-    private Message mockMessageInChannelWithContent(MessageChannel channel, String content) {
+    private Message mockMessageWithContent(String content) {
         Message message = mock(Message.class);
         when(message.getContent()).thenReturn(content);
-        when(message.getChannel()).thenReturn(Mono.just(channel));
         return message;
     }
 }
