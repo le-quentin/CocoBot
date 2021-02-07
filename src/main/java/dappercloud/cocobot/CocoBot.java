@@ -1,3 +1,5 @@
+package dappercloud.cocobot;
+
 import discord4j.core.object.entity.Message;
 
 public class CocoBot {

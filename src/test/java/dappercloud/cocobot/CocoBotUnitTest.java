@@ -1,3 +1,5 @@
+package dappercloud.cocobot;
+
 import discord4j.core.object.entity.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

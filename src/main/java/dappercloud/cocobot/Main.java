@@ -1,3 +1,5 @@
+package dappercloud.cocobot;
+
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
