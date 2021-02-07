@@ -26,5 +26,5 @@ test {
 }
 
 application {
-    mainClass = 'dappercloud.cocobot.Main'
+    mainClass = 'dappercloud.cocobot.CocoApplication'
 }
