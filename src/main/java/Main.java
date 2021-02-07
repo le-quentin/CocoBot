@@ -2,20 +2,17 @@ import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.channel.MessageChannel;
 
-public final class ExampleBot {
+public final class Main {
     public static void main(final String[] args) {
         final String token = args[0];
         final DiscordClient client = DiscordClient.create(token);
         final GatewayDiscordClient gateway = client.login().block();
+        final CocoBot coco = new CocoBot();
 
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
             final Message message = event.getMessage();
-            if ("!ping".equals(message.getContent())) {
-                final MessageChannel channel = message.getChannel().block();
-                channel.createMessage("Pong!").block();
-            }
+            coco.handleMessage(message);
         });
 
         gateway.onDisconnect().block();
