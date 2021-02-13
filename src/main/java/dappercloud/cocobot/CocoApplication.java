@@ -30,7 +30,6 @@ public class CocoApplication {
     }
 
     public void run() {
-        //TODO should be tested
         final GatewayDiscordClient gateway = discordClient.login().block();
 
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
