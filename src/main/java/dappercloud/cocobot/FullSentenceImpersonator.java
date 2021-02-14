@@ -24,12 +24,12 @@ public class FullSentenceImpersonator implements Impersonator {
     }
 
     @Override
-    public void buildModel(MessagesRepository messagesRepository) {
-        messagesRepository.getAllMessages().subscribe(this::addToModel);
+    public void addAllMessagesFromSource(MessagesSource messagesSource) {
+        messagesSource.getAllMessages().subscribe(this::addMessage);
     }
 
     @Override
-    public void addToModel(Message message) {
+    public void addMessage(Message message) {
         Optional<User> author = message.getAuthor();
         if (author.isPresent()) {
             List<String> currentUserSentences = usersSentences.getOrDefault(author.get(), new ArrayList<>());

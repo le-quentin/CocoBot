@@ -7,11 +7,11 @@ import discord4j.core.object.entity.channel.Channel.Type;
 import discord4j.core.object.entity.channel.TextChannel;
 import reactor.core.publisher.Flux;
 
-public class DirectAccessMessagesRepository implements MessagesRepository {
+public class DirectAccessMessagesSource implements MessagesSource {
 
     private final GatewayDiscordClient discord;
 
-    public DirectAccessMessagesRepository(GatewayDiscordClient discord) {
+    public DirectAccessMessagesSource(GatewayDiscordClient discord) {
         this.discord = discord;
     }
 

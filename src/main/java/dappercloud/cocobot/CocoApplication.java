@@ -24,7 +24,7 @@ public class CocoApplication {
         final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
         final GatewayDiscordClient gateway = discordClient.login().block();
 
-        final MessagesRepository messagesRepository = new DirectAccessMessagesRepository(gateway);
+        final MessagesSource messagesSource = new DirectAccessMessagesSource(gateway);
         final Impersonator impersonator = new FullSentenceImpersonator(new Random());
         final MessageClient messageClient = new MessageClient();
         final CocoBot coco = new CocoBot(impersonator, messageClient);
@@ -32,7 +32,7 @@ public class CocoApplication {
 
         final CocoApplication app = new CocoApplication(gateway, service);
 
-        impersonator.buildModel(messagesRepository);
+        impersonator.addAllMessagesFromSource(messagesSource);
         app.run();
     }
 

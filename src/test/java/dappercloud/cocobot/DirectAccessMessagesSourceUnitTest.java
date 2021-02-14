@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DirectAccessMessagesRepositoryUnitTest {
+class DirectAccessMessagesSourceUnitTest {
 
     private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
 
@@ -37,7 +37,7 @@ class DirectAccessMessagesRepositoryUnitTest {
     private Guild guild;
 
     @InjectMocks
-    private DirectAccessMessagesRepository repository;
+    private DirectAccessMessagesSource messagesSource;
 
     @BeforeEach
     void setUp() {
@@ -56,7 +56,7 @@ class DirectAccessMessagesRepositoryUnitTest {
         when(channel.getType()).thenReturn(Type.GUILD_TEXT);
         when(guild.getChannels()).thenReturn(Flux.just(channel));
 
-        Flux<Message> messages = repository.getAllMessages();
+        Flux<Message> messages = messagesSource.getAllMessages();
 
         StepVerifier.create(messages)
                 .expectNext(message1, message2)
@@ -71,7 +71,7 @@ class DirectAccessMessagesRepositoryUnitTest {
         when(otherChannel.getType()).thenReturn(Type.DM);
         when(guild.getChannels()).thenReturn(Flux.just(otherChannel));
 
-        Flux<Message> messages = repository.getAllMessages();
+        Flux<Message> messages = messagesSource.getAllMessages();
 
         StepVerifier.create(messages)
                 .expectComplete()
@@ -87,7 +87,7 @@ class DirectAccessMessagesRepositoryUnitTest {
         when(channel.getType()).thenReturn(Type.GUILD_TEXT);
         when(guild.getChannels()).thenReturn(Flux.just(channel));
 
-        Flux<Message> messages = repository.getAllMessages();
+        Flux<Message> messages = messagesSource.getAllMessages();
 
         StepVerifier.create(messages)
                 .expectComplete()

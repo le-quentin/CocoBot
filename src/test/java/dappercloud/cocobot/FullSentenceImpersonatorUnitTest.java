@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 class FullSentenceImpersonatorUnitTest {
 
     @Mock
-    private MessagesRepository messages;
+    private MessagesSource messages;
 
     @Mock
     private Random random;
@@ -47,7 +47,7 @@ class FullSentenceImpersonatorUnitTest {
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
-        impersonator.buildModel(messages);
+        impersonator.addAllMessagesFromSource(messages);
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("Second sentence. First sentence. First sentence. Second sentence. Second sentence");
@@ -65,7 +65,7 @@ class FullSentenceImpersonatorUnitTest {
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
         when(random.nextInt(3)).thenReturn(1, 2, 0, 1, 2);
 
-        impersonator.buildModel(messages);
+        impersonator.addAllMessagesFromSource(messages);
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("Second sentence. Third sentence. First sentence. Second sentence. Third sentence");
@@ -83,7 +83,7 @@ class FullSentenceImpersonatorUnitTest {
         when(message2.getContent()).thenReturn("!!!!????.. . ? ?");
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
 
-        impersonator.buildModel(messages);
+        impersonator.addAllMessagesFromSource(messages);
 
         assertThatThrownBy(() -> impersonator.impersonate(user))
                 .isExactlyInstanceOf(UserNotFoundException.class)
@@ -98,7 +98,7 @@ class FullSentenceImpersonatorUnitTest {
         when(message.getContent()).thenReturn("First sentence. Second sentence");
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
-        impersonator.addToModel(message);
+        impersonator.addMessage(message);
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("Second sentence. First sentence. First sentence. Second sentence. Second sentence");

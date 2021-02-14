@@ -40,6 +40,6 @@ public class CocoBot {
 
     private void handleNonCommandMessage(Message message) {
         System.out.println("Adding message to model: " + message.getContent());
-        impersonator.addToModel(message);
+        impersonator.addMessage(message);
     }
 }
