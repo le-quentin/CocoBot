@@ -47,7 +47,7 @@ class FullSentenceImpersonatorUnitTest {
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
-        impersonator.buildModel();
+        impersonator.buildModel(messages);
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("Second sentence. First sentence. First sentence. Second sentence. Second sentence");
@@ -65,7 +65,7 @@ class FullSentenceImpersonatorUnitTest {
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
         when(random.nextInt(3)).thenReturn(1, 2, 0, 1, 2);
 
-        impersonator.buildModel();
+        impersonator.buildModel(messages);
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("Second sentence. Third sentence. First sentence. Second sentence. Third sentence");
@@ -83,10 +83,24 @@ class FullSentenceImpersonatorUnitTest {
         when(message2.getContent()).thenReturn("!!!!????.. . ? ?");
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
 
-        impersonator.buildModel();
+        impersonator.buildModel(messages);
 
         assertThatThrownBy(() -> impersonator.impersonate(user))
                 .isExactlyInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User john_doe has no messages");
+    }
+
+    @Test
+    void shouldImpersonateAfterAddingMessageToModel() {
+        User user = mock(User.class);
+        Message message = mock(Message.class);
+        when(message.getAuthor()).thenReturn(Optional.of(user));
+        when(message.getContent()).thenReturn("First sentence. Second sentence");
+        when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
+
+        impersonator.addToModel(message);
+        String impersonation = impersonator.impersonate(user);
+
+        assertThat(impersonation).isEqualTo("Second sentence. First sentence. First sentence. Second sentence. Second sentence");
     }
 }

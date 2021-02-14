@@ -15,28 +15,29 @@ import java.util.stream.Stream;
 
 public class FullSentenceImpersonator implements Impersonator {
 
-    private final MessagesRepository messages;
     private final Random random;
     private final Map<User, List<String>> usersSentences;
 
-    public FullSentenceImpersonator(MessagesRepository messages, Random random) {
-        this.messages = messages;
+    public FullSentenceImpersonator(Random random) {
         this.random = random;
         this.usersSentences = new HashMap<>();
     }
 
     @Override
-    public void buildModel() {
-        messages.getAllMessages().subscribe((message -> {
-            Optional<User> author = message.getAuthor();
-            if (author.isPresent()) {
-                List<String> currentUserSentences = usersSentences.getOrDefault(author.get(), new ArrayList<>());
-                currentUserSentences.addAll(getSentences(message));
-                usersSentences.put(author.get(), currentUserSentences);
-            } else {
-                System.out.println("Not parsing message [" + message.getContent() + " because it has not author");
-            }
-        }));
+    public void buildModel(MessagesRepository messagesRepository) {
+        messagesRepository.getAllMessages().subscribe(this::addToModel);
+    }
+
+    @Override
+    public void addToModel(Message message) {
+        Optional<User> author = message.getAuthor();
+        if (author.isPresent()) {
+            List<String> currentUserSentences = usersSentences.getOrDefault(author.get(), new ArrayList<>());
+            currentUserSentences.addAll(getSentences(message));
+            usersSentences.put(author.get(), currentUserSentences);
+        } else {
+            System.out.println("Not parsing message [" + message.getContent() + " because it has not author");
+        }
     }
 
     @Override

@@ -25,14 +25,14 @@ public class CocoApplication {
         final GatewayDiscordClient gateway = discordClient.login().block();
 
         final MessagesRepository messagesRepository = new DirectAccessMessagesRepository(gateway);
-        final Impersonator impersonator = new FullSentenceImpersonator(messagesRepository, new Random());
+        final Impersonator impersonator = new FullSentenceImpersonator(new Random());
         final MessageClient messageClient = new MessageClient();
         final CocoBot coco = new CocoBot(impersonator, messageClient);
         final CocoFluxService service = new CocoFluxService(coco);
 
         final CocoApplication app = new CocoApplication(gateway, service);
 
-        impersonator.buildModel();
+        impersonator.buildModel(messagesRepository);
         app.run();
     }
 

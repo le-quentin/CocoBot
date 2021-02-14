@@ -79,7 +79,8 @@ class CocoBotUnitTest {
 
         coco.handleMessage(message);
 
-        assertThat(outputStreamCaptor.toString()).contains("Parsing message: Random message");
+        assertThat(outputStreamCaptor.toString()).contains("Adding message to model: Random message");
+        verify(impersonator).addToModel(message);
         verifyNoInteractions(messageClient);
     }
 
