@@ -3,7 +3,6 @@ package dappercloud.cocobot;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Message;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,7 +23,7 @@ class CocoApplicationUnitTest {
     private DiscordClient discordClient;
 
     @Mock
-    private CocoBot cocoBot;
+    private CocoFluxService service;
 
     @InjectMocks
     private CocoApplication app;
@@ -45,13 +44,8 @@ class CocoApplicationUnitTest {
 
         ArgumentCaptor<Consumer<MessageCreateEvent>> eventConsumerCaptor = ArgumentCaptor.forClass(Consumer.class);
         verify(monoLogin).block();
-        verify(eventFlux).subscribe(eventConsumerCaptor.capture());
-        Consumer<MessageCreateEvent> eventConsumer = eventConsumerCaptor.getValue();
-        MessageCreateEvent testEvent = mock(MessageCreateEvent.class);
-        Message testMessage = mock(Message.class);
-        when(testEvent.getMessage()).thenReturn(testMessage);
-        eventConsumer.accept(testEvent);
-        verify(cocoBot).handleMessage(testMessage);
+        verify(service).subscribeToMessageCreateFlux(eventFlux);
+        verify(monoDisconnect).block();
     }
 
 }

@@ -4,18 +4,17 @@ import dappercloud.cocobot.config.Config;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Message;
 
 import java.io.IOException;
 
 public class CocoApplication {
 
     private final DiscordClient discordClient;
-    private final CocoBot coco;
+    private final CocoFluxService service;
 
-    public CocoApplication(DiscordClient discordClient, CocoBot coco) {
+    public CocoApplication(DiscordClient discordClient, CocoFluxService service) {
         this.discordClient = discordClient;
-        this.coco = coco;
+        this.service = service;
     }
 
     public static void main(final String[] args) {
@@ -23,20 +22,16 @@ public class CocoApplication {
 
         final MessageClient messageClient = new MessageClient();
         final CocoBot coco = new CocoBot(messageClient);
+        final CocoFluxService service = new CocoFluxService(coco);
 
         final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
-        final CocoApplication app = new CocoApplication(discordClient, coco);
+        final CocoApplication app = new CocoApplication(discordClient, service);
         app.run();
     }
 
     public void run() {
         final GatewayDiscordClient gateway = discordClient.login().block();
-
-        gateway.on(MessageCreateEvent.class).subscribe(event -> {
-            final Message message = event.getMessage();
-            coco.handleMessage(message);
-        });
-
+        service.subscribeToMessageCreateFlux(gateway.on(MessageCreateEvent.class));
         gateway.onDisconnect().block();
     }
 
