@@ -6,33 +6,39 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class CocoApplication {
 
-    private final DiscordClient discordClient;
+    private final GatewayDiscordClient gatewayClient;
     private final CocoFluxService service;
 
-    public CocoApplication(DiscordClient discordClient, CocoFluxService service) {
-        this.discordClient = discordClient;
+    public CocoApplication(GatewayDiscordClient gatewayClient, CocoFluxService service) {
+        this.gatewayClient = gatewayClient;
         this.service = service;
     }
 
     public static void main(final String[] args) {
         final Config config = loadConfig();
 
+        final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
+        final GatewayDiscordClient gateway = discordClient.login().block();
+
+        final MessagesRepository messagesRepository = new DirectAccessMessagesRepository(gateway);
+        final Impersonator impersonator = new FullSentenceImpersonator(messagesRepository, new Random());
         final MessageClient messageClient = new MessageClient();
-        final CocoBot coco = new CocoBot(messageClient);
+        final CocoBot coco = new CocoBot(impersonator, messageClient);
         final CocoFluxService service = new CocoFluxService(coco);
 
-        final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
-        final CocoApplication app = new CocoApplication(discordClient, service);
+        final CocoApplication app = new CocoApplication(gateway, service);
+
+        impersonator.buildModel();
         app.run();
     }
 
     public void run() {
-        final GatewayDiscordClient gateway = discordClient.login().block();
-        service.subscribeToMessageCreateFlux(gateway.on(MessageCreateEvent.class));
-        gateway.onDisconnect().block();
+        service.subscribeToMessageCreateFlux(gatewayClient.on(MessageCreateEvent.class));
+        gatewayClient.onDisconnect().block();
     }
 
     private static Config loadConfig() {

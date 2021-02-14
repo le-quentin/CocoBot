@@ -1,6 +1,7 @@
 package dappercloud.cocobot;
 
 import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,6 +20,9 @@ import static org.mockito.Mockito.*;
 class CocoBotUnitTest {
 
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+
+    @Mock
+    private Impersonator impersonator;
 
     @Mock
     private MessageClient messageClient;
@@ -37,12 +42,26 @@ class CocoBotUnitTest {
     }
 
     @Test
-    void shouldHandleMessageWithCommand() {
+    void shouldHandleCMeCommand() {
+        User user = mock(User.class);
         Message message = mockMessageWithContent("c/me");
+        when(message.getAuthor()).thenReturn(Optional.of(user));
+        when(impersonator.impersonate(user)).thenReturn("an impersonation");
 
         coco.handleMessage(message);
 
-        verify(messageClient).replyToMessage(message, "Message rigolo");
+        verify(messageClient).replyToMessage(message, "an impersonation");
+    }
+
+    @Test
+    void shouldHandleCMeCommandWhenMessageHasNoAuthor() {
+        Message message = mockMessageWithContent("c/me");
+        when(message.getAuthor()).thenReturn(Optional.empty());
+
+        coco.handleMessage(message);
+
+        verify(messageClient).replyToMessage(message, "Y a un problème avec Discord, koâââ koââ");
+        verifyNoInteractions(impersonator);
     }
 
     @Test
