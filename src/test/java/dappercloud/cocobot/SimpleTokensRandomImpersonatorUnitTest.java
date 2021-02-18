@@ -11,21 +11,25 @@ import reactor.core.publisher.Flux;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class FullSentenceImpersonatorUnitTest {
+class SimpleTokensRandomImpersonatorUnitTest {
 
     @Mock
-    private MessagesSource messages;
+    private Tokenizer tokenizer;
 
     @Mock
     private Random random;
 
     @InjectMocks
-    private FullSentenceImpersonator impersonator;
+    private SimpleTokensRandomImpersonator impersonator;
+
+    @Mock
+    private MessagesSource messages;
 
     @Test
     void shouldNotImpersonateNotFoundUser() {
@@ -39,55 +43,55 @@ class FullSentenceImpersonatorUnitTest {
     }
 
     @Test
-    void shouldImpersonateUserWithTwoSentencesInOneMessage() {
+    void shouldNotImpersonateUserWithNoTokens() {
+        User user = mock(User.class);
+        when(user.getUsername()).thenReturn("john_doe");
+        Message message = mock(Message.class);
+        when(message.getAuthor()).thenReturn(Optional.of(user));
+        when(message.getContent()).thenReturn("content");
+        when(tokenizer.tokenize("content")).thenReturn(Stream.empty());
+        when(messages.getAllMessages()).thenReturn(Flux.just(message));
+
+        impersonator.addAllMessagesFromSource(messages);
+        assertThatThrownBy(() -> impersonator.impersonate(user))
+                .isExactlyInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User john_doe has no messages");
+    }
+
+    @Test
+    void shouldImpersonateUserWithTwoTokensInOneMessage() {
         User user = mock(User.class);
         Message message = mock(Message.class);
         when(message.getAuthor()).thenReturn(Optional.of(user));
-        when(message.getContent()).thenReturn("First sentence. Second sentence");
+        when(message.getContent()).thenReturn("content");
+        when(tokenizer.tokenize("content")).thenReturn(Stream.of("0", "1"));
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
         impersonator.addAllMessagesFromSource(messages);
         String impersonation = impersonator.impersonate(user);
 
-        assertThat(impersonation).isEqualTo("Second sentence. First sentence. First sentence. Second sentence. Second sentence");
+        assertThat(impersonation).isEqualTo("1. 0. 0. 1. 1");
     }
 
     @Test
-    void shouldImpersonateWithThreeSentencesInTwoMessages() {
+    void shouldImpersonateWithThreeTokensInTwoMessages() {
         User user = mock(User.class);
         Message message1 = mock(Message.class);
         Message message2 = mock(Message.class);
         when(message1.getAuthor()).thenReturn(Optional.of(user));
-        when(message1.getContent()).thenReturn("First sentence. Second sentence");
+        when(message1.getContent()).thenReturn("content1");
+        when(tokenizer.tokenize("content1")).thenReturn(Stream.of("0", "1"));
         when(message2.getAuthor()).thenReturn(Optional.of(user));
-        when(message2.getContent()).thenReturn("Third sentence   ");
+        when(message2.getContent()).thenReturn("content2");
+        when(tokenizer.tokenize("content2")).thenReturn(Stream.of("2"));
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
         when(random.nextInt(3)).thenReturn(1, 2, 0, 1, 2);
 
         impersonator.addAllMessagesFromSource(messages);
         String impersonation = impersonator.impersonate(user);
 
-        assertThat(impersonation).isEqualTo("Second sentence. Third sentence. First sentence. Second sentence. Third sentence");
-    }
-
-    @Test
-    void shouldNotImpersonateWhenUserHasOnlyEmptyMessages() {
-        User user = mock(User.class);
-        when(user.getUsername()).thenReturn("john_doe");
-        Message message1 = mock(Message.class);
-        Message message2 = mock(Message.class);
-        when(message1.getAuthor()).thenReturn(Optional.of(user));
-        when(message1.getContent()).thenReturn("    . !!!!. . ? ?");
-        when(message2.getAuthor()).thenReturn(Optional.of(user));
-        when(message2.getContent()).thenReturn("!!!!????.. . ? ?");
-        when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
-
-        impersonator.addAllMessagesFromSource(messages);
-
-        assertThatThrownBy(() -> impersonator.impersonate(user))
-                .isExactlyInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User john_doe has no messages");
+        assertThat(impersonation).isEqualTo("1. 2. 0. 1. 2");
     }
 
     @Test
@@ -95,12 +99,13 @@ class FullSentenceImpersonatorUnitTest {
         User user = mock(User.class);
         Message message = mock(Message.class);
         when(message.getAuthor()).thenReturn(Optional.of(user));
-        when(message.getContent()).thenReturn("First sentence. Second sentence");
+        when(message.getContent()).thenReturn("content");
+        when(tokenizer.tokenize("content")).thenReturn(Stream.of("0", "1"));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
         impersonator.addMessage(message);
         String impersonation = impersonator.impersonate(user);
 
-        assertThat(impersonation).isEqualTo("Second sentence. First sentence. First sentence. Second sentence. Second sentence");
+        assertThat(impersonation).isEqualTo("1. 0. 0. 1. 1");
     }
 }

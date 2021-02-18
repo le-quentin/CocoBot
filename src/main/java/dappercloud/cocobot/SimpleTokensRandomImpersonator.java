@@ -11,16 +11,17 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-public class FullSentenceImpersonator implements Impersonator {
+public class SimpleTokensRandomImpersonator implements Impersonator {
 
+    private final Tokenizer tokenizer;
     private final Random random;
-    private final Map<User, List<String>> usersSentences;
+    private final Map<User, List<String>> usersTokens;
 
-    public FullSentenceImpersonator(Random random) {
+    public SimpleTokensRandomImpersonator(Tokenizer tokenizer, Random random) {
+        this.tokenizer = tokenizer;
         this.random = random;
-        this.usersSentences = new HashMap<>();
+        this.usersTokens = new HashMap<>();
     }
 
     @Override
@@ -32,9 +33,9 @@ public class FullSentenceImpersonator implements Impersonator {
     public void addMessage(Message message) {
         Optional<User> author = message.getAuthor();
         if (author.isPresent()) {
-            List<String> currentUserSentences = usersSentences.getOrDefault(author.get(), new ArrayList<>());
-            currentUserSentences.addAll(getSentences(message));
-            usersSentences.put(author.get(), currentUserSentences);
+            List<String> currentUserTokens = usersTokens.getOrDefault(author.get(), new ArrayList<>());
+            currentUserTokens.addAll(tokenizer.tokenize(message.getContent()).collect(Collectors.toList()));
+            usersTokens.put(author.get(), currentUserTokens);
         } else {
             System.out.println("Not parsing message [" + message.getContent() + " because it has not author");
         }
@@ -42,11 +43,11 @@ public class FullSentenceImpersonator implements Impersonator {
 
     @Override
     public String impersonate(User user) {
-        if (!usersSentences.containsKey(user)) {
+        if (!usersTokens.containsKey(user)) {
             throw new UserNotFoundException("User " + user.getUsername() + " not found.");
         }
 
-        List<String> sentences = usersSentences.get(user);
+        List<String> sentences = usersTokens.get(user);
         if (sentences.isEmpty()) {
             throw new UserNotFoundException("User " + user.getUsername() + " has no messages.");
         }
@@ -55,13 +56,5 @@ public class FullSentenceImpersonator implements Impersonator {
                 .limit(5)
                 .mapToObj(sentences::get)
                 .collect(Collectors.joining(". "));
-    }
-
-    private List<String> getSentences(Message message) {
-        //TODO extract sentence tokenizing in a proper service and fully test it
-        return Stream.of(message.getContent().split("[.?!]+"))
-                .map(String::trim)
-                .filter(sentence -> !sentence.isEmpty())
-                .collect(Collectors.toList());
     }
 }
