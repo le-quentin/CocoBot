@@ -1,6 +1,15 @@
 package dappercloud.cocobot;
 
 import dappercloud.cocobot.config.Config;
+import dappercloud.cocobot.discord.CocoFluxService;
+import dappercloud.cocobot.discord.DirectAccessMessagesSource;
+import dappercloud.cocobot.discord.DiscordConverter;
+import dappercloud.cocobot.discord.MessageClient;
+import dappercloud.cocobot.domain.MessagesSource;
+import dappercloud.cocobot.domain.CocoBot;
+import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.SentencesTokenizer;
+import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -24,11 +33,12 @@ public class CocoApplication {
         final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
         final GatewayDiscordClient gateway = discordClient.login().block();
 
-        final MessagesSource messagesSource = new DirectAccessMessagesSource(gateway);
+        final DiscordConverter discordConverter = new DiscordConverter();
+        final MessagesSource messagesSource = new DirectAccessMessagesSource(gateway, discordConverter);
         final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesTokenizer(), new Random());
         final MessageClient messageClient = new MessageClient();
-        final CocoBot coco = new CocoBot(impersonator, messageClient);
-        final CocoFluxService service = new CocoFluxService(coco);
+        final CocoBot coco = new CocoBot(impersonator);
+        final CocoFluxService service = new CocoFluxService(discordConverter, coco, messageClient);
 
         final CocoApplication app = new CocoApplication(gateway, service);
 

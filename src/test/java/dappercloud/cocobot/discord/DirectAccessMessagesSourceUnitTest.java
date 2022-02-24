@@ -1,9 +1,9 @@
-package dappercloud.cocobot;
+package dappercloud.cocobot.discord;
 
+import dappercloud.cocobot.domain.Message;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.Channel.Type;
 import discord4j.core.object.entity.channel.TextChannel;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +34,9 @@ class DirectAccessMessagesSourceUnitTest {
     private GatewayDiscordClient discord;
 
     @Mock
+    private DiscordConverter converter;
+
+    @Mock
     private Guild guild;
 
     @InjectMocks
@@ -47,14 +50,18 @@ class DirectAccessMessagesSourceUnitTest {
 
     @Test
     void shouldGetAllMessagesFromOneChannel() {
-        Message message1 = mock(Message.class);
-        Message message2 = mock(Message.class);
+        discord4j.core.object.entity.Message discordMessage1 = mock(discord4j.core.object.entity.Message.class);
+        discord4j.core.object.entity.Message discordMessage2 = mock(discord4j.core.object.entity.Message.class);
         TextChannel channel = mock(TextChannel.class);
         Snowflake lastMessageId = mock(Snowflake.class);
         when(channel.getLastMessageId()).thenReturn(Optional.of(lastMessageId));
-        when(channel.getMessagesBefore(lastMessageId)).thenReturn(Flux.just(message1, message2));
+        when(channel.getMessagesBefore(lastMessageId)).thenReturn(Flux.just(discordMessage1, discordMessage2));
         when(channel.getType()).thenReturn(Type.GUILD_TEXT);
         when(guild.getChannels()).thenReturn(Flux.just(channel));
+        Message message1 = mock(Message.class);
+        Message message2 = mock(Message.class);
+        when(converter.toDomain(discordMessage1)).thenReturn(message1);
+        when(converter.toDomain(discordMessage2)).thenReturn(message2);
 
         Flux<Message> messages = messagesSource.getAllMessages();
 

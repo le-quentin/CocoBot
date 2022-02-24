@@ -1,13 +1,9 @@
-package dappercloud.cocobot;
-
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.User;
+package dappercloud.cocobot.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,14 +27,10 @@ public class SimpleTokensRandomImpersonator implements Impersonator {
 
     @Override
     public void addMessage(Message message) {
-        Optional<User> author = message.getAuthor();
-        if (author.isPresent()) {
-            List<String> currentUserTokens = usersTokens.getOrDefault(author.get(), new ArrayList<>());
-            currentUserTokens.addAll(tokenizer.tokenize(message.getContent()).collect(Collectors.toList()));
-            usersTokens.put(author.get(), currentUserTokens);
-        } else {
-            System.out.println("Not parsing message [" + message.getContent() + " because it has not author");
-        }
+        User author = message.getAuthor();
+        List<String> currentUserTokens = usersTokens.getOrDefault(author, new ArrayList<>());
+        currentUserTokens.addAll(tokenizer.tokenize(message.getText()).collect(Collectors.toList()));
+        usersTokens.put(author, currentUserTokens);
     }
 
     @Override

@@ -1,8 +1,9 @@
-package dappercloud.cocobot;
+package dappercloud.cocobot.discord;
 
+import dappercloud.cocobot.domain.Message;
+import dappercloud.cocobot.domain.MessagesSource;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.Channel.Type;
 import discord4j.core.object.entity.channel.TextChannel;
 import reactor.core.publisher.Flux;
@@ -10,9 +11,11 @@ import reactor.core.publisher.Flux;
 public class DirectAccessMessagesSource implements MessagesSource {
 
     private final GatewayDiscordClient discord;
+    private final DiscordConverter converter;
 
-    public DirectAccessMessagesSource(GatewayDiscordClient discord) {
+    public DirectAccessMessagesSource(GatewayDiscordClient discord, DiscordConverter converter) {
         this.discord = discord;
+        this.converter = converter;
     }
 
     @Override
@@ -30,6 +33,7 @@ public class DirectAccessMessagesSource implements MessagesSource {
                 .orElseGet(() -> {
                     System.err.println("Not parsing channel " + channel.getName() + " because cannot get last message id.");
                     return Flux.empty();
-                });
+                })
+                .map(converter::toDomain);
     }
 }

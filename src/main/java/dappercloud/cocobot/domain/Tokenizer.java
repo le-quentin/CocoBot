@@ -1,4 +1,4 @@
-package dappercloud.cocobot;
+package dappercloud.cocobot.domain;
 
 import java.util.stream.Stream;
 

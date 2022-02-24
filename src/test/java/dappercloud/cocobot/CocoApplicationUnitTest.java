@@ -1,5 +1,6 @@
 package dappercloud.cocobot;
 
+import dappercloud.cocobot.discord.CocoFluxService;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.junit.jupiter.api.Test;

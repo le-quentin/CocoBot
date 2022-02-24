@@ -1,7 +1,5 @@
-package dappercloud.cocobot;
+package dappercloud.cocobot.domain;
 
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +22,6 @@ class CocoBotUnitTest {
     @Mock
     private Impersonator impersonator;
 
-    @Mock
-    private MessageClient messageClient;
-
     @InjectMocks
     private CocoBot coco;
 
@@ -44,49 +39,42 @@ class CocoBotUnitTest {
     @Test
     void shouldHandleCMeCommand() {
         User user = mock(User.class);
-        Message message = mockMessageWithContent("c/me");
-        when(message.getAuthor()).thenReturn(Optional.of(user));
+        Message message = mockMessageWithText("c/me");
+        when(message.getAuthor()).thenReturn(user);
         when(impersonator.impersonate(user)).thenReturn("an impersonation");
 
-        coco.handleMessage(message);
+        Optional<MessageReply> reply = coco.handleMessage(message);
 
-        verify(messageClient).replyToMessage(message, "an impersonation");
-    }
-
-    @Test
-    void shouldHandleCMeCommandWhenMessageHasNoAuthor() {
-        Message message = mockMessageWithContent("c/me");
-        when(message.getAuthor()).thenReturn(Optional.empty());
-
-        coco.handleMessage(message);
-
-        verify(messageClient).replyToMessage(message, "Y a un problème avec Discord, koâââ koââ");
-        verifyNoInteractions(impersonator);
+        assertThat(reply)
+                .usingFieldByFieldValueComparator()
+                .contains(new MessageReply("an impersonation"));
     }
 
     @Test
     void shouldHandleMessageWithUnknownCommand() {
-        Message message = mockMessageWithContent("c/unknown");
+        Message message = mockMessageWithText("c/unknown");
 
-        coco.handleMessage(message);
+        Optional<MessageReply> reply = coco.handleMessage(message);
 
-        verify(messageClient).replyToMessage(message, "Je ne connais pas cette commande");
+        assertThat(reply)
+                .usingFieldByFieldValueComparator()
+                .contains(new MessageReply("Je ne connais pas cette commande"));
     }
 
     @Test
     void shouldHandleMessageWithNonCommandMessage() {
-        Message message = mockMessageWithContent("Random message");
+        Message message = mockMessageWithText("Random message");
 
-        coco.handleMessage(message);
+        Optional<MessageReply> reply = coco.handleMessage(message);
 
         assertThat(outputStreamCaptor.toString()).contains("Adding message to model: Random message");
+        assertThat(reply).isEmpty();
         verify(impersonator).addMessage(message);
-        verifyNoInteractions(messageClient);
     }
 
-    private Message mockMessageWithContent(String content) {
+    private Message mockMessageWithText(String text) {
         Message message = mock(Message.class);
-        when(message.getContent()).thenReturn(content);
+        when(message.getText()).thenReturn(text);
         return message;
     }
 }

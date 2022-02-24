@@ -1,7 +1,9 @@
-package dappercloud.cocobot;
+package dappercloud.cocobot.discord;
 
+import dappercloud.cocobot.domain.CocoBot;
+import dappercloud.cocobot.domain.Message;
+import dappercloud.cocobot.domain.MessageReply;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.*;
@@ -24,7 +27,13 @@ class CocoFluxServiceUnitTest {
     private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
 
     @Mock
+    private DiscordConverter converter;
+
+    @Mock
     private CocoBot coco;
+
+    @Mock
+    private MessageClient client;
 
     @InjectMocks
     private CocoFluxService service;
@@ -32,34 +41,48 @@ class CocoFluxServiceUnitTest {
     @BeforeEach
     public void setUp() {
         System.setErr(new PrintStream(errorStreamCaptor));
+
+    }
+
+    @Test
+    void shouldSubscribeToFluxAndHandleMessages() {
+        Consumer<MessageCreateEvent> subscribedConsumer = getSubscribedConsumer();
+        MessageCreateEvent testEvent = mock(MessageCreateEvent.class);
+        discord4j.core.object.entity.Message discordMessage = mock(discord4j.core.object.entity.Message.class);
+        Message message = mock(Message.class);
+        when(testEvent.getMessage()).thenReturn(discordMessage);
+        when(converter.toDomain(discordMessage)).thenReturn(message);
+        MessageReply reply = mock(MessageReply.class);
+        when(reply.getText()).thenReturn("the reply");
+        when(coco.handleMessage(message)).thenReturn(Optional.of(reply));
+
+        subscribedConsumer.accept(testEvent);
+
+        verify(client).replyToMessage(discordMessage, "the reply");
     }
 
     @SuppressWarnings("unchecked")
-    @Test
-    void shouldSubscribeToFluxAndHandleMessages() {
+    private Consumer<MessageCreateEvent> getSubscribedConsumer() {
         Flux<MessageCreateEvent> eventFlux = (Flux<MessageCreateEvent>) mock(Flux.class);
-
         service.subscribeToMessageCreateFlux(eventFlux);
-
         ArgumentCaptor<Consumer<MessageCreateEvent>> eventConsumerCaptor = ArgumentCaptor.forClass(Consumer.class);
         verify(eventFlux).subscribe(eventConsumerCaptor.capture());
-        Consumer<MessageCreateEvent> eventConsumer = eventConsumerCaptor.getValue();
-        MessageCreateEvent testEvent = mock(MessageCreateEvent.class);
-        Message testMessage = mock(Message.class);
-        when(testEvent.getMessage()).thenReturn(testMessage);
-        eventConsumer.accept(testEvent);
-        verify(coco).handleMessage(testMessage);
+        return eventConsumerCaptor.getValue();
     }
 
     @Test
     void shouldHandleExceptionAndKeepRunning() {
         MessageCreateEvent event1 = mock(MessageCreateEvent.class);
         MessageCreateEvent event2 = mock(MessageCreateEvent.class);
+        discord4j.core.object.entity.Message discordMessage1 = mock(discord4j.core.object.entity.Message.class);
+        when(discordMessage1.getContent()).thenReturn("erroneous message");
+        discord4j.core.object.entity.Message discordMessage2 = mock(discord4j.core.object.entity.Message.class);
+        when(event1.getMessage()).thenReturn(discordMessage1);
+        when(event2.getMessage()).thenReturn(discordMessage2);
         Message message1 = mock(Message.class);
-        when(message1.getContent()).thenReturn("erroneous message");
         Message message2 = mock(Message.class);
-        when(event1.getMessage()).thenReturn(message1);
-        when(event2.getMessage()).thenReturn(message2);
+        when(converter.toDomain(discordMessage1)).thenReturn(message1);
+        when(converter.toDomain(discordMessage2)).thenReturn(message2);
         RuntimeException thrown = mock(RuntimeException.class);
         doThrow(thrown).when(coco).handleMessage(message1);
         Flux<MessageCreateEvent> fluxWithException = Flux.just(event1, event2);
