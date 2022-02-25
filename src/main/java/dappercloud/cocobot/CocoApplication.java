@@ -3,9 +3,12 @@ package dappercloud.cocobot;
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.CocoFluxService;
 import dappercloud.cocobot.discord.DiscordConverter;
+import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.discord.MessageClient;
 import dappercloud.cocobot.domain.CocoBot;
 import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.MessagesFilter;
+import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesRepository;
 import dappercloud.cocobot.domain.SentencesTokenizer;
 import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
@@ -30,16 +33,25 @@ public class CocoApplication {
     public static void main(final String[] args) {
         final Config config = loadConfig();
 
+        // Discord API
         final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
         final GatewayDiscordClient gateway = discordClient.login().block();
 
+        // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
         final MessagesRepository messagesRepository = new SimpleFileMessagesRepository();
-        final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesTokenizer(), new Random());
         final MessageClient messageClient = new MessageClient();
-        final CocoBot coco = new CocoBot(impersonator);
+        final MessagesFilter discordMessagesFilter = new ExcludeCommandsDiscordMessagesFilter();
+
+        // domain
+        final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesTokenizer(), new Random());
+        final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
+        final CocoBot coco = new CocoBot(filteredImpersonator);
+
+        // service
         final CocoFluxService service = new CocoFluxService(discordConverter, coco, messageClient);
 
+        // app
         final CocoApplication app = new CocoApplication(gateway, service);
 
         System.out.println("Loading all messages from repostitory...");
