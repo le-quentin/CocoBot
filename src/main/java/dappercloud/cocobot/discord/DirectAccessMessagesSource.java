@@ -28,12 +28,14 @@ public class DirectAccessMessagesSource implements MessagesSource {
     }
 
     private Flux<Message> allMessagesFlux(TextChannel channel) {
+        System.out.println("Fetching all messages for channel " + channel.getName());
         return channel.getLastMessageId()
                 .map(channel::getMessagesBefore)
                 .orElseGet(() -> {
                     System.err.println("Not parsing channel " + channel.getName() + " because cannot get last message id.");
                     return Flux.empty();
                 })
+                .filter(msg -> !msg.getContent().isBlank())
                 .map(converter::toDomain);
     }
 }

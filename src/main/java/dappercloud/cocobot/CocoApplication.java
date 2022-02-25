@@ -2,14 +2,14 @@ package dappercloud.cocobot;
 
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.CocoFluxService;
-import dappercloud.cocobot.discord.DirectAccessMessagesSource;
 import dappercloud.cocobot.discord.DiscordConverter;
 import dappercloud.cocobot.discord.MessageClient;
-import dappercloud.cocobot.domain.MessagesSource;
 import dappercloud.cocobot.domain.CocoBot;
 import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.MessagesRepository;
 import dappercloud.cocobot.domain.SentencesTokenizer;
 import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
+import dappercloud.cocobot.storage.SimpleFileMessagesRepository;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -34,7 +34,7 @@ public class CocoApplication {
         final GatewayDiscordClient gateway = discordClient.login().block();
 
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessagesSource messagesSource = new DirectAccessMessagesSource(gateway, discordConverter);
+        final MessagesRepository messagesRepository = new SimpleFileMessagesRepository();
         final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesTokenizer(), new Random());
         final MessageClient messageClient = new MessageClient();
         final CocoBot coco = new CocoBot(impersonator);
@@ -42,7 +42,7 @@ public class CocoApplication {
 
         final CocoApplication app = new CocoApplication(gateway, service);
 
-        impersonator.addAllMessagesFromSource(messagesSource);
+        impersonator.addAllMessagesFromSource(messagesRepository);
         app.run();
     }
 

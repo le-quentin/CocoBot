@@ -17,3 +17,4 @@ gradle-app.setting
 
 # App specific
 *secrets.yaml
+stored_messages
