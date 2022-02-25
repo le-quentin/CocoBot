@@ -48,7 +48,7 @@ public class ImpersonationTestingApplication {
         final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
 
         // application
-        final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication();
+        final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication(messagesRepository);
 
         // service
         final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication, messageClient);
