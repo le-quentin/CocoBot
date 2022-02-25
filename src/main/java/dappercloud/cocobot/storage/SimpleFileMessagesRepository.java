@@ -235,9 +235,8 @@ public class SimpleFileMessagesRepository implements MessagesRepository {
     }
 
     private static String deserializeText(String serialized) {
-        if (serialized.length() == 2) System.out.println(serialized);
         return serialized
-            .substring(1, serialized.length() - 2)
+            .substring(1, serialized.length() - 1)
             .replaceAll(Pattern.quote("\\\""), "\"");
     }
 }
