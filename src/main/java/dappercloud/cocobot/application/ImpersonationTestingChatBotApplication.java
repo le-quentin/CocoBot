@@ -7,10 +7,10 @@ import dappercloud.cocobot.domain.Message;
 import dappercloud.cocobot.domain.MessageReply;
 import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesSource;
-import dappercloud.cocobot.domain.SentencesTokenizer;
+import dappercloud.cocobot.domain.SentencesStringTokenizer;
 import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
-import dappercloud.cocobot.domain.Tokenizer;
-import dappercloud.cocobot.domain.WordsTokenizer;
+import dappercloud.cocobot.domain.StringTokenizer;
+import dappercloud.cocobot.domain.WordsStringTokenizer;
 import dappercloud.cocobot.domain.markov.MarkovChains;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 
@@ -23,16 +23,16 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     private final Impersonator markovImpersonator;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
-        Tokenizer sentencesTokenizer = new SentencesTokenizer();
+        StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
         simpleSentencesImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new SimpleTokensRandomImpersonator(sentencesTokenizer, new Random())
+                new SimpleTokensRandomImpersonator(sentencesStringTokenizer, new Random())
         );
         simpleSentencesImpersonator.addAllMessagesFromSource(source);
 
-        WordsTokenizer wordsTokenizer = new WordsTokenizer();
-        Tokenizer markovTokenizer = new MarkovTokenizer(wordsTokenizer, 3);
-        markovImpersonator = new MarkovImpersonator(sentencesTokenizer, markovTokenizer, new MarkovChains<>());
+        WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
+        MarkovTokenizer markovTokenizer = new MarkovTokenizer(wordsTokenizer, 3);
+        markovImpersonator = new MarkovImpersonator(sentencesStringTokenizer, markovTokenizer, new MarkovChains<>());
         markovImpersonator.addAllMessagesFromSource(source);
     }
 

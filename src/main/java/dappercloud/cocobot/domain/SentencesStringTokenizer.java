@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class SentencesTokenizer implements Tokenizer {
+public class SentencesStringTokenizer implements StringTokenizer {
 
     private static final Pattern CONTAINS_FRENCH_WORD_REGEX = Pattern.compile("^.*[a-zàâçéèêëîïôûùüÿñæœ]{2,}.*$", Pattern.CASE_INSENSITIVE);
 

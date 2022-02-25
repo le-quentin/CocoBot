@@ -11,12 +11,12 @@ public class MarkovChains<T> {
     }
 
     public void addTransition(T from, T to) {
-        MarkovState<T> stateFrom = getState(from);
-        MarkovState<T> stateTo = getState(to);
+        MarkovState<T> stateFrom = getOrCreateState(from);
+        MarkovState<T> stateTo = getOrCreateState(to);
         stateFrom.incrementTransitionTo(stateTo);
     }
 
-    private MarkovState<T> getState(T value) {
+    private MarkovState<T> getOrCreateState(T value) {
        if (!states.containsKey(value)) states.put(value, new MarkovState<>(value));
        return states.get(value);
     }

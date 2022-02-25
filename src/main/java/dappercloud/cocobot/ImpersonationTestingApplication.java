@@ -4,21 +4,14 @@ import dappercloud.cocobot.application.ImpersonationTestingChatBotApplication;
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.DiscordChatBotService;
 import dappercloud.cocobot.discord.DiscordConverter;
-import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.discord.MessageClient;
-import dappercloud.cocobot.domain.Impersonator;
-import dappercloud.cocobot.domain.MessagesFilter;
-import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesRepository;
-import dappercloud.cocobot.domain.SentencesTokenizer;
-import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
 import dappercloud.cocobot.storage.SimpleFileMessagesRepository;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class ImpersonationTestingApplication {
 
@@ -41,11 +34,6 @@ public class ImpersonationTestingApplication {
         final DiscordConverter discordConverter = new DiscordConverter();
         final MessagesRepository messagesRepository = new SimpleFileMessagesRepository();
         final MessageClient messageClient = new MessageClient();
-        final MessagesFilter discordMessagesFilter = new ExcludeCommandsDiscordMessagesFilter();
-
-        // domain
-        final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesTokenizer(), new Random());
-        final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
 
         // application
         final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication(messagesRepository);
@@ -56,9 +44,6 @@ public class ImpersonationTestingApplication {
         // app
         final ImpersonationTestingApplication app = new ImpersonationTestingApplication(gateway, service);
 
-        System.out.println("Loading all messages from repostitory...");
-        impersonator.addAllMessagesFromSource(messagesRepository);
-        System.out.println("Messages read!");
         app.run();
     }
 

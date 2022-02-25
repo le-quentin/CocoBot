@@ -3,7 +3,7 @@ package dappercloud.cocobot.domain;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class WordsTokenizer implements Tokenizer {
+public class WordsStringTokenizer implements StringTokenizer {
     @Override
     public Stream<String> tokenize(String str) {
         String notNullStr = Optional.ofNullable(str).orElse("");

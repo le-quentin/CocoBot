@@ -12,13 +12,13 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 
-class WordsTokenizerUnitTest {
+class WordsStringTokenizerUnitTest {
 
-    private WordsTokenizer tokenizer;
+    private WordsStringTokenizer tokenizer;
 
     @BeforeEach
     void setUp() {
-        tokenizer = new WordsTokenizer();
+        tokenizer = new WordsStringTokenizer();
     }
 
     @Test

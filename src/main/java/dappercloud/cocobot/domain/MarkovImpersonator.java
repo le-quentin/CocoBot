@@ -1,24 +1,26 @@
 package dappercloud.cocobot.domain;
 
 import dappercloud.cocobot.domain.markov.MarkovChains;
+import dappercloud.cocobot.domain.markov.MarkovTokenizer;
+import dappercloud.cocobot.domain.markov.WordsTuple;
 
 import java.util.stream.Collectors;
 
 public class MarkovImpersonator implements Impersonator {
 
-    private final Tokenizer sentencesTokenizer;
-    private final Tokenizer markovTokenizer;
-    private final MarkovChains<String> markovChains;
+    private final StringTokenizer sentencesStringTokenizer;
+    private final MarkovTokenizer markovTokenizer;
+    private final MarkovChains<WordsTuple> markovChains;
 
-    public MarkovImpersonator(Tokenizer sentencesTokenizer, Tokenizer markovTokenizer, MarkovChains<String> markovChains) {
-        this.sentencesTokenizer = sentencesTokenizer;
+    public MarkovImpersonator(StringTokenizer sentencesStringTokenizer, MarkovTokenizer markovTokenizer, MarkovChains<WordsTuple> markovChains) {
+        this.sentencesStringTokenizer = sentencesStringTokenizer;
         this.markovTokenizer = markovTokenizer;
         this.markovChains = markovChains;
     }
 
     @Override
     public void addMessage(Message message) {
-        sentencesTokenizer.tokenize(message.getText())
+        sentencesStringTokenizer.tokenize(message.getText())
                 .map(markovTokenizer::tokenize)
                 .map(tokens -> tokens.collect(Collectors.toList()))
                 .forEach(markovTokens -> {

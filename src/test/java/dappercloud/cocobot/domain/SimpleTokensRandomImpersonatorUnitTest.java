@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 class SimpleTokensRandomImpersonatorUnitTest {
 
     @Mock
-    private Tokenizer tokenizer;
+    private StringTokenizer stringTokenizer;
 
     @Mock
     private Random random;
@@ -46,7 +46,7 @@ class SimpleTokensRandomImpersonatorUnitTest {
         Message message = mock(Message.class);
         when(message.getAuthor()).thenReturn(user);
         when(message.getText()).thenReturn("content");
-        when(tokenizer.tokenize("content")).thenReturn(Stream.empty());
+        when(stringTokenizer.tokenize("content")).thenReturn(Stream.empty());
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
 
         impersonator.addAllMessagesFromSource(messages);
@@ -61,7 +61,7 @@ class SimpleTokensRandomImpersonatorUnitTest {
         Message message = mock(Message.class);
         when(message.getAuthor()).thenReturn(user);
         when(message.getText()).thenReturn("content");
-        when(tokenizer.tokenize("content")).thenReturn(Stream.of("0", "1"));
+        when(stringTokenizer.tokenize("content")).thenReturn(Stream.of("0", "1"));
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
@@ -78,10 +78,10 @@ class SimpleTokensRandomImpersonatorUnitTest {
         Message message2 = mock(Message.class);
         when(message1.getAuthor()).thenReturn(user);
         when(message1.getText()).thenReturn("content1");
-        when(tokenizer.tokenize("content1")).thenReturn(Stream.of("0", "1"));
+        when(stringTokenizer.tokenize("content1")).thenReturn(Stream.of("0", "1"));
         when(message2.getAuthor()).thenReturn(user);
         when(message2.getText()).thenReturn("content2");
-        when(tokenizer.tokenize("content2")).thenReturn(Stream.of("2"));
+        when(stringTokenizer.tokenize("content2")).thenReturn(Stream.of("2"));
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
         when(random.nextInt(3)).thenReturn(1, 2, 0, 1, 2);
 
@@ -97,7 +97,7 @@ class SimpleTokensRandomImpersonatorUnitTest {
         Message message = mock(Message.class);
         when(message.getAuthor()).thenReturn(user);
         when(message.getText()).thenReturn("content");
-        when(tokenizer.tokenize("content")).thenReturn(Stream.of("0", "1"));
+        when(stringTokenizer.tokenize("content")).thenReturn(Stream.of("0", "1"));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
         impersonator.addMessage(message);

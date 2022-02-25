@@ -10,12 +10,12 @@ import java.util.stream.IntStream;
 
 public class SimpleTokensRandomImpersonator implements Impersonator {
 
-    private final Tokenizer tokenizer;
+    private final StringTokenizer stringTokenizer;
     private final Random random;
     private final Map<User, List<String>> usersTokens;
 
-    public SimpleTokensRandomImpersonator(Tokenizer tokenizer, Random random) {
-        this.tokenizer = tokenizer;
+    public SimpleTokensRandomImpersonator(StringTokenizer stringTokenizer, Random random) {
+        this.stringTokenizer = stringTokenizer;
         this.random = random;
         this.usersTokens = new HashMap<>();
     }
@@ -24,7 +24,7 @@ public class SimpleTokensRandomImpersonator implements Impersonator {
     public void addMessage(Message message) {
         User author = message.getAuthor();
         List<String> currentUserTokens = usersTokens.getOrDefault(author, new ArrayList<>());
-        currentUserTokens.addAll(tokenizer.tokenize(message.getText()).collect(Collectors.toList()));
+        currentUserTokens.addAll(stringTokenizer.tokenize(message.getText()).collect(Collectors.toList()));
         usersTokens.put(author, currentUserTokens);
     }
 

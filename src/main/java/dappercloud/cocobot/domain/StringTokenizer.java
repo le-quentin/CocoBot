@@ -2,6 +2,6 @@ package dappercloud.cocobot.domain;
 
 import java.util.stream.Stream;
 
-public interface Tokenizer {
+public interface StringTokenizer {
     Stream<String> tokenize(String str);
 }

@@ -10,7 +10,7 @@ import dappercloud.cocobot.domain.Impersonator;
 import dappercloud.cocobot.domain.MessagesFilter;
 import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesRepository;
-import dappercloud.cocobot.domain.SentencesTokenizer;
+import dappercloud.cocobot.domain.SentencesStringTokenizer;
 import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
 import dappercloud.cocobot.storage.SimpleFileMessagesRepository;
 import discord4j.core.DiscordClient;
@@ -44,7 +44,7 @@ public class CocoApplication {
         final MessagesFilter discordMessagesFilter = new ExcludeCommandsDiscordMessagesFilter();
 
         // domain
-        final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesTokenizer(), new Random());
+        final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesStringTokenizer(), new Random());
         final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
 
         // application

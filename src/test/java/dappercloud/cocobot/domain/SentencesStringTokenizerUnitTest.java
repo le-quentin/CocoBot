@@ -7,13 +7,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.*;
 
-class SentencesTokenizerUnitTest {
+class SentencesStringTokenizerUnitTest {
 
-    private SentencesTokenizer tokenizer;
+    private SentencesStringTokenizer tokenizer;
 
     @BeforeEach
     void setUp() {
-        tokenizer = new SentencesTokenizer();
+        tokenizer = new SentencesStringTokenizer();
     }
 
     @Test
