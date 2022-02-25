@@ -42,12 +42,15 @@ public class CocoApplication {
 
         final CocoApplication app = new CocoApplication(gateway, service);
 
+        System.out.println("Loading all messages from repostitory...");
         impersonator.addAllMessagesFromSource(messagesRepository);
+        System.out.println("Messages read!");
         app.run();
     }
 
     public void run() {
         service.subscribeToMessageCreateFlux(gatewayClient.on(MessageCreateEvent.class));
+        System.out.println("Listening to new messages...");
         gatewayClient.onDisconnect().block();
     }
 
