@@ -1,7 +1,5 @@
 package dappercloud.cocobot.domain;
 
-import dappercloud.cocobot.domain.Tokenizer;
-
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;

@@ -2,7 +2,9 @@ package dappercloud.cocobot.domain;
 
 
 public interface Impersonator {
-    void addAllMessagesFromSource(MessagesSource messagesSource);
+    default void addAllMessagesFromSource(MessagesSource messagesSource) {
+        messagesSource.getAllMessages().subscribe(this::addMessage);
+    }
     void addMessage(Message message);
     String impersonate(User user);
 }

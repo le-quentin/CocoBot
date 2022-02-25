@@ -21,11 +21,6 @@ public class SimpleTokensRandomImpersonator implements Impersonator {
     }
 
     @Override
-    public void addAllMessagesFromSource(MessagesSource messagesSource) {
-        messagesSource.getAllMessages().subscribe(this::addMessage);
-    }
-
-    @Override
     public void addMessage(Message message) {
         User author = message.getAuthor();
         List<String> currentUserTokens = usersTokens.getOrDefault(author, new ArrayList<>());
