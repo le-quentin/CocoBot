@@ -1,12 +1,16 @@
-package dappercloud.cocobot.domain;
+package dappercloud.cocobot.application;
+
+import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.Message;
+import dappercloud.cocobot.domain.MessageReply;
 
 import java.util.Optional;
 
-public class CocoBot {
+public class CocoChatBotApplication implements ChatBot {
 
     private final Impersonator impersonator;
 
-    public CocoBot(Impersonator impersonator) {
+    public CocoChatBotApplication(Impersonator impersonator) {
         this.impersonator = impersonator;
     }
 

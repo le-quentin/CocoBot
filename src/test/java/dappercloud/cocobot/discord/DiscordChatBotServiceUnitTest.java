@@ -1,6 +1,6 @@
 package dappercloud.cocobot.discord;
 
-import dappercloud.cocobot.domain.CocoBot;
+import dappercloud.cocobot.application.CocoChatBotApplication;
 import dappercloud.cocobot.domain.Message;
 import dappercloud.cocobot.domain.MessageReply;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CocoFluxServiceUnitTest {
+class DiscordChatBotServiceUnitTest {
 
     private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
 
@@ -30,13 +30,13 @@ class CocoFluxServiceUnitTest {
     private DiscordConverter converter;
 
     @Mock
-    private CocoBot coco;
+    private CocoChatBotApplication coco;
 
     @Mock
     private MessageClient client;
 
     @InjectMocks
-    private CocoFluxService service;
+    private DiscordChatBotService service;
 
     @BeforeEach
     public void setUp() {

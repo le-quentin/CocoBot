@@ -1,6 +1,6 @@
 package dappercloud.cocobot.discord;
 
-import dappercloud.cocobot.domain.CocoBot;
+import dappercloud.cocobot.application.ChatBot;
 import dappercloud.cocobot.domain.MessageReply;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
@@ -8,13 +8,13 @@ import reactor.core.publisher.Flux;
 
 import java.util.Optional;
 
-public class CocoFluxService {
+public class DiscordChatBotService {
 
     private final DiscordConverter converter;
-    private final CocoBot coco;
+    private final ChatBot coco;
     private final MessageClient client;
 
-    public CocoFluxService(DiscordConverter converter, CocoBot coco, MessageClient client) {
+    public DiscordChatBotService(DiscordConverter converter, ChatBot coco, MessageClient client) {
         this.converter = converter;
         this.coco = coco;
         this.client = client;

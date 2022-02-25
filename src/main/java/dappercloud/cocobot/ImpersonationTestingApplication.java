@@ -1,11 +1,11 @@
 package dappercloud.cocobot;
 
+import dappercloud.cocobot.application.ImpersonationTestingChatBotApplication;
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.DiscordChatBotService;
 import dappercloud.cocobot.discord.DiscordConverter;
 import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.discord.MessageClient;
-import dappercloud.cocobot.application.CocoChatBotApplication;
 import dappercloud.cocobot.domain.Impersonator;
 import dappercloud.cocobot.domain.MessagesFilter;
 import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
@@ -20,12 +20,12 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import java.io.IOException;
 import java.util.Random;
 
-public class CocoApplication {
+public class ImpersonationTestingApplication {
 
     private final GatewayDiscordClient gatewayClient;
     private final DiscordChatBotService service;
 
-    public CocoApplication(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public ImpersonationTestingApplication(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -48,13 +48,13 @@ public class CocoApplication {
         final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
 
         // application
-        final CocoChatBotApplication coco = new CocoChatBotApplication(filteredImpersonator);
+        final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication();
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco, messageClient);
+        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication, messageClient);
 
         // app
-        final CocoApplication app = new CocoApplication(gateway, service);
+        final ImpersonationTestingApplication app = new ImpersonationTestingApplication(gateway, service);
 
         System.out.println("Loading all messages from repostitory...");
         impersonator.addAllMessagesFromSource(messagesRepository);

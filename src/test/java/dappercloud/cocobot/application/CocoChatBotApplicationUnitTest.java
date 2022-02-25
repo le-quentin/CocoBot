@@ -1,5 +1,9 @@
-package dappercloud.cocobot.domain;
+package dappercloud.cocobot.application;
 
+import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.Message;
+import dappercloud.cocobot.domain.MessageReply;
+import dappercloud.cocobot.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +19,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CocoBotUnitTest {
+class CocoChatBotApplicationUnitTest {
 
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
@@ -23,7 +27,7 @@ class CocoBotUnitTest {
     private Impersonator impersonator;
 
     @InjectMocks
-    private CocoBot coco;
+    private CocoChatBotApplication coco;
 
     @BeforeEach
     public void setUp() {

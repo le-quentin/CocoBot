@@ -1,6 +1,6 @@
 package dappercloud.cocobot;
 
-import dappercloud.cocobot.discord.CocoFluxService;
+import dappercloud.cocobot.discord.DiscordChatBotService;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ class CocoApplicationUnitTest {
     private GatewayDiscordClient gatewayDiscordClient;
 
     @Mock
-    private CocoFluxService service;
+    private DiscordChatBotService service;
 
     @InjectMocks
     private CocoApplication app;
