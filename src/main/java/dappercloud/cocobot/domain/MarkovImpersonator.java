@@ -1,6 +1,7 @@
 package dappercloud.cocobot.domain;
 
 import dappercloud.cocobot.domain.markov.MarkovChains;
+import dappercloud.cocobot.domain.markov.MarkovState;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 import dappercloud.cocobot.domain.markov.WordsTuple;
 
@@ -32,6 +33,16 @@ public class MarkovImpersonator implements Impersonator {
 
     @Override
     public String impersonate(User user) {
-        return null;
+        //TODO extract in MarkovWalker/Crawler or something
+        MarkovState<WordsTuple> currentState = markovChains
+                .getState(WordsTuple.EMPTY)
+                .electNext();
+        StringBuilder builder = new StringBuilder(currentState.getValue().join(" "));
+        currentState = currentState.electNext();
+        while (!currentState.getValue().equals(WordsTuple.EMPTY)) {
+            builder.append(" ").append(currentState.getValue().lastWord());
+            currentState = currentState.electNext();
+        }
+        return builder.toString();
     }
 }

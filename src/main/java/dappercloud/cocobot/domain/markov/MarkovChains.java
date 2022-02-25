@@ -20,4 +20,8 @@ public class MarkovChains<T> {
        if (!states.containsKey(value)) states.put(value, new MarkovState<>(value));
        return states.get(value);
     }
+
+    public MarkovState<T> getState(T value) {
+        return states.get(value);
+    }
 }

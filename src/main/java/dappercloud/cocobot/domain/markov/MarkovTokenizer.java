@@ -24,8 +24,6 @@ public class MarkovTokenizer {
                 .collect(Collectors.toList());
         if (words.size() < tokenWordsCount) return Stream.empty();
 
-        words.add(""); //Adding empty string at the end of the Stream to represent end of the sentence.
-
         Queue<String> lastWords = new ArrayDeque<>(words.subList(0, tokenWordsCount));
         WordsTuple firstToken = tokenFromQueue(lastWords);
         Stream<WordsTuple> tokens = words.subList(tokenWordsCount, words.size()).stream()
@@ -34,7 +32,8 @@ public class MarkovTokenizer {
                     lastWords.add(word);
                     return tokenFromQueue(lastWords);
                 });
-        return Stream.concat(Stream.of(firstToken), tokens);
+        // Wrapping tuples with EMPTY values, to represent start/end of sentence
+        return Stream.concat(Stream.of(WordsTuple.EMPTY), Stream.concat(tokens, Stream.of(WordsTuple.EMPTY)));
     }
 
     private WordsTuple tokenFromQueue(Queue<String> queue) {

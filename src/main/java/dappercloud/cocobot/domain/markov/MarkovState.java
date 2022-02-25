@@ -1,8 +1,10 @@
 package dappercloud.cocobot.domain.markov;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class MarkovState<T> {
     private final T value;
@@ -21,6 +23,17 @@ public class MarkovState<T> {
         int count = transitions.getOrDefault(otherState, 0);
         transitions.put(otherState, count+1);
         totalCount++;
+    }
+
+    private Random rnd = new Random();
+    public MarkovState<T> electNext() {
+        // TODO implement properly, by computing a sorted list with cumulative values
+        int index = rnd.nextInt(transitions.size());
+        return new ArrayList<>(transitions.keySet()).get(index);
+    }
+
+    public T getValue() {
+        return value;
     }
 
     @Override

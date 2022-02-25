@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 public class WordsTuple {
+    public static final WordsTuple EMPTY = new WordsTuple(List.of());
+
     private final List<String> words;
 
     public WordsTuple(String... words) {
@@ -13,6 +15,14 @@ public class WordsTuple {
 
     public WordsTuple(Iterable<String> words) {
         this(StreamSupport.stream(words.spliterator(), false).toArray(String[]::new));
+    }
+
+    public String join(String separator) {
+        return String.join(separator, words);
+    }
+
+    public String lastWord() {
+        return words.get(words.size()-1);
     }
 
     @Override
