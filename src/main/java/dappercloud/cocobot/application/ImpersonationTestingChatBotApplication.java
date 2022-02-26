@@ -2,6 +2,7 @@ package dappercloud.cocobot.application;
 
 import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.LongImpersonationImpersonatorDecorator;
 import dappercloud.cocobot.domain.MarkovImpersonator;
 import dappercloud.cocobot.domain.Message;
 import dappercloud.cocobot.domain.MessageReply;
@@ -33,18 +34,22 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 
         WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
         MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
-        markov2Impersonator = new MessagesFilterImpersonatorDecorator(
+        Impersonator markov2Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
                 new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new MarkovChains<>(), new Random())
         );
+        markov2Impersonator = new LongImpersonationImpersonatorDecorator(markov2Impersonator, 30, 200);
         markov2Impersonator.addAllMessagesFromSource(source);
+        this.markov2Impersonator = markov2Impersonator;
 
         MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
-        markov3Impersonator = new MessagesFilterImpersonatorDecorator(
+        Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
                 new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>(), new Random())
         );
         markov3Impersonator.addAllMessagesFromSource(source);
+        markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
+        this.markov3Impersonator = markov3Impersonator;
     }
 
     @Override
