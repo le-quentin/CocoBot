@@ -20,7 +20,8 @@ import java.util.Random;
 public class ImpersonationTestingChatBotApplication implements ChatBot{
 
     private final Impersonator simpleSentencesImpersonator;
-    private final Impersonator markovImpersonator;
+    private final Impersonator markov3Impersonator;
+    private final Impersonator markov2Impersonator;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
         StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
@@ -31,9 +32,19 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         simpleSentencesImpersonator.addAllMessagesFromSource(source);
 
         WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
-        MarkovTokenizer markovTokenizer = new MarkovTokenizer(wordsTokenizer, 3);
-        markovImpersonator = new MarkovImpersonator(sentencesStringTokenizer, markovTokenizer, new MarkovChains<>());
-        markovImpersonator.addAllMessagesFromSource(source);
+        MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
+        markov2Impersonator = new MessagesFilterImpersonatorDecorator(
+                new ExcludeCommandsDiscordMessagesFilter(),
+                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new MarkovChains<>())
+        );
+        markov2Impersonator.addAllMessagesFromSource(source);
+
+        MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
+        markov3Impersonator = new MessagesFilterImpersonatorDecorator(
+                new ExcludeCommandsDiscordMessagesFilter(),
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>())
+        );
+        markov3Impersonator.addAllMessagesFromSource(source);
     }
 
     @Override
@@ -41,9 +52,13 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         if (message.getText().startsWith("c/sentences")) {
             return Optional.of(new MessageReply(simpleSentencesImpersonator.impersonate(message.getAuthor())));
         }
-        if (message.getText().startsWith("c/markov")) {
-            return Optional.of(new MessageReply(markovImpersonator.impersonate(message.getAuthor())));
+        if (message.getText().startsWith("c/markov2")) {
+            return Optional.of(new MessageReply(markov2Impersonator.impersonate(message.getAuthor())));
         }
+        if (message.getText().startsWith("c/markov3")) {
+            return Optional.of(new MessageReply(markov3Impersonator.impersonate(message.getAuthor())));
+        }
+
         return Optional.empty();
     }
 }
