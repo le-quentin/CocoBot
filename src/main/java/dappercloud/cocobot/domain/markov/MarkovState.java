@@ -1,10 +1,13 @@
 package dappercloud.cocobot.domain.markov;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class MarkovState<T> {
     private final T value;
@@ -25,11 +28,19 @@ public class MarkovState<T> {
         totalCount++;
     }
 
-    private Random rnd = new Random();
-    public MarkovState<T> electNext() {
-        // TODO implement properly, by computing a sorted list with cumulative values
-        int index = rnd.nextInt(transitions.size());
-        return new ArrayList<>(transitions.keySet()).get(index);
+    public MarkovState<T> electNext(Random random) {
+        int randomInt = random.nextInt(totalCount);
+        int cumul = 0;
+        List<Entry<MarkovState<T>, Integer>> sortedStates = transitions.entrySet().stream()
+                .sorted(Entry.comparingByValue(Comparator.comparingInt(a -> -a)))
+                .collect(Collectors.toList());
+        for(var entry : sortedStates) {
+            cumul += entry.getValue();
+            if (randomInt < cumul) {
+                return entry.getKey();
+            }
+        }
+        throw new RuntimeException("Should not have reached here!");
     }
 
     public T getValue() {

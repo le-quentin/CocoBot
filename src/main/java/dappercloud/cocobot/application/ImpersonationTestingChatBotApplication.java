@@ -35,14 +35,14 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
         markov2Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new MarkovChains<>())
+                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new MarkovChains<>(), new Random())
         );
         markov2Impersonator.addAllMessagesFromSource(source);
 
         MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
         markov3Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>())
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>(), new Random())
         );
         markov3Impersonator.addAllMessagesFromSource(source);
     }
