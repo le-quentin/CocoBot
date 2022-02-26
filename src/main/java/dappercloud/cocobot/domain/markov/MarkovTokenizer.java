@@ -33,7 +33,8 @@ public class MarkovTokenizer {
                     return tokenFromQueue(lastWords);
                 });
         // Wrapping tuples with EMPTY values, to represent start/end of sentence
-        return Stream.concat(Stream.of(WordsTuple.EMPTY), Stream.concat(tokens, Stream.of(WordsTuple.EMPTY)));
+        Stream<WordsTuple> allTokens = Stream.concat(Stream.of(firstToken), tokens);
+        return Stream.concat(Stream.of(WordsTuple.EMPTY), Stream.concat(allTokens, Stream.of(WordsTuple.EMPTY)));
     }
 
     private WordsTuple tokenFromQueue(Queue<String> queue) {
