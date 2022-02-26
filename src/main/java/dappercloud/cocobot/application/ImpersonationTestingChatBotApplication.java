@@ -8,6 +8,7 @@ import dappercloud.cocobot.domain.Message;
 import dappercloud.cocobot.domain.MessageReply;
 import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesSource;
+import dappercloud.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import dappercloud.cocobot.domain.SentencesStringTokenizer;
 import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
 import dappercloud.cocobot.domain.StringTokenizer;
@@ -23,6 +24,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     private final Impersonator simpleSentencesImpersonator;
     private final Impersonator markov3Impersonator;
     private final Impersonator markov2Impersonator;
+    private final Impersonator multiImpersonator;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
         StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
@@ -48,8 +50,12 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
                 new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>(), new Random())
         );
         markov3Impersonator.addAllMessagesFromSource(source);
-        markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
-        this.markov3Impersonator = markov3Impersonator;
+        this.markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
+
+        this.multiImpersonator = new MultipleSentencesImpersonatorDecorator(
+                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
+                4
+        );
     }
 
     @Override
@@ -62,6 +68,9 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         }
         if (message.getText().startsWith("c/markov3")) {
             return Optional.of(new MessageReply(markov3Impersonator.impersonate(message.getAuthor())));
+        }
+        if (message.getText().startsWith("c/multi")) {
+            return Optional.of(new MessageReply(multiImpersonator.impersonate(message.getAuthor())));
         }
 
         return Optional.empty();
