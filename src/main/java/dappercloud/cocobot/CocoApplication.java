@@ -8,23 +8,26 @@ import dappercloud.cocobot.discord.DiscordConverter;
 import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.discord.MessageClient;
 import dappercloud.cocobot.domain.Impersonator;
-import dappercloud.cocobot.domain.LongImpersonationImpersonatorDecorator;
 import dappercloud.cocobot.domain.MarkovImpersonator;
-import dappercloud.cocobot.domain.MessagesFilter;
 import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesRepository;
 import dappercloud.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import dappercloud.cocobot.domain.SentencesStringTokenizer;
 import dappercloud.cocobot.domain.StringTokenizer;
 import dappercloud.cocobot.domain.WordsStringTokenizer;
+import dappercloud.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
 import dappercloud.cocobot.domain.markov.MarkovChainsWalker;
+import dappercloud.cocobot.domain.markov.MarkovPath;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
+import dappercloud.cocobot.domain.markov.SimpleMarkovChainsWalker;
+import dappercloud.cocobot.domain.markov.WordsTuple;
 import dappercloud.cocobot.storage.SimpleFileMessagesRepository;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Random;
 
 public class CocoApplication {
@@ -48,18 +51,23 @@ public class CocoApplication {
         final DiscordConverter discordConverter = new DiscordConverter();
         final MessagesRepository messagesRepository = new SimpleFileMessagesRepository();
         final MessageClient messageClient = new MessageClient();
-        final MessagesFilter discordMessagesFilter = new ExcludeCommandsDiscordMessagesFilter();
 
         // domain
         final StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
         final WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
         final MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
+        final MarkovChainsWalker<WordsTuple> walker = new FindMaxOverBatchOfPathWalkerDecorator<>(
+                new SimpleMarkovChainsWalker<>(new Random()),
+                Comparator.comparingInt(MarkovPath::getNonDeterministicScore),
+                100,
+                2
+        );
         final Impersonator markovImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChainsWalker<>(new Random()))
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, walker)
         );
         final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
-                new LongImpersonationImpersonatorDecorator(markovImpersonator, 30, 200),
+                markovImpersonator,
                 2
         );
 
@@ -74,7 +82,7 @@ public class CocoApplication {
         // app
         final CocoApplication app = new CocoApplication(gateway, service);
 
-        System.out.println("Loading all messages from repostitory...");
+        System.out.println("Loading all messages from repository...");
         impersonator.addAllMessagesFromSource(messagesRepository);
         System.out.println("Messages read!");
         app.run();
