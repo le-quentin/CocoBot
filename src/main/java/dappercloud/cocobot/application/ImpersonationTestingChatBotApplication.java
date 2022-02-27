@@ -24,7 +24,8 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     private final Impersonator simpleSentencesImpersonator;
     private final Impersonator markov3Impersonator;
     private final Impersonator markov2Impersonator;
-    private final Impersonator multiImpersonator;
+    private final Impersonator multi2Impersonator;
+    private final Impersonator multi4Impersonator;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
         StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
@@ -52,7 +53,12 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         markov3Impersonator.addAllMessagesFromSource(source);
         this.markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
 
-        this.multiImpersonator = new MultipleSentencesImpersonatorDecorator(
+        this.multi2Impersonator = new MultipleSentencesImpersonatorDecorator(
+                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200),
+                2
+        );
+
+        this.multi4Impersonator = new MultipleSentencesImpersonatorDecorator(
                 new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
                 4
         );
@@ -69,8 +75,11 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         if (message.getText().startsWith("c/markov3")) {
             return Optional.of(new MessageReply(markov3Impersonator.impersonate(message.getAuthor())));
         }
-        if (message.getText().startsWith("c/multi")) {
-            return Optional.of(new MessageReply(multiImpersonator.impersonate(message.getAuthor())));
+        if (message.getText().startsWith("c/multi2")) {
+            return Optional.of(new MessageReply(multi2Impersonator.impersonate(message.getAuthor())));
+        }
+        if (message.getText().startsWith("c/multi4")) {
+            return Optional.of(new MessageReply(multi4Impersonator.impersonate(message.getAuthor())));
         }
 
         return Optional.empty();
