@@ -6,10 +6,10 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class MarkovTokenizer {
-    public static final String SEPARATOR = ";";
 
     private final StringTokenizer wordsStringTokenizer;
     private final int tokenWordsCount;
@@ -24,17 +24,16 @@ public class MarkovTokenizer {
                 .collect(Collectors.toList());
         if (words.size() < tokenWordsCount) return Stream.empty();
 
-        Queue<String> lastWords = new ArrayDeque<>(words.subList(0, tokenWordsCount));
-        WordsTuple firstToken = tokenFromQueue(lastWords);
-        Stream<WordsTuple> tokens = words.subList(tokenWordsCount, words.size()).stream()
+        Queue<String> lastWords = new ArrayDeque<>();
+        IntStream.range(0, tokenWordsCount).forEach(i -> lastWords.add(""));
+        Stream<WordsTuple> tokens = words.stream()
                 .map(word -> {
                     lastWords.remove();
                     lastWords.add(word);
                     return tokenFromQueue(lastWords);
                 });
         // Wrapping tuples with EMPTY values, to represent start/end of sentence
-        Stream<WordsTuple> allTokens = Stream.concat(Stream.of(firstToken), tokens);
-        return Stream.concat(Stream.of(WordsTuple.EMPTY), Stream.concat(allTokens, Stream.of(WordsTuple.EMPTY)));
+        return Stream.concat(Stream.of(WordsTuple.EMPTY), Stream.concat(tokens, Stream.of(WordsTuple.EMPTY)));
     }
 
     private WordsTuple tokenFromQueue(Queue<String> queue) {

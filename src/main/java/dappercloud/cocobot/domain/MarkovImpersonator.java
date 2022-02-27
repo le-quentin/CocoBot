@@ -1,28 +1,28 @@
 package dappercloud.cocobot.domain;
 
 import dappercloud.cocobot.domain.markov.MarkovChains;
-import dappercloud.cocobot.domain.markov.MarkovState;
+import dappercloud.cocobot.domain.markov.MarkovChainsWalker;
+import dappercloud.cocobot.domain.markov.MarkovPath;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 import dappercloud.cocobot.domain.markov.WordsTuple;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class MarkovImpersonator implements Impersonator {
 
     private final StringTokenizer sentencesStringTokenizer;
     private final MarkovTokenizer markovTokenizer;
+    private final MarkovChainsWalker<WordsTuple> walker;
 
     private final Map<User, MarkovChains<WordsTuple>> userMarkovChains;
-    private final Random random;
 
-    public MarkovImpersonator(StringTokenizer sentencesStringTokenizer, MarkovTokenizer markovTokenizer, MarkovChains<WordsTuple> markovChains, Random random) {
+    public MarkovImpersonator(StringTokenizer sentencesStringTokenizer, MarkovTokenizer markovTokenizer, MarkovChainsWalker<WordsTuple> walker) {
         this.sentencesStringTokenizer = sentencesStringTokenizer;
         this.markovTokenizer = markovTokenizer;
+        this.walker = walker;
         this.userMarkovChains = new HashMap<>();
-        this.random = random;
     }
 
     @Override
@@ -43,17 +43,15 @@ public class MarkovImpersonator implements Impersonator {
         if (!userMarkovChains.containsKey(user)) {
             throw new UserNotFoundException(user.getUsername());
         }
-        MarkovChains<WordsTuple> markovChains = userMarkovChains.get(user);
-        MarkovState<WordsTuple> currentState = markovChains
-                .getState(WordsTuple.EMPTY)
-                .electNext(random);
-        StringBuilder builder = new StringBuilder(currentState.getValue().join(" "));
-        currentState = currentState.electNext(random);
-        while (!currentState.getValue().equals(WordsTuple.EMPTY)) {
-            builder.append(" ").append(currentState.getValue().lastWord());
-            currentState = currentState.electNext(random);
-        }
-        return builder.toString();
+        MarkovPath<WordsTuple> path = walker.walkFromUntil(
+                userMarkovChains.get(user),
+                WordsTuple.EMPTY,
+                pathBuilder -> pathBuilder.getLastAddedState().getValue() == WordsTuple.EMPTY
+        );
+        return path.getPath()
+                .filter(wordsTuple -> wordsTuple != WordsTuple.EMPTY)
+                .map(WordsTuple::lastWord)
+                .collect(Collectors.joining(" "));
     }
 
     private MarkovChains<WordsTuple> getOrCreateUserChains(User user) {

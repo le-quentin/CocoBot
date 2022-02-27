@@ -17,7 +17,7 @@ import dappercloud.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import dappercloud.cocobot.domain.SentencesStringTokenizer;
 import dappercloud.cocobot.domain.StringTokenizer;
 import dappercloud.cocobot.domain.WordsStringTokenizer;
-import dappercloud.cocobot.domain.markov.MarkovChains;
+import dappercloud.cocobot.domain.markov.MarkovChainsWalker;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 import dappercloud.cocobot.storage.SimpleFileMessagesRepository;
 import discord4j.core.DiscordClient;
@@ -56,7 +56,7 @@ public class CocoApplication {
         final MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
         final Impersonator markovImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>(), new Random())
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChainsWalker<>(new Random()))
         );
         final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
                 new LongImpersonationImpersonatorDecorator(markovImpersonator, 30, 200),

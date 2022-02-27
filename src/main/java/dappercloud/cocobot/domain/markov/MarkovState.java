@@ -47,6 +47,10 @@ public class MarkovState<T> {
         return value;
     }
 
+    public int nextStatesCount() {
+        return transitions.size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

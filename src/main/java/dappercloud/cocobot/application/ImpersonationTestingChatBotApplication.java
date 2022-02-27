@@ -13,7 +13,7 @@ import dappercloud.cocobot.domain.SentencesStringTokenizer;
 import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
 import dappercloud.cocobot.domain.StringTokenizer;
 import dappercloud.cocobot.domain.WordsStringTokenizer;
-import dappercloud.cocobot.domain.markov.MarkovChains;
+import dappercloud.cocobot.domain.markov.MarkovChainsWalker;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 
 import java.util.Optional;
@@ -39,7 +39,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
         Impersonator markov2Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new MarkovChains<>(), new Random())
+                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new MarkovChainsWalker<>(new Random()))
         );
         markov2Impersonator = new LongImpersonationImpersonatorDecorator(markov2Impersonator, 30, 200);
         markov2Impersonator.addAllMessagesFromSource(source);
@@ -48,7 +48,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
         Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeCommandsDiscordMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>(), new Random())
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChainsWalker<>(new Random()))
         );
         markov3Impersonator.addAllMessagesFromSource(source);
         this.markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
