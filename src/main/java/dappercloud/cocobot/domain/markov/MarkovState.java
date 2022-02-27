@@ -59,4 +59,13 @@ public class MarkovState<T> {
     public int hashCode() {
         return Objects.hash(value);
     }
+
+    @Override
+    public String toString() {
+        return "MarkovState{" +
+                value + transitions.entrySet().stream()
+                    .map(entry -> "-"+entry.getValue()+"->"+entry.getKey().getValue())
+                    .collect(Collectors.joining(", ")) +
+                '}';
+    }
 }

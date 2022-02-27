@@ -37,4 +37,9 @@ public class WordsTuple {
     public int hashCode() {
         return Objects.hash(words);
     }
+
+    @Override
+    public String toString() {
+        return "("+String.join(";", words)+")";
+    }
 }
