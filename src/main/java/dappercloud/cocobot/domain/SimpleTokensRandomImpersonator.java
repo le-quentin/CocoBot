@@ -31,7 +31,7 @@ public class SimpleTokensRandomImpersonator implements Impersonator {
     @Override
     public String impersonate(User user) {
         if (!usersTokens.containsKey(user)) {
-            throw new UserNotFoundException("User " + user.getUsername() + " not found.");
+            throw new UserNotFoundException(user.getUsername());
         }
 
         List<String> sentences = usersTokens.get(user);

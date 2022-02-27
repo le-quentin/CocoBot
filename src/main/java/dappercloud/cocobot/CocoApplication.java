@@ -1,5 +1,6 @@
 package dappercloud.cocobot;
 
+import dappercloud.cocobot.application.CocoCommandParser;
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.DiscordChatBotService;
 import dappercloud.cocobot.discord.DiscordConverter;
@@ -48,7 +49,8 @@ public class CocoApplication {
         final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
 
         // application
-        final CocoChatBotApplication coco = new CocoChatBotApplication(filteredImpersonator);
+        final CocoCommandParser cocoCommandParser = new CocoCommandParser();
+        final CocoChatBotApplication coco = new CocoChatBotApplication(filteredImpersonator, cocoCommandParser);
 
         // service
         final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco, messageClient);

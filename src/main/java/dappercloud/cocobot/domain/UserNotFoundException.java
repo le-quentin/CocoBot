@@ -1,7 +1,15 @@
 package dappercloud.cocobot.domain;
 
 public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(String message) {
-        super(message);
+
+    private final String username;
+
+    public UserNotFoundException(String username) {
+        super("User " + username + " not found");
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
