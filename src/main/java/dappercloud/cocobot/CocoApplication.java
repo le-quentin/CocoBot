@@ -1,18 +1,24 @@
 package dappercloud.cocobot;
 
+import dappercloud.cocobot.application.CocoChatBotApplication;
 import dappercloud.cocobot.application.CocoCommandParser;
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.DiscordChatBotService;
 import dappercloud.cocobot.discord.DiscordConverter;
 import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.discord.MessageClient;
-import dappercloud.cocobot.application.CocoChatBotApplication;
 import dappercloud.cocobot.domain.Impersonator;
+import dappercloud.cocobot.domain.LongImpersonationImpersonatorDecorator;
+import dappercloud.cocobot.domain.MarkovImpersonator;
 import dappercloud.cocobot.domain.MessagesFilter;
 import dappercloud.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import dappercloud.cocobot.domain.MessagesRepository;
+import dappercloud.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import dappercloud.cocobot.domain.SentencesStringTokenizer;
-import dappercloud.cocobot.domain.SimpleTokensRandomImpersonator;
+import dappercloud.cocobot.domain.StringTokenizer;
+import dappercloud.cocobot.domain.WordsStringTokenizer;
+import dappercloud.cocobot.domain.markov.MarkovChains;
+import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 import dappercloud.cocobot.storage.SimpleFileMessagesRepository;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
@@ -45,12 +51,22 @@ public class CocoApplication {
         final MessagesFilter discordMessagesFilter = new ExcludeCommandsDiscordMessagesFilter();
 
         // domain
-        final Impersonator impersonator = new SimpleTokensRandomImpersonator(new SentencesStringTokenizer(), new Random());
-        final Impersonator filteredImpersonator = new MessagesFilterImpersonatorDecorator(discordMessagesFilter, impersonator);
+        final StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
+        final WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
+        final MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
+        final Impersonator markovImpersonator = new MessagesFilterImpersonatorDecorator(
+                new ExcludeCommandsDiscordMessagesFilter(),
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new MarkovChains<>(), new Random())
+        );
+        final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
+                new LongImpersonationImpersonatorDecorator(markovImpersonator, 30, 200),
+                2
+        );
+
 
         // application
         final CocoCommandParser cocoCommandParser = new CocoCommandParser();
-        final CocoChatBotApplication coco = new CocoChatBotApplication(filteredImpersonator, cocoCommandParser);
+        final CocoChatBotApplication coco = new CocoChatBotApplication(impersonator, cocoCommandParser);
 
         // service
         final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco, messageClient);

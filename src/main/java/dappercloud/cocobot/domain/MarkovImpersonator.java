@@ -5,6 +5,8 @@ import dappercloud.cocobot.domain.markov.MarkovState;
 import dappercloud.cocobot.domain.markov.MarkovTokenizer;
 import dappercloud.cocobot.domain.markov.WordsTuple;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -12,19 +14,20 @@ public class MarkovImpersonator implements Impersonator {
 
     private final StringTokenizer sentencesStringTokenizer;
     private final MarkovTokenizer markovTokenizer;
-    private final MarkovChains<WordsTuple> markovChains;
+
+    private final Map<User, MarkovChains<WordsTuple>> userMarkovChains;
     private final Random random;
 
     public MarkovImpersonator(StringTokenizer sentencesStringTokenizer, MarkovTokenizer markovTokenizer, MarkovChains<WordsTuple> markovChains, Random random) {
         this.sentencesStringTokenizer = sentencesStringTokenizer;
         this.markovTokenizer = markovTokenizer;
-        this.markovChains = markovChains;
+        this.userMarkovChains = new HashMap<>();
         this.random = random;
     }
 
     @Override
     public void addMessage(Message message) {
-        if(!message.getAuthor().getUsername().equals("DapperCloud")) return;
+        MarkovChains<WordsTuple> markovChains = getOrCreateUserChains(message.getAuthor());
         sentencesStringTokenizer.tokenize(message.getText())
                 .map(markovTokenizer::tokenize)
                 .map(tokens -> tokens.collect(Collectors.toList()))
@@ -37,6 +40,10 @@ public class MarkovImpersonator implements Impersonator {
 
     @Override
     public String impersonate(User user) {
+        if (!userMarkovChains.containsKey(user)) {
+            throw new UserNotFoundException(user.getUsername());
+        }
+        MarkovChains<WordsTuple> markovChains = userMarkovChains.get(user);
         MarkovState<WordsTuple> currentState = markovChains
                 .getState(WordsTuple.EMPTY)
                 .electNext(random);
@@ -48,4 +55,10 @@ public class MarkovImpersonator implements Impersonator {
         }
         return builder.toString();
     }
+
+    private MarkovChains<WordsTuple> getOrCreateUserChains(User user) {
+        if (!userMarkovChains.containsKey(user)) userMarkovChains.put(user, new MarkovChains<>());
+        return userMarkovChains.get(user);
+    }
+
 }
