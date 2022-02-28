@@ -14,6 +14,7 @@ A Discord bot watching people chat and then able to impersonate them
 - [ ] prefix in conf
 
 ### Deploy
+- [ ] Proper logging with timestamp and levels
 - [ ] Dockerize: Dockerfile to put the jar in a jdk container
 - [ ] Registry: use github package to get the image, and run in prod without sources
 
