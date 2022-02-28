@@ -52,10 +52,14 @@ class DirectAccessMessagesSourceUnitTest {
     void shouldGetAllMessagesFromOneChannel() {
         discord4j.core.object.entity.Message discordMessage1 = mock(discord4j.core.object.entity.Message.class);
         discord4j.core.object.entity.Message discordMessage2 = mock(discord4j.core.object.entity.Message.class);
+        discord4j.core.object.entity.Message discordMessage3 = mock(discord4j.core.object.entity.Message.class);
+        when(discordMessage1.getContent()).thenReturn("content");
+        when(discordMessage2.getContent()).thenReturn("content");
+        when(discordMessage3.getContent()).thenReturn("   ");
         TextChannel channel = mock(TextChannel.class);
         Snowflake lastMessageId = mock(Snowflake.class);
         when(channel.getLastMessageId()).thenReturn(Optional.of(lastMessageId));
-        when(channel.getMessagesBefore(lastMessageId)).thenReturn(Flux.just(discordMessage1, discordMessage2));
+        when(channel.getMessagesBefore(lastMessageId)).thenReturn(Flux.just(discordMessage1, discordMessage2, discordMessage3));
         when(channel.getType()).thenReturn(Type.GUILD_TEXT);
         when(guild.getChannels()).thenReturn(Flux.just(channel));
         Message message1 = mock(Message.class);

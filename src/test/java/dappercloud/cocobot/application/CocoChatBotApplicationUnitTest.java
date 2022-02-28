@@ -3,7 +3,7 @@ package dappercloud.cocobot.application;
 import dappercloud.cocobot.domain.Impersonator;
 import dappercloud.cocobot.domain.Message;
 import dappercloud.cocobot.domain.MessageReply;
-import dappercloud.cocobot.domain.User;
+import dappercloud.cocobot.domain.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +26,9 @@ class CocoChatBotApplicationUnitTest {
     @Mock
     private Impersonator impersonator;
 
+    @Mock
+    private CocoCommandParser commandParser;
+
     @InjectMocks
     private CocoChatBotApplication coco;
 
@@ -41,44 +44,42 @@ class CocoChatBotApplicationUnitTest {
     }
 
     @Test
-    void shouldHandleCMeCommand() {
-        User user = mock(User.class);
-        Message message = mockMessageWithText("c/me");
-        when(message.getAuthor()).thenReturn(user);
-        when(impersonator.impersonate(user)).thenReturn("an impersonation");
+    void shouldHandleCommand() {
+        Message message = mock(Message.class);
+        Command command = mock(Command.class);
+        MessageReply reply = mock(MessageReply.class);
+        when(commandParser.parse(message)).thenReturn(Optional.of(command));
+        when(command.apply(impersonator)).thenReturn(reply);
 
-        Optional<MessageReply> reply = coco.handleMessage(message);
+        Optional<MessageReply> result = coco.handleMessage(message);
 
-        assertThat(reply)
-                .usingFieldByFieldValueComparator()
-                .contains(new MessageReply("an impersonation"));
+        assertThat(result).contains(reply);
     }
 
     @Test
-    void shouldHandleMessageWithUnknownCommand() {
-        Message message = mockMessageWithText("c/unknown");
+    void shouldHandleCommandWhenUserNotFound() {
+        Message message = mock(Message.class);
+        Command command = mock(Command.class);
+        when(commandParser.parse(message)).thenReturn(Optional.of(command));
+        when(command.apply(impersonator)).thenThrow(new UserNotFoundException("username"));
 
-        Optional<MessageReply> reply = coco.handleMessage(message);
+        Optional<MessageReply> result = coco.handleMessage(message);
 
-        assertThat(reply)
+        assertThat(result)
                 .usingFieldByFieldValueComparator()
-                .contains(new MessageReply("Je ne connais pas cette commande"));
+                .contains(new MessageReply("Je ne connais pas l'utilisateur username"));
     }
 
     @Test
     void shouldHandleMessageWithNonCommandMessage() {
-        Message message = mockMessageWithText("Random message");
-
-        Optional<MessageReply> reply = coco.handleMessage(message);
-
-        assertThat(outputStreamCaptor.toString()).contains("Adding message to model: Random message");
-        assertThat(reply).isEmpty();
-        verify(impersonator).addMessage(message);
-    }
-
-    private Message mockMessageWithText(String text) {
         Message message = mock(Message.class);
-        when(message.getText()).thenReturn(text);
-        return message;
+        when(message.getText()).thenReturn("Random message");
+        when(commandParser.parse(message)).thenReturn(Optional.empty());
+
+        Optional<MessageReply> result = coco.handleMessage(message);
+
+        assertThat(result).isEmpty();
+        verify(impersonator).addMessage(message);
+        assertThat(outputStreamCaptor.toString()).contains("Adding message to model: Random message");
     }
 }
