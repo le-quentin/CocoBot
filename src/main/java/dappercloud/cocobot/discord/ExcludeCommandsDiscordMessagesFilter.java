@@ -9,6 +9,6 @@ public class ExcludeCommandsDiscordMessagesFilter implements MessagesFilter {
         String text = msg.getText();
         if (text.length() < 3) return false;
 
-        return !text.matches("^.?(/|!)");
+        return !text.matches("^.?[/!].*$");
     }
 }

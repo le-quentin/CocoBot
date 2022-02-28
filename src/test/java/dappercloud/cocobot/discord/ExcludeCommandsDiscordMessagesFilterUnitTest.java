@@ -5,18 +5,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ExcludeCommandsDiscordMessagesFilterUnitTest {
 
-    private ExcludeCommandsDiscordMessagesFilter filter = new ExcludeCommandsDiscordMessagesFilter();
+    private final ExcludeCommandsDiscordMessagesFilter filter = new ExcludeCommandsDiscordMessagesFilter();
 
     @ValueSource(strings = {
             "A perfectly fine message",
             "cc/dd", "Yes sure!"
     })
     @ParameterizedTest
-    void shouldFilter(Message msg) {
-        assertThat(filter.accepts(msg)).isTrue();
+    void shouldFilter(String msg) {
+        assertThat(filter.accepts(fromString(msg))).isTrue();
     }
 
     @ValueSource(strings = {
@@ -24,8 +25,13 @@ class ExcludeCommandsDiscordMessagesFilterUnitTest {
             "f!a command", "f!/! s", "! whatever command", "!!!"
     })
     @ParameterizedTest
-    void shouldFilterOut(Message msg) {
-        assertThat(filter.accepts(msg)).isFalse();
+    void shouldFilterOut(String msg) {
+        assertThat(filter.accepts(fromString(msg))).isFalse();
     }
 
+    private Message fromString(String str) {
+        Message msg = mock(Message.class);
+        when(msg.getText()).thenReturn(str);
+        return msg;
+    }
 }
