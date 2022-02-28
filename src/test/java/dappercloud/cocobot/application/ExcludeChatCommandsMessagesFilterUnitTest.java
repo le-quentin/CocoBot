@@ -1,4 +1,4 @@
-package dappercloud.cocobot.discord;
+package dappercloud.cocobot.application;
 
 import dappercloud.cocobot.domain.Message;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,9 +7,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ExcludeCommandsDiscordMessagesFilterUnitTest {
+class ExcludeChatCommandsMessagesFilterUnitTest {
 
-    private final ExcludeCommandsDiscordMessagesFilter filter = new ExcludeCommandsDiscordMessagesFilter();
+    private final ExcludeChatCommandsMessagesFilter filter = new ExcludeChatCommandsMessagesFilter();
 
     @ValueSource(strings = {
             "A perfectly fine message",

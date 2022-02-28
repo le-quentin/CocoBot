@@ -1,6 +1,5 @@
 package dappercloud.cocobot.application;
 
-import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
 import dappercloud.cocobot.domain.Impersonator;
 import dappercloud.cocobot.domain.LongImpersonationImpersonatorDecorator;
 import dappercloud.cocobot.domain.MarkovImpersonator;
@@ -30,7 +29,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
         StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
         simpleSentencesImpersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeCommandsDiscordMessagesFilter(),
+                new ExcludeChatCommandsMessagesFilter(),
                 new SimpleTokensRandomImpersonator(sentencesStringTokenizer, new Random())
         );
         simpleSentencesImpersonator.addAllMessagesFromSource(source);
@@ -38,7 +37,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
         MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
         Impersonator markov2Impersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeCommandsDiscordMessagesFilter(),
+                new ExcludeChatCommandsMessagesFilter(),
                 new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
         );
         markov2Impersonator = new LongImpersonationImpersonatorDecorator(markov2Impersonator, 30, 200);
@@ -47,7 +46,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 
         MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
         Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeCommandsDiscordMessagesFilter(),
+                new ExcludeChatCommandsMessagesFilter(),
                 new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
         );
         markov3Impersonator.addAllMessagesFromSource(source);

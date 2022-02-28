@@ -5,7 +5,7 @@ import dappercloud.cocobot.application.CocoCommandParser;
 import dappercloud.cocobot.config.Config;
 import dappercloud.cocobot.discord.DiscordChatBotService;
 import dappercloud.cocobot.discord.DiscordConverter;
-import dappercloud.cocobot.discord.ExcludeCommandsDiscordMessagesFilter;
+import dappercloud.cocobot.application.ExcludeChatCommandsMessagesFilter;
 import dappercloud.cocobot.discord.MessageClient;
 import dappercloud.cocobot.domain.Impersonator;
 import dappercloud.cocobot.domain.MarkovImpersonator;
@@ -63,7 +63,7 @@ public class CocoApplication {
                 2
         );
         final Impersonator markovImpersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeCommandsDiscordMessagesFilter(),
+                new ExcludeChatCommandsMessagesFilter(),
                 new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, walker)
         );
         final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
