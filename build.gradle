@@ -34,5 +34,5 @@ test {
 }
 
 application {
-    mainClass = 'dappercloud.cocobot.CocoApplication'
+    mainClass = 'lequentin.cocobot.CocoApplication'
 }
