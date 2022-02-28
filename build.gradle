@@ -36,3 +36,8 @@ test {
 application {
     mainClass = 'lequentin.cocobot.CocoApplication'
 }
+
+task('synchronise', dependsOn: 'classes', type: JavaExec) {
+    mainClass = 'lequentin.cocobot.SynchroniseStorageApplication'
+    classpath = sourceSets.main.runtimeClasspath
+}
