@@ -1,9 +1,5 @@
 package dappercloud.cocobot.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -23,10 +19,14 @@ public class Config {
 
     private Secrets secrets;
 
-    public void readFromResources() throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
-        secrets = mapper.readValue(getFileFromResourceAsStream("config/secrets.yaml"), Secrets.class);
+    public void readFromEnv() throws IOException {
+        secrets = new Secrets();
+        String botToken = System.getenv("BOT_TOKEN");
+        if (botToken == null) {
+            throw new RuntimeException("BOT_TOKEN env var not set!");
+        }
+
+        secrets.setBotToken(botToken);
     }
 
     public Secrets getSecrets() {

@@ -55,7 +55,7 @@ public class ImpersonationTestingApplication {
 
     private static Config loadConfig() {
         try {
-            Config.get().readFromResources();
+            Config.get().readFromEnv();
         } catch(IOException ex) {
             System.err.println("There was an error reading config files");
             ex.printStackTrace(System.err);

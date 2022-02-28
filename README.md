@@ -3,11 +3,7 @@ A Discord bot watching people chat and then able to impersonate them
 
 ## Installation
 
-You will need java 17 installed.
-
-Setup the bot token in the config file: 
-- Copy `resources/config/secrets.yaml.template` into `resources/config/secrets.yaml`
-- Set your bot token value in that new file
+The project uses Gradle wrapper. It will take care of everything, even downloading the JDK version required for the project (namely 17).
 
 Check that everything is alright by running tests:
 
@@ -17,6 +13,8 @@ Check that everything is alright by running tests:
 
 ## Run
 
+You need the BOT_TOKEN env var:
+
 ```shell
-./gradlew run
+BOT_TOKEN=<your_token_here> ./gradlew run
 ```
