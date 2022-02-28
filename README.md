@@ -3,7 +3,7 @@ A Discord bot watching people chat and then able to impersonate them
 
 ## Installation
 
-You will need java 15 installed.
+You will need java 17 installed.
 
 Setup the bot token in the config file: 
 - Copy `resources/config/secrets.yaml.template` into `resources/config/secrets.yaml`
