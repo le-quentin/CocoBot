@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17
+FROM eclipse-temurin:17.0.2_8-jre
 
 RUN mkdir /opt/app
 COPY ./build/libs/CocoBot-1.0-SNAPSHOT-all.jar /opt/app/coco.jar
