@@ -8,10 +8,21 @@ public class SentencesStringTokenizer implements StringTokenizer {
 
     private static final Pattern CONTAINS_FRENCH_WORD_REGEX = Pattern.compile("^.*[a-zàâçéèêëîïôûùüÿñæœ]{2,}.*$", Pattern.CASE_INSENSITIVE);
 
+    private final Optional<StringSanitizer> sanitizer;
+
+    public SentencesStringTokenizer() {
+        this(null);
+    }
+
+    public SentencesStringTokenizer(StringSanitizer sanitizer) {
+        this.sanitizer = Optional.ofNullable(sanitizer);
+    }
+
     @Override
     public Stream<String> tokenize(String str) {
-        String message = Optional.ofNullable(str).orElse("");
-        return Stream.of(message.split(" ?[.?!]+"))
+        final String message = Optional.ofNullable(str).orElse("");
+        final String sanitized = sanitizer.map(sanitizer -> sanitizer.sanitize(message)).orElse(message);
+        return Stream.of(sanitized.split(" ?[.?!]+"))
                 .filter(this::containsAtLeastOneFrenchWord)
                 .map(String::trim)
                 .filter(sentence -> !sentence.isEmpty());

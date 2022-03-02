@@ -4,7 +4,7 @@ A Discord bot watching people chat and then able to impersonate them
 ## TODO
 
 ### Core
-- [ ] Exclude quotes from parsed messages
+- [x] Exclude quotes from parsed messages
 - [ ] synchronise task should add to existing DB (store lastSyncDate)
 - [ ] Then coco could sync at startup, syncAll if date null
 - [ ] Keep testing with existing impersonators to produce funnier outputs

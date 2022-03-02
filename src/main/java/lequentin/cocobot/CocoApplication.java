@@ -1,11 +1,15 @@
 package lequentin.cocobot;
 
+import discord4j.core.DiscordClient;
+import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.CocoChatBotApplication;
 import lequentin.cocobot.application.CocoCommandParser;
+import lequentin.cocobot.application.ExcludeChatCommandsMessagesFilter;
+import lequentin.cocobot.application.commands.RemoveQuotesAndBlocksStringSanitizer;
 import lequentin.cocobot.config.Config;
 import lequentin.cocobot.discord.DiscordChatBotService;
 import lequentin.cocobot.discord.DiscordConverter;
-import lequentin.cocobot.application.ExcludeChatCommandsMessagesFilter;
 import lequentin.cocobot.discord.MessageClient;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.MarkovImpersonator;
@@ -13,6 +17,7 @@ import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
+import lequentin.cocobot.domain.StringSanitizer;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.WordsStringTokenizer;
 import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
@@ -22,9 +27,6 @@ import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.WordsTuple;
 import lequentin.cocobot.storage.SimpleFileMessagesRepository;
-import discord4j.core.DiscordClient;
-import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.message.MessageCreateEvent;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -53,7 +55,8 @@ public class CocoApplication {
         final MessageClient messageClient = new MessageClient();
 
         // domain
-        final StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
+        final StringSanitizer sanitizer = new RemoveQuotesAndBlocksStringSanitizer();
+        final StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer(sanitizer);
         final WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
         final MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
         final MarkovChainsWalker<WordsTuple> walker = new FindMaxOverBatchOfPathWalkerDecorator<>(
@@ -84,7 +87,7 @@ public class CocoApplication {
 
         System.out.println("Loading all messages from repository...");
         impersonator.addAllMessagesFromSource(messagesRepository);
-        System.out.println("Messages read!");
+        System.out.println("All messages loaded!");
         app.run();
     }
 

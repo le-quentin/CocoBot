@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class SentencesStringTokenizerUnitTest {
 
@@ -48,4 +51,14 @@ class SentencesStringTokenizerUnitTest {
         assertThat(tokenizer.tokenize("First sentence. Second sentence")).containsExactly("First sentence", "Second sentence");
     }
 
+    @Test
+    void shouldUseSanitizerWhenSet() {
+        StringSanitizer sanitizer = mock(StringSanitizer.class);
+        when(sanitizer.sanitize("text")).thenReturn("sanitized");
+        tokenizer = new SentencesStringTokenizer(sanitizer);
+
+        Stream<String> result = tokenizer.tokenize("text");
+
+        assertThat(result).containsExactly("sanitized");
+    }
 }
