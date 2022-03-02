@@ -4,6 +4,7 @@ A Discord bot watching people chat and then able to impersonate them
 ## TODO
 
 ### Core
+- [ ] Exclude quotes from parsed messages
 - [ ] synchronise task should add to existing DB (store lastSyncDate)
 - [ ] Then coco could sync at startup, syncAll if date null
 - [ ] Keep testing with existing impersonators to produce funnier outputs
@@ -15,8 +16,9 @@ A Discord bot watching people chat and then able to impersonate them
 
 ### Deploy
 - [ ] Proper logging with timestamp and levels
-- [ ] Dockerize: Dockerfile to put the jar in a jdk container
-- [ ] Registry: use github package to get the image, and run in prod without sources
+- [ ] stored_messages outside of docker image
+- [ ] alternative images for armv7 and amd64
+- [ ] GitHub actions to automatically push image on commit push
 
 ## Installation
 
