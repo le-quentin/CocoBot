@@ -9,7 +9,7 @@ public class DiscordConverter {
         discord4j.core.object.entity.User discordUser = discordMessage.getAuthor()
                 .orElseThrow(() -> new RuntimeException("Message has no user"));
         User author = new User(discordUser.getUsername());
-        return new Message(author, discordMessage.getContent());
+        return new Message(author, discordMessage.getTimestamp(), discordMessage.getContent());
     }
 
 }

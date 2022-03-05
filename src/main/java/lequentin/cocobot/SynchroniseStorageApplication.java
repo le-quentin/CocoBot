@@ -1,6 +1,5 @@
 package lequentin.cocobot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import lequentin.cocobot.config.Config;
@@ -38,7 +37,7 @@ public class SynchroniseStorageApplication {
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository jsonStorage = new JsonFileMessagesRepository(
                 Path.of("stored_messages.json"),
-                new ObjectMapper(),
+                JsonMapper.get(),
                 jsonConverter
         );
 

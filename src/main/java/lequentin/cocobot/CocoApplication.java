@@ -1,6 +1,5 @@
 package lequentin.cocobot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -60,7 +59,7 @@ public class CocoApplication {
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
                 Path.of("stored_messages.json"),
-                new ObjectMapper(),
+                JsonMapper.get(),
                 jsonConverter
         );
 

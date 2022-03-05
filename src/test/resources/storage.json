@@ -2,15 +2,15 @@
   {
     "username": "toto",
     "messages": [
-      { "text":  "Hi guys" },
-      { "text":  "How are you?" }
+      { "text":  "Hi guys", "createdAt": "2022-01-04T19:30:42Z" },
+      { "text":  "How are you?", "createdAt": "2022-02-01T02:01:11Z" }
     ]
   },
   {
     "username": "tata",
     "messages": [
-      { "text":  "Hi girls" },
-      { "text":  "How are you not?" }
+      { "text":  "Hi girls", "createdAt": "2022-01-04T19:30:42Z" },
+      { "text":  "How are you not?", "createdAt": "2022-02-01T02:01:11Z" }
     ]
   }
 ]

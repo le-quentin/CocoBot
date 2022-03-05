@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Deprecated(forRemoval = true, since = "Not storing messages timestamps")
 public class SimpleFileMessagesRepository implements MessagesRepository {
 
     private enum State { BEGIN, OPEN_BRACKET, OPEN_QUOTE, CLOSE_QUOTE, COMMA, CLOSE_BRACKET, END };
@@ -117,7 +118,7 @@ public class SimpleFileMessagesRepository implements MessagesRepository {
                 do {
                     nextMessageText.append(readUntilNextDoubleQuote());
                 } while(nextMessageText.charAt(nextMessageText.length()-2) == '\\');
-                newMessage = new Message(currentAuthor, deserializeText(nextMessageText.toString()));
+                newMessage = new Message(currentAuthor, null, deserializeText(nextMessageText.toString()));
                 currentState = State.CLOSE_QUOTE;
             }
 

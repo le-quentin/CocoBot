@@ -5,10 +5,10 @@ import lequentin.cocobot.domain.User;
 
 public class UserMessagesJsonConverter {
     public Message toDomainMessage(UserMessagesJson userMessagesJson, MessageJson messageJson) {
-        return new Message(new User(userMessagesJson.getUsername()), messageJson.getText());
+        return new Message(new User(userMessagesJson.getUsername()), messageJson.getCreatedAt(), messageJson.getText());
     }
 
     public MessageJson toJsonMessage(Message message) {
-        return new MessageJson(message.getText());
+        return new MessageJson(message.getCreatedAt(), message.getText());
     }
 }

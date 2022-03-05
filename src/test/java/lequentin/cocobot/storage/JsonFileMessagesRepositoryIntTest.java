@@ -1,6 +1,7 @@
 package lequentin.cocobot.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lequentin.cocobot.JsonMapper;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
 import org.junit.jupiter.api.Test;
@@ -10,16 +11,22 @@ import reactor.test.StepVerifier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.*;
 
 class JsonFileMessagesRepositoryIntTest {
 
+    private final Instant CREATED_AT_1 = Instant.parse("2022-01-04T19:30:42Z");
+    private final Instant CREATED_AT_2 = Instant.parse("2022-02-01T02:01:11Z");
+
+    private final ObjectMapper objectMapper = JsonMapper.get();
+
     @Test
     void shouldGetAllMessages() {
         JsonFileMessagesRepository repository = new JsonFileMessagesRepository(
                 getResourcePath("storage.json"),
-                new ObjectMapper(),
+                objectMapper,
                 new UserMessagesJsonConverter()
         );
         Flux<Message> allMessages = repository.getAllMessages();
@@ -27,10 +34,10 @@ class JsonFileMessagesRepositoryIntTest {
         User author1 = new User("toto");
         User author2 = new User("tata");
         StepVerifier.create(allMessages)
-                .assertNext(msg -> assertMessage(msg, author1, "Hi guys"))
-                .assertNext(msg -> assertMessage(msg, author1, "How are you?"))
-                .assertNext(msg -> assertMessage(msg, author2, "Hi girls"))
-                .assertNext(msg -> assertMessage(msg, author2, "How are you not?"))
+                .assertNext(msg -> assertMessage(msg, author1, CREATED_AT_1, "Hi guys"))
+                .assertNext(msg -> assertMessage(msg, author1, CREATED_AT_2, "How are you?"))
+                .assertNext(msg -> assertMessage(msg, author2, CREATED_AT_1, "Hi girls"))
+                .assertNext(msg -> assertMessage(msg, author2, CREATED_AT_2, "How are you not?"))
                 .verifyComplete();
     }
 
@@ -40,15 +47,15 @@ class JsonFileMessagesRepositoryIntTest {
         if (Files.exists(filePath)) Files.delete(filePath);
         JsonFileMessagesRepository repository = new JsonFileMessagesRepository(
                 filePath,
-                new ObjectMapper(),
+                objectMapper,
                 new UserMessagesJsonConverter()
         );
         User author1 = new User("titi");
         User author2 = new User("tutu");
         Flux<Message> source = Flux.just(
-                new Message(author1, "Hello there"),
-                new Message(author1, "How are you?"),
-                new Message(author2, "I'm doing fine")
+                new Message(author1, CREATED_AT_1, "Hello there"),
+                new Message(author1, CREATED_AT_2, "How are you?"),
+                new Message(author2,  CREATED_AT_2,"I'm doing fine")
         );
 
         repository.synchronise(() -> source);
@@ -57,14 +64,14 @@ class JsonFileMessagesRepositoryIntTest {
         String user1Json = "{" +
             "\"username\":\"titi\"," +
             "\"messages\":[" +
-                "{\"text\":\"Hello there\"}," +
-                "{\"text\":\"How are you?\"}" +
+                "{\"createdAt\":\"2022-01-04T19:30:42Z\",\"text\":\"Hello there\"}," +
+                "{\"createdAt\":\"2022-02-01T02:01:11Z\",\"text\":\"How are you?\"}" +
             "]" +
         "}";
         String user2Json = "{" +
             "\"username\":\"tutu\"," +
             "\"messages\":[" +
-                "{\"text\":\"I'm doing fine\"}" +
+                "{\"createdAt\":\"2022-02-01T02:01:11Z\",\"text\":\"I'm doing fine\"}" +
             "]" +
         "}";
         assertThat(content).isIn(
@@ -73,8 +80,8 @@ class JsonFileMessagesRepositoryIntTest {
         );
     }
 
-    private void assertMessage(Message message, User author, String text) {
-        assertThat(message).usingRecursiveComparison().isEqualTo(new Message(author, text));
+    private void assertMessage(Message message, User author, Instant createdAt, String text) {
+        assertThat(message).usingRecursiveComparison().isEqualTo(new Message(author, createdAt, text));
     }
 
     private Path getResourcePath(String relativePath) {
