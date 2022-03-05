@@ -1,5 +1,6 @@
 package lequentin.cocobot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -26,9 +27,11 @@ import lequentin.cocobot.domain.markov.MarkovPath;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.WordsTuple;
-import lequentin.cocobot.storage.SimpleFileMessagesRepository;
+import lequentin.cocobot.storage.JsonFileMessagesRepository;
+import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -51,8 +54,15 @@ public class CocoApplication {
 
         // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessagesRepository messagesRepository = new SimpleFileMessagesRepository();
         final MessageClient messageClient = new MessageClient();
+
+        // storage
+        final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
+        final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
+                Path.of("stored_messages.json"),
+                new ObjectMapper(),
+                jsonConverter
+        );
 
         // domain
         final StringSanitizer sanitizer = new RemoveQuotesAndBlocksStringSanitizer();
