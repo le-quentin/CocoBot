@@ -1,0 +1,16 @@
+[
+  {
+    "username": "toto",
+    "messages": [
+      { "text":  "Hi guys" },
+      { "text":  "How are you?" }
+    ]
+  },
+  {
+    "username": "tata",
+    "messages": [
+      { "text":  "Hi girls" },
+      { "text":  "How are you not?" }
+    ]
+  }
+]
