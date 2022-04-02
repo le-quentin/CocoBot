@@ -1,4 +1,6 @@
 docker_access_token=$CR_PAT
+image_name=ghcr.io/le-quentin/cocobot
+version_tag=`git rev-parse --short HEAD`
 
 if [ -z ${docker_access_token} ]; then
   >&2 echo 'CR_PAT env var needs to be set to the GitHub repo access token'; exit 1
@@ -15,5 +17,6 @@ fi
 docker buildx build \
 --push \
 --platform linux/arm/v7 \
---tag ghcr.io/le-quentin/cocobot:latest-armv7 \
+--tag "$image_name":"$version_tag"-armv7 \
+--tag "$image_name":latest-armv7 \
 .
