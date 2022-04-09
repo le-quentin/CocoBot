@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+// TODO turns out this could be more context agnostic... adding lines and not messages, impersonating persons and not users
+// The core logic should stay the same and be used in both chat impersonation and text generation. The strategy can then vary
+// with tokenizers and walkers implementations.
+// For the messages aggregation with timestamps, a messages aggregator could be used before adding them here.
 public class MarkovImpersonator implements Impersonator {
 
     private final StringTokenizer sentencesStringTokenizer;
