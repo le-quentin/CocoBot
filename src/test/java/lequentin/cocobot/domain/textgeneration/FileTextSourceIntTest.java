@@ -11,16 +11,25 @@ class FileTextSourceIntTest {
 
     @Test
     void shouldGetText() {
-        TextSource source = new FileTextSource(getResourcePath("test-text-file.txt").toString());
+        TextSource source = new FileTextSource(getResourcePath("text-file.txt").toString());
 
-        Stream<String> test = source.getText();
+        Stream<String> text = source.getText();
 
-        assertThat(test).containsExactly(
+        assertThat(text).containsExactly(
                 "line 1",
                 "line 2",
                 "",
                 "line 4"
         );
+    }
+
+    @Test
+    void shouldGetTextFromBigFile() {
+        TextSource source = new FileTextSource(getResourcePath("big-text-file.txt").toString());
+
+        Stream<String> text = source.getText();
+
+        assertThat(text).hasSizeGreaterThan(500);
     }
 
     private Path getResourcePath(String relativePath) {
