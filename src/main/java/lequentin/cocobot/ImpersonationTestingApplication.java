@@ -1,17 +1,19 @@
 package lequentin.cocobot;
 
+import discord4j.core.DiscordClient;
+import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.ImpersonationTestingChatBotApplication;
 import lequentin.cocobot.config.Config;
 import lequentin.cocobot.discord.DiscordChatBotService;
 import lequentin.cocobot.discord.DiscordConverter;
 import lequentin.cocobot.discord.MessageClient;
 import lequentin.cocobot.domain.MessagesRepository;
-import lequentin.cocobot.storage.SimpleFileMessagesRepository;
-import discord4j.core.DiscordClient;
-import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.message.MessageCreateEvent;
+import lequentin.cocobot.storage.JsonFileMessagesRepository;
+import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class ImpersonationTestingApplication {
 
@@ -30,9 +32,17 @@ public class ImpersonationTestingApplication {
         final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
         final GatewayDiscordClient gateway = discordClient.login().block();
 
+
+        // storage
+        final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
+        final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
+                Path.of("stored_messages.json"),
+                JsonMapper.get(),
+                jsonConverter
+        );
+
         // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessagesRepository messagesRepository = new SimpleFileMessagesRepository();
         final MessageClient messageClient = new MessageClient();
 
         // application
