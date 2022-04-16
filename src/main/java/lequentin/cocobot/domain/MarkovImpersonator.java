@@ -1,66 +1,50 @@
 package lequentin.cocobot.domain;
 
-import lequentin.cocobot.domain.markov.MarkovChains;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;
-import lequentin.cocobot.domain.markov.MarkovPath;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
+import lequentin.cocobot.domain.markov.MarkovWordsGenerator;
 import lequentin.cocobot.domain.markov.WordsTuple;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-// TODO turns out this could be more context agnostic... adding lines and not messages, impersonating persons and not users
-// The core logic should stay the same and be used in both chat impersonation and text generation. The strategy can then vary
-// with tokenizers and walkers implementations.
-// For the messages aggregation with timestamps, a messages aggregator could be used before adding them here.
 public class MarkovImpersonator implements Impersonator {
 
     private final StringTokenizer sentencesStringTokenizer;
     private final MarkovTokenizer markovTokenizer;
     private final MarkovChainsWalker<WordsTuple> walker;
 
-    private final Map<User, MarkovChains<WordsTuple>> userMarkovChains;
+    private final Map<User, MarkovWordsGenerator> userMarkovGenerators;
 
     public MarkovImpersonator(StringTokenizer sentencesStringTokenizer, MarkovTokenizer markovTokenizer, MarkovChainsWalker<WordsTuple> walker) {
         this.sentencesStringTokenizer = sentencesStringTokenizer;
         this.markovTokenizer = markovTokenizer;
         this.walker = walker;
-        this.userMarkovChains = new HashMap<>();
+        this.userMarkovGenerators = new HashMap<>();
     }
 
     @Override
     public void addMessage(Message message) {
-        MarkovChains<WordsTuple> markovChains = getOrCreateUserChains(message.getAuthor());
-        sentencesStringTokenizer.tokenize(message.getText())
-                .map(markovTokenizer::tokenize)
-                .map(tokens -> tokens.collect(Collectors.toList()))
-                .forEach(markovTokens -> {
-                    for (int i=0; i<markovTokens.size()-1; i++) {
-                        markovChains.addTransition(markovTokens.get(i), markovTokens.get(i+1));
-                    }
-                });
+        getOrCreateUserGenerator(message.getAuthor())
+                .addText(message.getText());
     }
 
     @Override
     public String impersonate(User user) {
-        if (!userMarkovChains.containsKey(user)) {
+        if (!userMarkovGenerators.containsKey(user)) {
             throw new UserNotFoundException(user.getUsername());
         }
-        MarkovPath<WordsTuple> path = walker.walkFromUntil(
-                userMarkovChains.get(user),
-                WordsTuple.EMPTY,
-                pathBuilder -> pathBuilder.getLastAddedState().getValue() == WordsTuple.EMPTY
-        );
-        return path.getPath()
-                .filter(wordsTuple -> wordsTuple != WordsTuple.EMPTY)
-                .map(WordsTuple::lastWord)
-                .collect(Collectors.joining(" "));
+        return userMarkovGenerators.get(user)
+                .generate();
     }
 
-    private MarkovChains<WordsTuple> getOrCreateUserChains(User user) {
-        if (!userMarkovChains.containsKey(user)) userMarkovChains.put(user, new MarkovChains<>());
-        return userMarkovChains.get(user);
+    private MarkovWordsGenerator getOrCreateUserGenerator(User user) {
+        if (!userMarkovGenerators.containsKey(user)) userMarkovGenerators.put(user, newMarkovGenerator());
+        return userMarkovGenerators.get(user);
+    }
+
+    private MarkovWordsGenerator newMarkovGenerator() {
+        return new MarkovWordsGenerator(sentencesStringTokenizer, markovTokenizer, walker);
     }
 
 }
