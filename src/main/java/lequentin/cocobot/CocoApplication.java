@@ -16,11 +16,11 @@ import lequentin.cocobot.domain.LongImpersonationImpersonatorDecorator;
 import lequentin.cocobot.domain.MarkovImpersonator;
 import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesRepository;
-import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
 import lequentin.cocobot.domain.StringSanitizer;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.WordsStringTokenizer;
+import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
@@ -30,6 +30,7 @@ import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Random;
 
 public class CocoApplication {
@@ -72,17 +73,21 @@ public class CocoApplication {
 //                100,
 //                2
 //        );
-        final MarkovChainsWalker<WordsTuple> walker = new SimpleMarkovChainsWalker<>(new Random());
+
+        final MarkovChainsWalker<WordsTuple> leastDeterministicWalker = new FindMaxOverBatchOfPathWalkerDecorator<>(
+                new SimpleMarkovChainsWalker<>(new Random()),
+                Comparator.comparingInt(path -> (int)Math.round(path.getNonDeterministicScore() * (Math.log10(path.getLength())))),
+                50,
+                0
+        );
+
+
+//        final MarkovChainsWalker<WordsTuple> walker = new SimpleMarkovChainsWalker<>(new Random());
         final Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeChatCommandsMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, walker)
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, leastDeterministicWalker)
         );
-        final Impersonator longMarkov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200);
-
-        final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
-                longMarkov3Impersonator,
-                2
-        );
+        final Impersonator impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 4, 5);
 
         // application
         final CocoCommandParser cocoCommandParser = new CocoCommandParser();
