@@ -11,10 +11,13 @@ import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
 import lequentin.cocobot.domain.SimpleTokensRandomImpersonator;
 import lequentin.cocobot.domain.StringTokenizer;
+import lequentin.cocobot.domain.User;
 import lequentin.cocobot.domain.WordsStringTokenizer;
-import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
+import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -53,7 +56,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         this.markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
 
         this.multi2Impersonator = new MultipleSentencesImpersonatorDecorator(
-                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200),
+                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
                 2
         );
 
@@ -82,5 +85,29 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         }
 
         return Optional.empty();
+    }
+
+    public void sample() {
+        List<User> authors = List.of(
+                new User("DapperCloud"),
+                new User("Hisatak"),
+                new User("Nasvar"),
+                new User("Zukajin"),
+                new User("Monsieur Blu"),
+                new User("Luo Sha")
+        );
+
+        Map<String, Impersonator> impersonators = Map.of(
+                "markov2", markov2Impersonator,
+                "markov3", markov3Impersonator,
+                "multi2", multi2Impersonator
+        );
+
+        impersonators.forEach((name, impersonator) -> {
+            System.out.println(name + "\n------------------------------");
+            authors.forEach(user -> {
+                System.out.println(user.getUsername() + ": " + impersonator.impersonate(user));
+            });
+        });
     }
 }
