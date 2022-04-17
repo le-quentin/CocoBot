@@ -75,12 +75,12 @@ public class CocoApplication {
         final MarkovChainsWalker<WordsTuple> walker = new SimpleMarkovChainsWalker<>(new Random());
         final Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeChatCommandsMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, walker)
         );
-        final Impersonator longMarkov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
+        final Impersonator longMarkov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200);
 
         final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
-                new LongImpersonationImpersonatorDecorator(longMarkov3Impersonator, 30, 200),
+                longMarkov3Impersonator,
                 2
         );
 
