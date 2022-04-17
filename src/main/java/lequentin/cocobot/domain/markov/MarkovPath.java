@@ -8,11 +8,13 @@ import java.util.stream.Stream;
 public class MarkovPath<T> {
 
     private final Stream<T> path;
+    private final int length;
     private final int nonDeterministicScore;
 
     private MarkovPath(Builder<T> builder) {
        this.path = builder.states.stream()
                .map(MarkovState::getValue) ;
+       this.length = builder.states.size();
        this.nonDeterministicScore = builder.nonDeterministicScore;
     }
 
@@ -22,6 +24,10 @@ public class MarkovPath<T> {
 
     public int getNonDeterministicScore() {
         return nonDeterministicScore;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public static <T> Builder<T> builder() {
@@ -41,7 +47,7 @@ public class MarkovPath<T> {
         public Builder<T> nextState(MarkovState<T> state) {
             states.add(state);
             nonDeterministicScore += Optional.ofNullable(lastAddedState)
-                    .map(lastTate -> state.nextStatesCount() - 1)
+                    .map(lastState -> lastState.nextStatesCount() - 1)
                     .orElse(0);
             lastAddedState = state;
             return this;
