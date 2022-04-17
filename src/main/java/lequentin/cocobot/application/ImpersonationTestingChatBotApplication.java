@@ -7,27 +7,36 @@ import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.MessageReply;
 import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesSource;
-import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
 import lequentin.cocobot.domain.SimpleTokensRandomImpersonator;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.User;
 import lequentin.cocobot.domain.WordsStringTokenizer;
+import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
+import lequentin.cocobot.domain.markov.MarkovChainsWalker;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
+import lequentin.cocobot.domain.markov.WordsTuple;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class ImpersonationTestingChatBotApplication implements ChatBot{
 
     private final Impersonator simpleSentencesImpersonator;
-    private final Impersonator markov3Impersonator;
-    private final Impersonator markov2Impersonator;
-    private final Impersonator multi2Impersonator;
-    private final Impersonator multi4Impersonator;
+
+    private final Impersonator markov3Impersonator = null;
+    private final Impersonator markov2Impersonator = null;
+
+    private final Impersonator multi2Impersonator = null;
+    private final Impersonator multi4Impersonator = null;
+
+    private final Impersonator markov3BatchWalkerImpersonator;
+    private final Impersonator markov2BatchWalkerImpersonator;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
         StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
@@ -39,31 +48,62 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 
         WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
         MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
-        Impersonator markov2Impersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeChatCommandsMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
-        );
-        markov2Impersonator = new LongImpersonationImpersonatorDecorator(markov2Impersonator, 30, 200);
-        markov2Impersonator.addAllMessagesFromSource(source);
-        this.markov2Impersonator = markov2Impersonator;
-
         MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
-        Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
+
+//        Impersonator markov2Impersonator = new MessagesFilterImpersonatorDecorator(
+//                new ExcludeChatCommandsMessagesFilter(),
+//                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
+//        );
+//        markov2Impersonator = new LongImpersonationImpersonatorDecorator(markov2Impersonator, 30, 200);
+//        markov2Impersonator.addAllMessagesFromSource(source);
+//        this.markov2Impersonator = markov2Impersonator;
+//
+
+//        Impersonator markov3Impersonator = new MessagesFilterImpersonatorDecorator(
+//                new ExcludeChatCommandsMessagesFilter(),
+//                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
+//        );
+//        markov3Impersonator.addAllMessagesFromSource(source);
+//        this.markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
+
+//        this.multi2Impersonator = new MultipleSentencesImpersonatorDecorator(
+//                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
+//                2
+//        );
+
+//        this.multi4Impersonator = new MultipleSentencesImpersonatorDecorator(
+//                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
+//                4
+//        );
+
+
+        final MarkovChainsWalker<WordsTuple> leastDeterministicWalker = new FindMaxOverBatchOfPathWalkerDecorator<>(
+                new SimpleMarkovChainsWalker<>(new Random()),
+                Comparator.comparingInt(path -> path.getNonDeterministicScore() * (path.getLength()/10)),
+                400,
+                20
+        );
+
+        final MarkovChainsWalker<WordsTuple> mostDeterministicWalker = new FindMaxOverBatchOfPathWalkerDecorator<>(
+                new SimpleMarkovChainsWalker<>(new Random()),
+                Comparator.comparingInt(path -> path.getLength()*100000/path.getNonDeterministicScore()),
+                400,
+                20
+        );
+
+        Impersonator markov2BatchImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeChatCommandsMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, new SimpleMarkovChainsWalker<>(new Random()))
+                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, mostDeterministicWalker)
         );
-        markov3Impersonator.addAllMessagesFromSource(source);
-        this.markov3Impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 30, 200);
+        markov2BatchImpersonator.addAllMessagesFromSource(source);
+        this.markov2BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov2BatchImpersonator, 4, 200);
 
-        this.multi2Impersonator = new MultipleSentencesImpersonatorDecorator(
-                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
-                2
+        Impersonator markov3BatchImpersonator = new MessagesFilterImpersonatorDecorator(
+                new ExcludeChatCommandsMessagesFilter(),
+                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, leastDeterministicWalker)
         );
-
-        this.multi4Impersonator = new MultipleSentencesImpersonatorDecorator(
-                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 15, 200),
-                4
-        );
+        markov3BatchImpersonator.addAllMessagesFromSource(source);
+        this.markov3BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov3BatchImpersonator, 4, 200);
     }
 
     @Override
@@ -98,15 +138,18 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         );
 
         Map<String, Impersonator> impersonators = Map.of(
-                "markov2", markov2Impersonator,
-                "markov3", markov3Impersonator,
-                "multi2", multi2Impersonator
+//                "markov2", markov2Impersonator,
+//                "markov3", markov3Impersonator,
+//                "multi2", multi2Impersonator,
+                "markov2Batch", markov2BatchWalkerImpersonator,
+                "markov3Batch", markov3BatchWalkerImpersonator
         );
 
         impersonators.forEach((name, impersonator) -> {
             System.out.println(name + "\n------------------------------");
             authors.forEach(user -> {
-                System.out.println(user.getUsername() + ": " + impersonator.impersonate(user));
+                System.out.println(user.getUsername());
+                IntStream.range(1, 6).forEach(i -> System.out.println(i + ": " + impersonator.impersonate(user)));
             });
         });
     }
