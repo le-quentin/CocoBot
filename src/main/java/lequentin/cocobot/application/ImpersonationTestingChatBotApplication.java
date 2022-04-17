@@ -79,9 +79,9 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 
         final MarkovChainsWalker<WordsTuple> leastDeterministicWalker = new FindMaxOverBatchOfPathWalkerDecorator<>(
                 new SimpleMarkovChainsWalker<>(new Random()),
-                Comparator.comparingInt(path -> path.getNonDeterministicScore() * (path.getLength()/10)),
-                400,
-                20
+                Comparator.comparingInt(path -> (int)Math.round(path.getNonDeterministicScore() * (Math.log10(path.getLength())))),
+                50,
+                0
         );
 
         final MarkovChainsWalker<WordsTuple> mostDeterministicWalker = new FindMaxOverBatchOfPathWalkerDecorator<>(
