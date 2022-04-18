@@ -13,14 +13,18 @@ import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.User;
 import lequentin.cocobot.domain.WordsStringTokenizer;
 import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
+import lequentin.cocobot.domain.markov.MarkovChains;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
+import lequentin.cocobot.domain.markov.MarkovWordsGenerator;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.WordsTuple;
 
+import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -29,8 +33,8 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 
     private final Impersonator simpleSentencesImpersonator;
 
-    private final Impersonator markov3Impersonator = null;
-    private final Impersonator markov2Impersonator = null;
+    private final MarkovImpersonator markov3Impersonator;
+    private final MarkovImpersonator markov2Impersonator;
 
     private final Impersonator multi2Impersonator = null;
     private final Impersonator multi4Impersonator = null;
@@ -91,16 +95,18 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
                 20
         );
 
+        this.markov2Impersonator = new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, mostDeterministicWalker);
         Impersonator markov2BatchImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeChatCommandsMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, mostDeterministicWalker)
+                markov2Impersonator
         );
         markov2BatchImpersonator.addAllMessagesFromSource(source);
         this.markov2BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov2BatchImpersonator, 4, 200);
 
+        this.markov3Impersonator = new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, leastDeterministicWalker);
         Impersonator markov3BatchImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeChatCommandsMessagesFilter(),
-                new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, leastDeterministicWalker)
+                markov3Impersonator
         );
         markov3BatchImpersonator.addAllMessagesFromSource(source);
         this.markov3BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov3BatchImpersonator, 4, 200);
@@ -127,7 +133,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
         return Optional.empty();
     }
 
-    public void sample() {
+    void sample() {
         List<User> authors = List.of(
                 new User("DapperCloud"),
                 new User("Hisatak"),
@@ -141,7 +147,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 //                "markov2", markov2Impersonator,
 //                "markov3", markov3Impersonator,
 //                "multi2", multi2Impersonator,
-                "markov2Batch", markov2BatchWalkerImpersonator,
+//                "markov2Batch", markov2BatchWalkerImpersonator,
                 "markov3Batch", markov3BatchWalkerImpersonator
         );
 
@@ -152,5 +158,44 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
                 IntStream.range(1, 6).forEach(i -> System.out.println(i + ": " + impersonator.impersonate(user)));
             });
         });
+    }
+
+    void printChainsMetadata() throws Exception {
+        Map<String, MarkovImpersonator> markovs = Map.of(
+//                "markov2", markov2Impersonator,
+//                "markov3", markov3Impersonator,
+//                "multi2", multi2Impersonator,
+                "markov2", markov2Impersonator,
+                "markov3", markov3Impersonator
+        );
+
+        List<User> authors = List.of(
+                new User("DapperCloud"),
+                new User("Hisatak"),
+                new User("Nasvar"),
+                new User("Zukajin"),
+                new User("Monsieur Blu"),
+                new User("Luo Sha")
+        );
+        for (Entry<String, MarkovImpersonator> entry : markovs.entrySet()) {
+            String name = entry.getKey();
+            MarkovImpersonator markov = entry.getValue();
+            Map<User, MarkovWordsGenerator> userMarkovGenerators = (Map<User, MarkovWordsGenerator>) getPrivateField(markov
+                    .getClass()
+                    .getDeclaredField("userMarkovGenerators"))
+                    .get(markov);
+            System.out.println(name + "\n------------------------------");
+            for (User user : authors) {
+                MarkovChains<WordsTuple> chains = (MarkovChains<WordsTuple>) getPrivateField(userMarkovGenerators.get(user).getClass()
+                        .getDeclaredField("markovChains"))
+                        .get(userMarkovGenerators.get(user));
+                System.out.println(user.getUsername() + ": " + chains.getMetadata());
+            }
+        }
+    }
+
+    private Field getPrivateField(Field field) {
+        field.setAccessible(true);
+        return field;
     }
 }

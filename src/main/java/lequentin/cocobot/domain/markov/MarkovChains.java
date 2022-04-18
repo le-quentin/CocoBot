@@ -1,6 +1,7 @@
 package lequentin.cocobot.domain.markov;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MarkovChains<T> {
@@ -23,5 +24,30 @@ public class MarkovChains<T> {
 
     public MarkovState<T> getState(T value) {
         return states.get(value);
+    }
+
+    public Metadata getMetadata() {
+        List<Integer> nextStatesCounts = states.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(WordsTuple.EMPTY))
+                .mapToInt(entry -> entry.getValue().nextStatesCount())
+                .boxed()
+                .toList();
+
+        double avg = nextStatesCounts.stream().mapToInt(i -> i).average().orElse(0);
+        return new Metadata(
+                avg,
+                nextStatesCounts.stream().mapToDouble(i -> Math.pow((double)i - avg, 2)).average().orElse(0),
+                nextStatesCounts.stream().filter(i -> i == 1).count(),
+                nextStatesCounts.stream().filter(i -> i == 2).count(),
+                nextStatesCounts.stream().filter(i -> i >= 3).count()
+        );
+    }
+
+    record Metadata(
+            double nextStatesAverage,
+            double nextStatesVariance,
+            long oneNextStateCount,
+            long twoNextStatesCount,
+            long threeOrMoreNextStatesCount) {
     }
 }
