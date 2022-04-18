@@ -57,7 +57,8 @@ class WordsStringTokenizerUnitTest {
             Arguments.of("two words", List.of("two", "words")),
             Arguments.of("two, words", List.of("two,", "words")),
             Arguments.of("we,ir-d words", List.of("we,ir-d", "words")),
-            Arguments.of("and a: whole lot of words", List.of("and", "a:", "whole", "lot", "of", "words"))
+            Arguments.of("and a: whole, lot; of: words", List.of("and", "a:", "whole,", "lot;", "of:", "words")),
+            Arguments.of("words , with : punctuation ; in-between them", List.of("words", ",", "with", ":", "punctuation", ";", "in-between", "them"))
         );
     }
 }
