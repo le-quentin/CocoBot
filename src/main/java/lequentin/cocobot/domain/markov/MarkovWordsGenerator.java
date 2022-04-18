@@ -40,7 +40,7 @@ public class MarkovWordsGenerator {
                 .filter(wordsTuple -> wordsTuple != WordsTuple.EMPTY)
                 .map(WordsTuple::lastWord)
                 .collect(Collectors.joining(" "))
-                .replaceAll("< : (.*) : (.*)>", "<:$1:$2>") // TODO extract those in post-treatments decorators
+                .replaceAll("<([a-zA-Z0-9-_]*) *: *([a-zA-Z0-9-_]*) *: *([a-zA-Z0-9-_]*) *>", "<$1:$2:$3>") // TODO extract those in post-treatments decorators
                 .replaceAll(" (,|:|;|/|\\))", "$1")
                 .replaceAll("(/|\\() ", "$1");
     }
