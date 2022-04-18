@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-import static org.assertj.core.api.Assertions.*;
-
 class ImpersonationTestingChatBotApplicationUnitTest {
 
     @Test
@@ -23,5 +21,18 @@ class ImpersonationTestingChatBotApplicationUnitTest {
         final ImpersonationTestingChatBotApplication app = new ImpersonationTestingChatBotApplication(messagesRepository);
 
         app.sample();
+    }
+
+    @Test
+    void shouldCompareChainsMetadata() throws Exception {
+        final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
+        final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
+                Path.of("stored_messages.json"),
+                JsonMapper.get(),
+                jsonConverter
+        );
+        final ImpersonationTestingChatBotApplication app = new ImpersonationTestingChatBotApplication(messagesRepository);
+
+        app.printChainsMetadata();
     }
 }
