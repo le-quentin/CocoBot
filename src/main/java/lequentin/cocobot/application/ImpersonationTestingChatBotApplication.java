@@ -42,6 +42,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     private final Impersonator multi4Impersonator = null;
 
     private final Impersonator markov3BatchWalkerImpersonator;
+    private final Impersonator markov3BatchWalkerPunctuationImpersonator;
     private final Impersonator markov2BatchWalkerImpersonator = null;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
@@ -109,10 +110,15 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
                 new ExcludeChatCommandsMessagesFilter(),
                 markov3Impersonator
         );
+        Impersonator markov3BatchPunctuationImpersonator = new MessagesFilterImpersonatorDecorator(
+                new ExcludeChatCommandsMessagesFilter(),
+                markov3PunctuationImpersonator
+        );
         this.markov3BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov3BatchImpersonator, 4, 200);
+        this.markov3BatchWalkerPunctuationImpersonator = new LongImpersonationImpersonatorDecorator(markov3BatchPunctuationImpersonator, 4, 200);
 
-        markov3Impersonator.addAllMessagesFromSource(source);
-//        markov3PunctuationImpersonator.addAllMessagesFromSource(source);
+//        markov3Impersonator.addAllMessagesFromSource(source);
+        markov3PunctuationImpersonator.addAllMessagesFromSource(source);
     }
 
     @Override
@@ -151,7 +157,8 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 //                "markov3", markov3Impersonator,
 //                "multi2", multi2Impersonator,
 //                "markov2Batch", markov2BatchWalkerImpersonator,
-                "markov3Batch", markov3BatchWalkerImpersonator
+//                "markov3Batch", markov3BatchWalkerImpersonator,
+                "markov3Batch (punctuation)", markov3BatchWalkerPunctuationImpersonator
         );
 
         impersonators.forEach((name, impersonator) -> {
