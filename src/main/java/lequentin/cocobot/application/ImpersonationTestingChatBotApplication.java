@@ -7,6 +7,7 @@ import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.MessageReply;
 import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesSource;
+import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
 import lequentin.cocobot.domain.SanitizerStringTokenizerDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
 import lequentin.cocobot.domain.SpacePunctuationSanitizer;
@@ -38,7 +39,7 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     private final MarkovImpersonator markov3PunctuationImpersonator;
     private final MarkovImpersonator markov2Impersonator = null;
 
-    private final Impersonator multi2Impersonator = null;
+    private Impersonator multi2Impersonator;
     private final Impersonator multi4Impersonator = null;
 
     private final Impersonator markov3BatchWalkerImpersonator;
@@ -119,6 +120,12 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 
 //        markov3Impersonator.addAllMessagesFromSource(source);
         markov3PunctuationImpersonator.addAllMessagesFromSource(source);
+
+        this.multi2Impersonator = new MultipleSentencesImpersonatorDecorator(
+                markov3PunctuationImpersonator,
+                2
+        );
+
     }
 
     @Override
@@ -158,7 +165,8 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 //                "multi2", multi2Impersonator,
 //                "markov2Batch", markov2BatchWalkerImpersonator,
 //                "markov3Batch", markov3BatchWalkerImpersonator,
-                "markov3Batch (punctuation)", markov3BatchWalkerPunctuationImpersonator
+//                "markov3Batch (punctuation)", markov3BatchWalkerPunctuationImpersonator
+                "multi2 (batch + punctuation)", multi2Impersonator
         );
 
         impersonators.forEach((name, impersonator) -> {

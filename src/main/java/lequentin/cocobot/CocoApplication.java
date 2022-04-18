@@ -16,7 +16,10 @@ import lequentin.cocobot.domain.LongImpersonationImpersonatorDecorator;
 import lequentin.cocobot.domain.MarkovImpersonator;
 import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesRepository;
+import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
+import lequentin.cocobot.domain.SanitizerStringTokenizerDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
+import lequentin.cocobot.domain.SpacePunctuationSanitizer;
 import lequentin.cocobot.domain.StringSanitizer;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.WordsStringTokenizer;
@@ -66,7 +69,8 @@ public class CocoApplication {
         final StringSanitizer sanitizer = new RemoveQuotesAndBlocksStringSanitizer();
         final StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer(sanitizer);
         final WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
-        final MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
+        final StringTokenizer punctuationAwareWordsTokenizer = new SanitizerStringTokenizerDecorator(new SpacePunctuationSanitizer(), wordsTokenizer);
+        final MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(punctuationAwareWordsTokenizer, 3);
 //        final MarkovChainsWalker<WordsTuple> walker = new FindMaxOverBatchOfPathWalkerDecorator<>(
 //                new SimpleMarkovChainsWalker<>(new Random()),
 //                Comparator.comparingInt(MarkovPath::getNonDeterministicScore),
@@ -87,7 +91,10 @@ public class CocoApplication {
                 new ExcludeChatCommandsMessagesFilter(),
                 new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, leastDeterministicWalker)
         );
-        final Impersonator impersonator = new LongImpersonationImpersonatorDecorator(markov3Impersonator, 4, 5);
+        final Impersonator impersonator = new MultipleSentencesImpersonatorDecorator(
+                new LongImpersonationImpersonatorDecorator(markov3Impersonator, 4, 5),
+                2
+        );
 
         // application
         final CocoCommandParser cocoCommandParser = new CocoCommandParser();
