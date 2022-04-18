@@ -2,6 +2,7 @@ package lequentin.cocobot.domain.markov;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class WordsTuple {
@@ -30,16 +31,22 @@ public class WordsTuple {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WordsTuple that = (WordsTuple) o;
-        return words.equals(that.words);
+        return toHashableString().equals(that.toHashableString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(words);
+        return Objects.hash(toHashableString());
     }
 
     @Override
     public String toString() {
         return "("+String.join(";", words)+")";
+    }
+
+    private String toHashableString() {
+        return words.stream()
+                .map(String::toUpperCase)
+                .collect(Collectors.joining(";"));
     }
 }

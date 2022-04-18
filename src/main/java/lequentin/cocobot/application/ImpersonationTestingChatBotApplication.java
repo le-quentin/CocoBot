@@ -176,8 +176,8 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 //                "markov3", markov3Impersonator,
 //                "multi2", multi2Impersonator,
 //                "markov2", markov2Impersonator,
-                "markov3", markov3Impersonator
-//                "markov3 (punctuation)", markov3PunctuationImpersonator
+//                "markov3", markov3Impersonator
+                "markov3 (punctuation)", markov3PunctuationImpersonator
         );
 
         List<User> authors = List.of(
