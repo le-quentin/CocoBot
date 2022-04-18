@@ -39,6 +39,9 @@ public class MarkovWordsGenerator {
         return path.getPath()
                 .filter(wordsTuple -> wordsTuple != WordsTuple.EMPTY)
                 .map(WordsTuple::lastWord)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(" "))
+                .replaceAll("< : (.*) : (.*)>", "<:$1:$2>") // TODO extract those in post-treatments decorators
+                .replaceAll(" (,|:|;|/|\\))", "$1")
+                .replaceAll("(/|\\() ", "$1");
     }
 }
