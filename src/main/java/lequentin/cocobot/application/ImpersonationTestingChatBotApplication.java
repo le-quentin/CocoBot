@@ -7,8 +7,9 @@ import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.MessageReply;
 import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesSource;
+import lequentin.cocobot.domain.SanitizerStringTokenizerDecorator;
 import lequentin.cocobot.domain.SentencesStringTokenizer;
-import lequentin.cocobot.domain.SimpleTokensRandomImpersonator;
+import lequentin.cocobot.domain.SpacePunctuationSanitizer;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.User;
 import lequentin.cocobot.domain.WordsStringTokenizer;
@@ -31,28 +32,27 @@ import java.util.stream.IntStream;
 
 public class ImpersonationTestingChatBotApplication implements ChatBot{
 
-    private final Impersonator simpleSentencesImpersonator;
+    private final Impersonator simpleSentencesImpersonator = null;
 
     private final MarkovImpersonator markov3Impersonator;
-    private final MarkovImpersonator markov2Impersonator;
+    private final MarkovImpersonator markov3PunctuationImpersonator;
+    private final MarkovImpersonator markov2Impersonator = null;
 
     private final Impersonator multi2Impersonator = null;
     private final Impersonator multi4Impersonator = null;
 
     private final Impersonator markov3BatchWalkerImpersonator;
-    private final Impersonator markov2BatchWalkerImpersonator;
+    private final Impersonator markov2BatchWalkerImpersonator = null;
 
     public ImpersonationTestingChatBotApplication(MessagesSource source) {
         StringTokenizer sentencesStringTokenizer = new SentencesStringTokenizer();
-        simpleSentencesImpersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeChatCommandsMessagesFilter(),
-                new SimpleTokensRandomImpersonator(sentencesStringTokenizer, new Random())
-        );
-        simpleSentencesImpersonator.addAllMessagesFromSource(source);
+        StringTokenizer sentencesStringPunctuationTokenizer = new SanitizerStringTokenizerDecorator(new SpacePunctuationSanitizer(), new SentencesStringTokenizer());
 
         WordsStringTokenizer wordsTokenizer = new WordsStringTokenizer();
+        StringTokenizer wordsAndPunctuationTokenizer = new SanitizerStringTokenizerDecorator(new SpacePunctuationSanitizer(), wordsTokenizer);
         MarkovTokenizer markov2Tokenizer = new MarkovTokenizer(wordsTokenizer, 2);
         MarkovTokenizer markov3Tokenizer = new MarkovTokenizer(wordsTokenizer, 3);
+        MarkovTokenizer markov3PunctuationTokenizer = new MarkovTokenizer(wordsAndPunctuationTokenizer, 3);
 
 //        Impersonator markov2Impersonator = new MessagesFilterImpersonatorDecorator(
 //                new ExcludeChatCommandsMessagesFilter(),
@@ -95,21 +95,24 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
                 20
         );
 
-        this.markov2Impersonator = new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, mostDeterministicWalker);
-        Impersonator markov2BatchImpersonator = new MessagesFilterImpersonatorDecorator(
-                new ExcludeChatCommandsMessagesFilter(),
-                markov2Impersonator
-        );
-        markov2BatchImpersonator.addAllMessagesFromSource(source);
-        this.markov2BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov2BatchImpersonator, 4, 200);
-
+//        this.markov2Impersonator = new MarkovImpersonator(sentencesStringTokenizer, markov2Tokenizer, mostDeterministicWalker);
+//        Impersonator markov2BatchImpersonator = new MessagesFilterImpersonatorDecorator(
+//                new ExcludeChatCommandsMessagesFilter(),
+//                markov2Impersonator
+//        );
+//        markov2BatchImpersonator.addAllMessagesFromSource(source);
+//        this.markov2BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov2BatchImpersonator, 4, 200);
+//
         this.markov3Impersonator = new MarkovImpersonator(sentencesStringTokenizer, markov3Tokenizer, leastDeterministicWalker);
+        this.markov3PunctuationImpersonator = new MarkovImpersonator(sentencesStringTokenizer, markov3PunctuationTokenizer, leastDeterministicWalker);
         Impersonator markov3BatchImpersonator = new MessagesFilterImpersonatorDecorator(
                 new ExcludeChatCommandsMessagesFilter(),
                 markov3Impersonator
         );
-        markov3BatchImpersonator.addAllMessagesFromSource(source);
         this.markov3BatchWalkerImpersonator = new LongImpersonationImpersonatorDecorator(markov3BatchImpersonator, 4, 200);
+
+        markov3Impersonator.addAllMessagesFromSource(source);
+//        markov3PunctuationImpersonator.addAllMessagesFromSource(source);
     }
 
     @Override
@@ -165,8 +168,9 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
 //                "markov2", markov2Impersonator,
 //                "markov3", markov3Impersonator,
 //                "multi2", multi2Impersonator,
-                "markov2", markov2Impersonator,
+//                "markov2", markov2Impersonator,
                 "markov3", markov3Impersonator
+//                "markov3 (punctuation)", markov3PunctuationImpersonator
         );
 
         List<User> authors = List.of(
