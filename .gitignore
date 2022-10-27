@@ -12,6 +12,19 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+#eclipse files
+.classpath
+.project
+.settings/
+src/main/webapp/META-INF/MANIFEST.MF
+*.iml
+
+#target folder
+target/
+.idea/
+*.log
+/bin/
+
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
