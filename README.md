@@ -3,21 +3,24 @@ A Discord bot watching people chat and then able to impersonate them
 
 ## TODO
 
+* means required before open sourcing
+
 ### Core
 - [x] Exclude quotes from parsed messages
-- [ ] synchronise task should add to existing DB (store lastSyncDate)
-- [ ] Then coco could sync at startup, syncAll if date null
+- [ ] synchronise task should add to existing DB (store lastSyncDate)*
+- [ ] Then coco could sync at startup, syncAll if date null*
+- [ ] Move to MongoDB or ProtoBuf for better performance
 - [ ] Keep testing with existing impersonators to produce funnier outputs
 
 ### Ergonomy
-- [ ] c/help
+- [ ] c/help*
 - [ ] rewrite conf from env properly
-- [ ] prefix in conf
+- [ ] prefix in conf*
 
 ### Deploy
 - [ ] Proper logging with timestamp and levels
-- [ ] stored_messages outside of docker image
-- [ ] alternative images for armv7 and amd64
+- [ ] stored_messages outside of docker image (not necessary if using Mongo or Protobuf)
+- [ ] alternative images for armv7 and amd64*
 - [ ] GitHub actions to automatically push image on commit push
 
 ## Installation
