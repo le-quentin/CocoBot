@@ -1,6 +1,24 @@
 # CocoBot
 A Discord bot watching people chat and then able to impersonate them
 
+## Installation
+
+The project uses Gradle wrapper. It will take care of everything, even downloading the JDK version required for the project (namely 17).
+
+Check that everything is alright by running tests:
+
+```shell
+./gradlew test
+```
+
+## Run
+
+You need the BOT_TOKEN env var:
+
+```shell
+BOT_TOKEN=<your_token_here> ./gradlew run
+```
+
 ## TODO
 
 * means required before open sourcing
@@ -23,20 +41,10 @@ A Discord bot watching people chat and then able to impersonate them
 - [ ] alternative images for armv7 and amd64*
 - [ ] GitHub actions to automatically push image on commit push
 
-## Installation
+### Release as a public bot
+- [ ] Multiple servers setup => store message in separate documents/files for each server, with impersonators local to them
+- [ ] Support english language
+- [ ] Ways to dynamically setup some stuf like prefix and language
+- [ ] Test a way to erase one user's data from all documents (GDPR)
+- [ ] Monitor/logging tools should be improved
 
-The project uses Gradle wrapper. It will take care of everything, even downloading the JDK version required for the project (namely 17).
-
-Check that everything is alright by running tests:
-
-```shell
-./gradlew test
-```
-
-## Run
-
-You need the BOT_TOKEN env var:
-
-```shell
-BOT_TOKEN=<your_token_here> ./gradlew run
-```
