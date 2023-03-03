@@ -43,7 +43,7 @@ class JsonFileMessagesRepositoryIntTest {
 
     @Test
     void shouldSynchronise() throws IOException {
-        Path filePath = getResourceFolderPath().resolve("build/intTest_jsonFileRepo_synchronise.json");
+        Path filePath = getResourceFolderPath().resolve("int-test-output/intTest_jsonFileRepo_synchronise.json");
         if (Files.exists(filePath)) Files.delete(filePath);
         JsonFileMessagesRepository repository = new JsonFileMessagesRepository(
                 filePath,
