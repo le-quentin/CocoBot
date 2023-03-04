@@ -69,6 +69,7 @@ public class JsonFileMessagesRepository implements MessagesRepository {
         }
 
         try {
+            System.out.println("Writing to file...");
             Files.writeString(filePath, content, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);

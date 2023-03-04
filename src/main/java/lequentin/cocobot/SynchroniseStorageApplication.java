@@ -33,7 +33,7 @@ public class SynchroniseStorageApplication {
 
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository jsonStorage = new JsonFileMessagesRepository(
-                Path.of("messages.json"),
+                Path.of(CocoApplication.MESSAGES_FILE),
                 JsonMapper.get(),
                 jsonConverter
         );

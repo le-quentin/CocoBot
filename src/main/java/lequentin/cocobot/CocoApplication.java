@@ -31,12 +31,14 @@ import lequentin.cocobot.domain.markov.WordsTuple;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Random;
 
 public class CocoApplication {
 
+    public static final String MESSAGES_FILE = "./data/messages.json";
     private final GatewayDiscordClient gatewayClient;
     private final DiscordChatBotService service;
 
@@ -57,9 +59,17 @@ public class CocoApplication {
         final MessageClient messageClient = new MessageClient();
 
         // storage
+        // If storage file does not exist, we synchronise first
+        Path messagesFilePath = Path.of(MESSAGES_FILE);
+        if (!Files.exists(messagesFilePath)) {
+            System.out.println("messages.json file not found! Coco will generate it, and it will take a while");
+            SynchroniseStorageApplication.main(new String[]{});
+        }
+
+        // Build the storage objects
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
-                Path.of("./data/messages.json"),
+                messagesFilePath,
                 JsonMapper.get(),
                 jsonConverter
         );
