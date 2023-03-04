@@ -1,7 +1,31 @@
-# CocoBot🦜
+![image](https://user-images.githubusercontent.com/6195955/222922200-45035f29-aaf9-4738-92e5-e9ce6313c687.png)
 
-*Built for both AMD64💻 and ARM32/64!🍇*
 
+# <p align=center>CocoBot</p>
+
+<p align=center>Learns from your friends' messages, and impersonates them. Because nonsense is fun.</p>
+<p align=center><img src="https://img.shields.io/badge/Arch-AMD%20%F0%9F%92%BB-yellow"/> <img src="https://img.shields.io/badge/Arch-ARM%F0%9F%8D%87-yellow"/> <img src="https://img.shields.io/github/license/le-quentin/cocobot"/> <img src="https://img.shields.io/tokei/lines/github/le-quentin/CocoBot"/></p>
+
+## I just wanna run it quick!
+
+Gotcha! Create [a bot application](https://discord.com/developers/docs/getting-started#creating-an-app) in your Discord server, and tick "Message content intent" in the bot settings. Then add the bot to your server with those permissions:
+- View channels
+- Send messages
+- Read messages history
+
+You're almost there! Run the bot with:
+
+```shell
+> docker run -e BOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
+```
+
+...give it a few minutes for the initial scraping of messages...
+
+And type `c/me` or `c/like <username>` to make Coco do funny impersonations!
+
+See below for more details. :) Have fun!
+
+## What is this?
 A Discord bot watching people chat and then able to "impersonate" them. It will use all of the impersonated person
 messages in order to produce a random message based on them. The message won't always be gramatically correct, but it is 100% guaranteed to be wacky and somewhat funny.
 We've been using it with my friends for a while, and we had a few laughs here and there. 
