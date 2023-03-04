@@ -80,7 +80,7 @@ Thankfully, gradle wrapper makes it all too easy. Clone the repository, then fro
 BOT_TOKEN=<token> ./gradlew run
 ```
 
-...to run it.
+...to run it. You will need to create a `data` folder under your current directory first. 
 
 Gradle wrapper should take care of everything, including downloading the appropriate JDK. You literally should have nothing else to do.
 
