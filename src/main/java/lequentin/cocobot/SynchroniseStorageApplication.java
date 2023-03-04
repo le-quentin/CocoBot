@@ -8,10 +8,8 @@ import lequentin.cocobot.discord.DiscordConverter;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.MessagesSource;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
-import lequentin.cocobot.storage.SimpleFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public class SynchroniseStorageApplication {
@@ -32,11 +30,10 @@ public class SynchroniseStorageApplication {
 
         final DiscordConverter discordConverter = new DiscordConverter();
         final MessagesSource messagesSource = new DirectAccessMessagesSource(gateway, discordConverter);
-        final MessagesRepository storage = new SimpleFileMessagesRepository();
 
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository jsonStorage = new JsonFileMessagesRepository(
-                Path.of("stored_messages.json"),
+                Path.of("messages.json"),
                 JsonMapper.get(),
                 jsonConverter
         );
@@ -52,8 +49,8 @@ public class SynchroniseStorageApplication {
 
     private static Config loadConfig() {
         try {
-            Config.get().readFromEnv();
-        } catch(IOException ex) {
+            Config.get().readFromEnv(true);
+        } catch(Exception ex) {
             System.err.println("There was an error reading config files");
             ex.printStackTrace(System.err);
             System.exit(-1);

@@ -12,7 +12,6 @@ import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public class ImpersonationTestingApplication {
@@ -36,7 +35,7 @@ public class ImpersonationTestingApplication {
         // storage
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
-                Path.of("stored_messages.json"),
+                Path.of("messages.json"),
                 JsonMapper.get(),
                 jsonConverter
         );
@@ -66,7 +65,7 @@ public class ImpersonationTestingApplication {
     private static Config loadConfig() {
         try {
             Config.get().readFromEnv();
-        } catch(IOException ex) {
+        } catch(Exception ex) {
             System.err.println("There was an error reading config files");
             ex.printStackTrace(System.err);
             System.exit(-1);

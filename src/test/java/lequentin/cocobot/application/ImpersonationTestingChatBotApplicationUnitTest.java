@@ -16,7 +16,7 @@ class ImpersonationTestingChatBotApplicationUnitTest {
     void shouldSample() {
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
-                Path.of("stored_messages.json"),
+                Path.of("messages.json"),
                 JsonMapper.get(),
                 jsonConverter
         );
@@ -29,7 +29,7 @@ class ImpersonationTestingChatBotApplicationUnitTest {
     void shouldCompareChainsMetadata() throws Exception {
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository messagesRepository = new JsonFileMessagesRepository(
-                Path.of("stored_messages.json"),
+                Path.of("messages.json"),
                 JsonMapper.get(),
                 jsonConverter
         );

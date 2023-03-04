@@ -76,7 +76,7 @@ public class SimpleFileMessagesRepository implements MessagesRepository {
         private void throwMalformed(String msg) {
             if (msg != null) System.err.println(msg);
             System.err.printf("Current state: currentAuthor=%s, state=%s, lastMessage=%s", currentAuthor.getUsername(), stateMachine.currentState, lastMessage);
-            throw new RuntimeException("Malformed stored_messages file");
+            throw new RuntimeException("Malformed messages file");
         }
 
         private class StateMachine {

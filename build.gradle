@@ -45,4 +45,5 @@ application {
 task('synchronise', dependsOn: 'classes', type: JavaExec) {
     mainClass = 'lequentin.cocobot.SynchroniseStorageApplication'
     classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
 }

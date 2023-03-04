@@ -30,5 +30,5 @@ target/
 
 # App specific
 *secrets.yaml
-stored_messages*
+**/messages.json
 src/test/resources/build/*

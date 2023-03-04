@@ -1,19 +1,35 @@
 # CocoBot
 A Discord bot watching people chat and then able to impersonate them
 
-## Installation
+## Generate your server's message file
 
-The project uses Gradle wrapper. It will take care of everything, even downloading the JDK version required for the project (namely 17).
+Currently, the bot needs your servers' message in a plain json file. It doesn't generate it on startup, and doesn't update it.
 
-Check that everything is alright by running tests:
+To generate that file, you can run the synchronise task. It will need your BOT_TOKEN:
 
 ```shell
-./gradlew test
+> BOT_TOKEN =<TOKEN> ./gradlew synchronise`
 ```
 
-## Run
+/!\ This will leave your token in your bash history. If you feel iffy about that (as you should) then either put it in your `.bashrc` file, or just run:
 
-You need the BOT_TOKEN env var:
+```shell
+> ./gradlew synchronise
+```
+
+and input your token when prompted. 
+
+## Run with docker
+
+Your need to put `messages.json` file in a dedicated folder, then run the docker container like this: 
+
+```shell
+> docker run -e BOT_TOKEN=<token> -v /your/dedicated/folder:/app/data:ro ghcr.io/le-quentin/cocobot:latest
+```
+
+Again, your token should probably be set in your shell's startup files to avoid putting it your cli history.
+
+## Run with gradle
 
 ```shell
 BOT_TOKEN=<your_token_here> ./gradlew run
@@ -37,7 +53,7 @@ BOT_TOKEN=<your_token_here> ./gradlew run
 
 ### Deploy
 - [ ] Proper logging with timestamp and levels
-- [ ] stored_messages outside of docker image (not necessary if using Mongo or Protobuf)
+- [x] messages.json outside of docker image (not necessary if using Mongo or Protobuf)
 - [ ] alternative images for armv7 and amd64*
 - [ ] GitHub actions to automatically push image on commit push
 
