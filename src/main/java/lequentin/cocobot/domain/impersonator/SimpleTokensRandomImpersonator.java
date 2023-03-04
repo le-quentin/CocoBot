@@ -1,4 +1,10 @@
-package lequentin.cocobot.domain;
+package lequentin.cocobot.domain.impersonator;
+
+import lequentin.cocobot.domain.Impersonator;
+import lequentin.cocobot.domain.Message;
+import lequentin.cocobot.domain.StringTokenizer;
+import lequentin.cocobot.domain.User;
+import lequentin.cocobot.domain.UserNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

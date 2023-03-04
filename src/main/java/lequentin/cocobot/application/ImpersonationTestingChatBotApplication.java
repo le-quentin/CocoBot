@@ -1,19 +1,19 @@
 package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.Impersonator;
-import lequentin.cocobot.domain.LongImpersonationImpersonatorDecorator;
-import lequentin.cocobot.domain.MarkovImpersonator;
+import lequentin.cocobot.domain.impersonator.LongImpersonationImpersonatorDecorator;
+import lequentin.cocobot.domain.impersonator.MarkovImpersonator;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.MessageReply;
-import lequentin.cocobot.domain.MessagesFilterImpersonatorDecorator;
+import lequentin.cocobot.domain.impersonator.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesSource;
-import lequentin.cocobot.domain.MultipleSentencesImpersonatorDecorator;
-import lequentin.cocobot.domain.SanitizerStringTokenizerDecorator;
-import lequentin.cocobot.domain.SentencesStringTokenizer;
-import lequentin.cocobot.domain.SpacePunctuationSanitizer;
+import lequentin.cocobot.domain.impersonator.MultipleSentencesImpersonatorDecorator;
+import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
+import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
+import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.User;
-import lequentin.cocobot.domain.WordsStringTokenizer;
+import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
 import lequentin.cocobot.domain.markov.MarkovChains;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;

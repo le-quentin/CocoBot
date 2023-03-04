@@ -1,5 +1,6 @@
 package lequentin.cocobot.domain;
 
+import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

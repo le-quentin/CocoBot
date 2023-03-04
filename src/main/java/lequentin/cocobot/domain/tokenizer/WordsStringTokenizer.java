@@ -1,4 +1,6 @@
-package lequentin.cocobot.domain;
+package lequentin.cocobot.domain.tokenizer;
+
+import lequentin.cocobot.domain.StringTokenizer;
 
 import java.util.Optional;
 import java.util.stream.Stream;

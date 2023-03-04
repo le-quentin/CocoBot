@@ -1,9 +1,13 @@
-package lequentin.cocobot.domain;
+package lequentin.cocobot.domain.impersonator;
+
+import lequentin.cocobot.domain.Impersonator;
+import lequentin.cocobot.domain.Message;
+import lequentin.cocobot.domain.User;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MultipleSentencesImpersonatorDecorator implements Impersonator{
+public class MultipleSentencesImpersonatorDecorator implements Impersonator {
 
     private final Impersonator impersonator;
     private final int numberOfSentences;

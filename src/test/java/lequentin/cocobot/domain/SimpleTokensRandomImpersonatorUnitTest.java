@@ -1,5 +1,6 @@
 package lequentin.cocobot.domain;
 
+import lequentin.cocobot.domain.impersonator.SimpleTokensRandomImpersonator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,5 +1,6 @@
 package lequentin.cocobot.domain;
 
+import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

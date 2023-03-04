@@ -1,6 +1,12 @@
-package lequentin.cocobot.domain;
+package lequentin.cocobot.domain.impersonator;
 
-public class MessagesFilterImpersonatorDecorator implements Impersonator{
+import lequentin.cocobot.domain.Impersonator;
+import lequentin.cocobot.domain.Message;
+import lequentin.cocobot.domain.MessagesFilter;
+import lequentin.cocobot.domain.MessagesSource;
+import lequentin.cocobot.domain.User;
+
+public class MessagesFilterImpersonatorDecorator implements Impersonator {
     private final MessagesFilter filter;
     private final Impersonator impersonator;
 
