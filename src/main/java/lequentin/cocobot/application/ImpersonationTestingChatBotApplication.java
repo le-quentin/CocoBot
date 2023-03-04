@@ -31,6 +31,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+/**
+ * This is my "prototyping" chat bot. I use it to try and compare different settings, and see what produces the funniest outputs!
+ */
 public class ImpersonationTestingChatBotApplication implements ChatBot{
 
     private final Impersonator simpleSentencesImpersonator = null;

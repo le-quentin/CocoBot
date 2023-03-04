@@ -14,6 +14,10 @@ import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
 import java.nio.file.Path;
 
+/**
+ * Runs the `ImpersonationTesting` chat bot.
+ * @see ImpersonationTestingChatBotApplication
+ */
 public class ImpersonationTestingApplicationMain {
 
     private final GatewayDiscordClient gatewayClient;
