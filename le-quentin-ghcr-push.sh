@@ -18,6 +18,7 @@ docker buildx build \
 --push \
 --platform linux/amd64 \
 --platform linux/arm/v7 \
+--platform linux/arm64 \
 --tag "$image_name":"sha-$version_tag" \
 --tag "$image_name":latest \
 .
