@@ -6,7 +6,7 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.CocoChatBotApplication;
 import lequentin.cocobot.application.CocoCommandParser;
 import lequentin.cocobot.application.ExcludeChatCommandsMessagesFilter;
-import lequentin.cocobot.application.commands.RemoveQuotesAndBlocksStringSanitizer;
+import lequentin.cocobot.application.RemoveQuotesAndBlocksStringSanitizer;
 import lequentin.cocobot.config.Config;
 import lequentin.cocobot.discord.DiscordChatBotService;
 import lequentin.cocobot.discord.DiscordConverter;

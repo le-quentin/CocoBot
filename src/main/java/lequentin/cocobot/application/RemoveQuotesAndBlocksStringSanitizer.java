@@ -1,4 +1,4 @@
-package lequentin.cocobot.application.commands;
+package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.StringSanitizer;
 
