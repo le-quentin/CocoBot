@@ -12,9 +12,9 @@ public class RemoveQuotesAndBlocksStringSanitizer implements StringSanitizer {
         String result = Arrays.stream(withoutBlocks.split("\n"))
                 .filter(line -> !line.startsWith(">"))
                 .collect(Collectors.joining("\n"));
-        if (!result.equals(text)) {
-            System.out.println("Sanitized [" + text + "] into [" + result + "]");
-        }
+//        if (!result.equals(text)) {
+//            System.out.println("Sanitized [" + text + "] into [" + result + "]");
+//        }
         return result;
     }
 }
