@@ -1,4 +1,7 @@
 # CocoBot🦜
+
+*Built for both AMD64💻 and ARM32/64!🍇*
+
 A Discord bot watching people chat and then able to "impersonate" them. It will use all of the impersonated person
 messages in order to produce a random message based on them. The message won't always be gramatically correct, but it is 100% guaranteed to be wacky and somewhat funny.
 We've been using it with my friends for a while, and we had a few laughs here and there. 
