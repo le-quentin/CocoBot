@@ -71,16 +71,16 @@ If you don't want to use docker, or if you'd like to extend/modify the bot, you 
 Thankfully, gradle wrapper makes it all too easy. Clone the repository, then from the root directory, simply run:
 
 ```shell
-./gradlew build
+> ./gradlew build
 ```
 
 ...to build the service (it will also run tests), and:
 
 ```shell
-BOT_TOKEN=<token> ./gradlew run
+> BOT_TOKEN=<token> ./gradlew run
 ```
 
-...to run it. You will need to create a `data` folder under your current directory first. 
+...to run it. You will need to create a `data` folder under your current directory first.
 
 Gradle wrapper should take care of everything, including downloading the appropriate JDK. You literally should have nothing else to do.
 
