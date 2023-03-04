@@ -10,6 +10,22 @@ Also, feel free to modify/extend the source code, depending on your needs and li
 
 **⚠️WARNING⚠️**: Currently, this bot is designed to handle only one server. You can invite it to more than one server, but be warned that everyone will be able to impersonate everyone with no server borders whatsoever... I recommend you stick to only one server per bot instance if you're afraid it might cause awkward situations. :)
 
+## Commands 
+
+From any channel where the bot is invited:
+```
+c/me                - the bot impersonates you
+c/like <username>   - the bot impersonates that user
+```
+
+`<username>` should be the actual username (not the server local nickname), without the `#<digits>` part. So to impersonate `JohnDoe#1234`, do:
+```
+c/like JohnDoe
+c/like johndoe
+```
+
+Both work, it's not case sensitive.
+
 ## Host the bot
 
 ### Discord setup 
