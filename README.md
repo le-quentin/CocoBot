@@ -54,7 +54,7 @@ BOT_TOKEN=<your_token_here> ./gradlew run
 ### Deploy
 - [ ] Proper logging with timestamp and levels
 - [x] messages.json outside of docker image (not necessary if using Mongo or Protobuf)
-- [ ] alternative images for armv7 and amd64*
+- [x] use platform image param to publish amd64/armv7/arm64
 - [ ] GitHub actions to automatically push image on commit push
 
 ### Release as a public bot
