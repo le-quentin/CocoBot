@@ -1,48 +1,80 @@
-# CocoBot
-A Discord bot watching people chat and then able to impersonate them
+# CocoBot🦜
+A Discord bot watching people chat and then able to "impersonate" them. It will use all of the impersonated person
+messages in order to produce a random message based on them. The message won't always be gramatically correct, but it is 100% guaranteed to be wacky and somewhat funny.
+We've been using it with my friends for a while, and we had a few laughs here and there. 
 
-## Generate your server's message file
+I don't host a public version of this bot (yet?), so you have to host it yourself. That being said, I offer up-to-date docker images via `github packages`, so you don't have
+to build it, you just need a server with docker installed!
 
-Currently, the bot needs your servers' message in a plain json file. It doesn't generate it on startup, and doesn't update it.
+Also, feel free to modify/extend the source code, depending on your needs and liking. The code makes heavy use of decorators and adapters, so it's a little messy, but very easy to extend (for example, porting the bot to another chat than Discord shouldn't be too much trouble). Feel free to fork and/or drop me a PR! 
 
-To generate that file, you can run the synchronise task. It will need your BOT_TOKEN:
+**⚠️WARNING⚠️**: Currently, this bot is designed to handle only one server. You can invite it to more than one server, but be warned that everyone will be able to impersonate everyone with no server borders whatsoever... I recommend you stick to only one server per bot instance if you're afraid it might cause awkward situations. :)
 
+## Host the bot
+
+### Discord setup 
+
+Go to https://discord.com/developers/applications and create an application for the bot. Go in the `Bot` section and create a bot for that application. 
+
+The bot will have a secret token: note it down, you'll need it later.
+
+Scroll down and tick `Message content intent`, it needs to be on.
+
+Then, invite the bot on your server (either with an oauth link, or simply by using its username). The required permissions are: 
+- View channels
+- Send messages
+- Read messages history
+
+...and that's it!
+
+### Run the bot with docker 
+
+Running the bot is as easy as: 
 ```shell
-> BOT_TOKEN =<TOKEN> ./gradlew synchronise`
+> docker run -e BOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
 ```
 
-/!\ This will leave your token in your bash history. If you feel iffy about that (as you should) then either put it in your `.bashrc` file, or just run:
+...with `<token>` obviously being your bot secret token (I recommend using an env var set in your shell startup files, to avoid printing the secret in your shell's history).
+
+The image also exists in other versions, tagged with `sha-<commit-hash>`, feel free to use those if you want a specific version.
+
+At the first container's startup, the bot will parse all the server's messages, which will take a while (~5 minutes for my server, could be way longer on a huge community server). Currently, the bot does not update this file after the first start: if you want to get all the messages again, recreate the container.
+
+If you would like to be able to recreate the container (to get updated images, typically) without having to regenerate all messages every time, you can use a docker volume. Create a directory dedicated to storing the messages. Then:
 
 ```shell
-> ./gradlew synchronise
+> docker run -e BOT_TOKEN=<token> -v /path/to/dedicated/dir:/app/data ghcr.io/le-quentin/cocobot:latest
 ```
 
-and input your token when prompted. 
+This way, any version of the bot will start using the messages stored in `/path/to/dedicated/dir/messages.json` (and the bot will generate the file on first run, as usual). If you want to get all messages again, simpy delete the file and restart the container.
 
-## Run with docker
+## Build it yourself
 
-Your need to put `messages.json` file in a dedicated folder, then run the docker container like this: 
+If you don't want to use docker, or if you'd like to extend/modify the bot, you need to build it yourself.
+
+Thankfully, gradle wrapper makes it all too easy. Clone the repository, then from the root directory, simply run:
 
 ```shell
-> docker run -e BOT_TOKEN=<token> -v /your/dedicated/folder:/app/data:ro ghcr.io/le-quentin/cocobot:latest
+./gradlew build
 ```
 
-Again, your token should probably be set in your shell's startup files to avoid putting it your cli history.
-
-## Run with gradle
+...to build the service (it will also run tests), and:
 
 ```shell
-BOT_TOKEN=<your_token_here> ./gradlew run
+BOT_TOKEN=<token> ./gradlew run
 ```
 
-## TODO
+...to run it.
+
+Gradle wrapper should take care of everything, including downloading the appropriate JDK. You literally should have nothing else to do.
+
+## TODO list - things I might change/add
 
 * means required before open sourcing
 
 ### Core
-- [x] Exclude quotes from parsed messages
-- [ ] synchronise task should add to existing DB (store lastSyncDate)*
-- [ ] Then coco could sync at startup, syncAll if date null*
+- [x] Exclude quotes from parsed messages*
+- [x] Sync at startup if messages file not found*
 - [ ] Move to MongoDB or ProtoBuf for better performance
 - [ ] Keep testing with existing impersonators to produce funnier outputs
 
