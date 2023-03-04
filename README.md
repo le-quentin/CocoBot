@@ -70,8 +70,6 @@ Gradle wrapper should take care of everything, including downloading the appropr
 
 ## TODO list - things I might change/add
 
-* means required before open sourcing
-
 ### Core
 - [x] Exclude quotes from parsed messages*
 - [x] Sync at startup if messages file not found*
@@ -79,9 +77,9 @@ Gradle wrapper should take care of everything, including downloading the appropr
 - [ ] Keep testing with existing impersonators to produce funnier outputs
 
 ### Ergonomy
-- [ ] c/help*
+- [ ] c/help
 - [ ] rewrite conf from env properly
-- [ ] prefix in conf*
+- [ ] prefix in conf
 
 ### Deploy
 - [ ] Proper logging with timestamp and levels
