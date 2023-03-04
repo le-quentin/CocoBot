@@ -14,12 +14,12 @@ import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
 import java.nio.file.Path;
 
-public class ImpersonationTestingApplication {
+public class ImpersonationTestingApplicationMain {
 
     private final GatewayDiscordClient gatewayClient;
     private final DiscordChatBotService service;
 
-    public ImpersonationTestingApplication(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public ImpersonationTestingApplicationMain(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -51,7 +51,7 @@ public class ImpersonationTestingApplication {
         final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication, messageClient);
 
         // app
-        final ImpersonationTestingApplication app = new ImpersonationTestingApplication(gateway, service);
+        final ImpersonationTestingApplicationMain app = new ImpersonationTestingApplicationMain(gateway, service);
 
         app.run();
     }

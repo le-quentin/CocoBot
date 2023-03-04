@@ -36,13 +36,13 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Random;
 
-public class CocoApplication {
+public class CocoApplicationMain {
 
     public static final String MESSAGES_FILE = "./data/messages.json";
     private final GatewayDiscordClient gatewayClient;
     private final DiscordChatBotService service;
 
-    public CocoApplication(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public CocoApplicationMain(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -63,7 +63,7 @@ public class CocoApplication {
         Path messagesFilePath = Path.of(MESSAGES_FILE);
         if (!Files.exists(messagesFilePath)) {
             System.out.println("messages.json file not found! Coco will generate it, and it will take a while");
-            SynchroniseStorageApplication.main(new String[]{});
+            SynchroniseStorageApplicationMain.main(new String[]{});
         }
 
         // Build the storage objects
@@ -113,7 +113,7 @@ public class CocoApplication {
         final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco, messageClient);
 
         // app
-        final CocoApplication app = new CocoApplication(gateway, service);
+        final CocoApplicationMain app = new CocoApplicationMain(gateway, service);
 
         System.out.println("Loading all messages from repository...");
         impersonator.addAllMessagesFromSource(messagesRepository);

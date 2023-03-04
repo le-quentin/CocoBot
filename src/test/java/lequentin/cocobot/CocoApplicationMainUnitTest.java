@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CocoApplicationUnitTest {
+class CocoApplicationMainUnitTest {
 
     @Mock
     private GatewayDiscordClient gatewayDiscordClient;
@@ -23,7 +23,7 @@ class CocoApplicationUnitTest {
     private DiscordChatBotService service;
 
     @InjectMocks
-    private CocoApplication app;
+    private CocoApplicationMain app;
 
     @SuppressWarnings("unchecked")
     @Test

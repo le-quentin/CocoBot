@@ -39,11 +39,11 @@ test {
 }
 
 application {
-    mainClass = 'lequentin.cocobot.CocoApplication'
+    mainClass = 'lequentin.cocobot.CocoApplicationMain'
 }
 
 task('synchronise', dependsOn: 'classes', type: JavaExec) {
-    mainClass = 'lequentin.cocobot.SynchroniseStorageApplication'
+    mainClass = 'lequentin.cocobot.SynchroniseStorageApplicationMain'
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
 }

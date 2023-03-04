@@ -12,12 +12,12 @@ import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
 import java.nio.file.Path;
 
-public class SynchroniseStorageApplication {
+public class SynchroniseStorageApplicationMain {
 
     private final MessagesSource externalSource;
     private final MessagesRepository storage;
 
-    public SynchroniseStorageApplication(MessagesSource externalSource, MessagesRepository storage) {
+    public SynchroniseStorageApplicationMain(MessagesSource externalSource, MessagesRepository storage) {
         this.externalSource = externalSource;
         this.storage = storage;
     }
@@ -33,12 +33,12 @@ public class SynchroniseStorageApplication {
 
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository jsonStorage = new JsonFileMessagesRepository(
-                Path.of(CocoApplication.MESSAGES_FILE),
+                Path.of(CocoApplicationMain.MESSAGES_FILE),
                 JsonMapper.get(),
                 jsonConverter
         );
 
-        final SynchroniseStorageApplication app = new SynchroniseStorageApplication(messagesSource, jsonStorage);
+        final SynchroniseStorageApplicationMain app = new SynchroniseStorageApplicationMain(messagesSource, jsonStorage);
 
         app.run();
     }
