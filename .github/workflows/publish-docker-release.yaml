@@ -21,8 +21,9 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set outputs
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Compute the artifact name from commit's SHA short
         id: vars
         run: echo "artifact_name=coco-package-$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
       - name: Download artifact
@@ -31,14 +32,10 @@ jobs:
           repo: le-quentin/cocobot
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: ${{ steps.vars.outputs.artifact_name }}
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Unzip artifact to libs dir
         run: |
           mkdir -p build/libs
           unzip ${{ steps.vars.outputs.artifact_name }} -d build/libs/
-      - name: Display structure of downloaded files
-        run: ls -R
 
       - # Add support for more platforms with QEMU (optional)
         # https://github.com/docker/setup-qemu-action

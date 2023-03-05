@@ -23,16 +23,15 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v3
-      - name: Set outputs
+      - name: Compute sha_short to suffix the built artifact
         id: vars
         run: echo "sha_short=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
-      - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Test and build
         run: ./gradlew build
-      - uses: actions/upload-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: coco-package-${{ steps.vars.outputs.sha_short }}
           path: build/libs
