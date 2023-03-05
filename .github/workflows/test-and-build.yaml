@@ -35,5 +35,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: coco-package-${{ steps.vars.outputs.sha_short }}
-          path: build/libs/CocoBot-1.0-SNAPSHOT-all.jar
+          path: build/libs
 

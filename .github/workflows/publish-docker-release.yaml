@@ -33,10 +33,10 @@ jobs:
           artifact_name: ${{ steps.vars.outputs.artifact_name }}
       - name: Display structure of downloaded files
         run: ls -R
-      - name: Move artifact to libs dir
+      - name: Unzip artifact to libs dir
         run: |
           mkdir -p build/libs
-          mv ${{ steps.vars.outputs.artifact_name }} build/libs/CocoBot-1.0-SNAPSHOT-all.jar
+          unzip ${{ steps.vars.outputs.artifact_name }} -d build/libs/
       - name: Display structure of downloaded files
         run: ls -R
 
