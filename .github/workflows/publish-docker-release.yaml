@@ -11,7 +11,7 @@ name: Create and publish a Docker image
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 env:
   REGISTRY: ghcr.io
@@ -21,12 +21,21 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v2
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Test and build
-        run: ./gradlew build
+      - uses: actions/checkout@v3
+      - name: Download artifact
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: le-quentin/cocobot
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Package
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Move artifact to libs dir
+        run: |
+          mkdir -p build/libs
+          mv Package build/libs/CocoBot-1.0-SNAPSHOT-all.jar
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - # Add support for more platforms with QEMU (optional)
         # https://github.com/docker/setup-qemu-action
