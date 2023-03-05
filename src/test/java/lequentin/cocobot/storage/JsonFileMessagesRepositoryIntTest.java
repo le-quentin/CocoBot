@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,8 +45,8 @@ class JsonFileMessagesRepositoryIntTest {
 
     @Test
     void shouldSynchronise() throws IOException {
-        Path filePath = getResourceFolderPath().resolve("int-test-output/intTest_jsonFileRepo_synchronise.json");
-        if (Files.exists(filePath)) Files.delete(filePath);
+        File tempFile = File.createTempFile("int-test-output_jsonFileRepo_synchronise", "json");
+        Path filePath = Path.of(tempFile.getAbsolutePath());
         JsonFileMessagesRepository repository = new JsonFileMessagesRepository(
                 filePath,
                 objectMapper,
