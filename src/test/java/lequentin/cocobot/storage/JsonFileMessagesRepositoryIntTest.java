@@ -42,7 +42,6 @@ class JsonFileMessagesRepositoryIntTest {
                 .verifyComplete();
     }
 
-    @Disabled("Doesn't work in CI")
     @Test
     void shouldSynchronise() throws IOException {
         Path filePath = getResourceFolderPath().resolve("int-test-output/intTest_jsonFileRepo_synchronise.json");
