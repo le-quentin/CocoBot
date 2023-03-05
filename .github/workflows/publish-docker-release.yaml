@@ -27,13 +27,13 @@ jobs:
         with:
           repo: le-quentin/cocobot
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: Package
+          artifact_name: coco-package-${{ github.sha }}
       - name: Display structure of downloaded files
         run: ls -R
       - name: Move artifact to libs dir
         run: |
           mkdir -p build/libs
-          mv Package build/libs/CocoBot-1.0-SNAPSHOT-all.jar
+          mv coco-package-${{ github.sha }} build/libs/CocoBot-1.0-SNAPSHOT-all.jar
       - name: Display structure of downloaded files
         run: ls -R
 
