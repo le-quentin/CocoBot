@@ -11,7 +11,7 @@ name: Create and publish a Docker image
 
 on:
   release:
-    type: [published]
+    type: ['published']
 
 env:
   REGISTRY: ghcr.io
@@ -29,8 +29,8 @@ jobs:
           java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+      - name: Test and build
+        run: ./gradlew build --scan
 
       - # Add support for more platforms with QEMU (optional)
         # https://github.com/docker/setup-qemu-action
