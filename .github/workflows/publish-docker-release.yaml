@@ -22,18 +22,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Set outputs
+        id: vars
+        run: echo "artifact_name=coco-package-$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
       - name: Download artifact
         uses: bettermarks/action-artifact-download@0.3.0
         with:
           repo: le-quentin/cocobot
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: coco-package-${{ github.sha }}
+          artifact_name: ${{ steps.vars.outputs.artifact_name }}
       - name: Display structure of downloaded files
         run: ls -R
       - name: Move artifact to libs dir
         run: |
           mkdir -p build/libs
-          mv coco-package-${{ github.sha }} build/libs/CocoBot-1.0-SNAPSHOT-all.jar
+          mv ${{ steps.vars.outputs.artifact_name }} build/libs/CocoBot-1.0-SNAPSHOT-all.jar
       - name: Display structure of downloaded files
         run: ls -R
 
