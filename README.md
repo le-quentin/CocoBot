@@ -4,7 +4,16 @@
 # <p align=center>CocoBot</p>
 
 <p align=center>Learns from your friends' messages, and impersonates them. Because nonsense is fun.</p>
-<p align=center><img src="https://img.shields.io/badge/Arch-AMD%20%F0%9F%92%BB-yellow"/> <img src="https://img.shields.io/badge/Arch-ARM%F0%9F%8D%87-yellow"/> <img src="https://img.shields.io/github/license/le-quentin/cocobot"/> <img src="https://img.shields.io/tokei/lines/github/le-quentin/CocoBot"/></p>
+<p align=center>
+<a href="https://github.com/le-quentin/CocoBot/actions/workflows/test-and-build.yaml"><img src="https://img.shields.io/github/actions/workflow/status/le-quentin/CocoBot/test-and-build.yaml"/></a>
+<a href="https://github.com/le-quentin/CocoBot/releases"><img src="https://img.shields.io/github/v/release/le-quentin/Cocobot"/></a>
+</p>
+<p align=center>
+<a href="https://github.com/le-quentin/CocoBot/blob/master/LICENSE"><img src="https://img.shields.io/github/license/le-quentin/cocobot"/></a>
+<img src="https://img.shields.io/badge/Arch-AMD%20%F0%9F%92%BB-yellow"/> 
+<img src="https://img.shields.io/badge/Arch-ARM%F0%9F%8D%87-yellow"/> 
+<img src="https://img.shields.io/tokei/lines/github/le-quentin/CocoBot"/>
+</p>
 
 ## I just wanna run it quick!
 
@@ -79,7 +88,7 @@ Running the bot is as easy as:
 
 ...with `<token>` obviously being your bot secret token (I recommend using an env var set in your shell startup files, to avoid printing the secret in your shell's history).
 
-The image also exists in other versions, tagged with `sha-<commit-hash>`, feel free to use those if you want a specific version.
+`latest` is the last stable release. If you want a specific version, checkout [releases](https://github.com/le-quentin/CocoBot/releases), every release has a matching docker image tag.
 
 At the first container's startup, the bot will parse all the server's messages, which will take a while (~5 minutes for my server, could be way longer on a huge community server). Currently, the bot does not update this file after the first start: if you want to get all the messages again, recreate the container.
 
@@ -128,12 +137,12 @@ Gradle wrapper should take care of everything, including downloading the appropr
 - [ ] Proper logging with timestamp and levels
 - [x] messages.json outside of docker image (not necessary if using Mongo or Protobuf)
 - [x] use platform image param to publish amd64/armv7/arm64
-- [ ] GitHub actions to automatically push image on commit push
+- [x] GitHub actions to automatically push image on commit push
 
 ### Release as a public bot
 - [ ] Multiple servers setup => store message in separate documents/files for each server, with impersonators local to them
 - [ ] Support english language
-- [ ] Ways to dynamically setup some stuf like prefix and language
+- [ ] Ways to dynamically setup some stuff like prefix and language
 - [ ] Test a way to erase one user's data from all documents (GDPR)
 - [ ] Monitor/logging tools should be improved
 
