@@ -14,7 +14,6 @@ on:
     branches: [ 'master' ]
 
 env:
-  REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -36,26 +35,20 @@ jobs:
           name: coco-package-${{ steps.vars.outputs.sha_short }}
           path: build/libs
 
-      - # Add support for more platforms with QEMU (optional)
-        # https://github.com/docker/setup-qemu-action
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  docker-setup-and-login:
+    needs: test-and-build
+    uses: ./.github/workflows/reusable-docker-setup-and-login.yaml
+    secrets: inherit
+
+  publish-docker-image:
+    needs: docker-setup-and-login
+    runs-on: ubuntu-latest
+    steps:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ghcr.io/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=nightly
       - name: Build and push Docker image
@@ -65,7 +58,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: ${{ steps.buildx.outputs.platforms }}
+          platforms: ${{ needs.docker-setup-and-login.outputs.platforms }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
