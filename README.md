@@ -138,8 +138,8 @@ Gradle wrapper should take care of everything, including downloading the appropr
 - [x] messages.json outside of docker image (not necessary if using Mongo or Protobuf)
 - [x] use platform image param to publish amd64/armv7/arm64
 - [x] GitHub actions to automatically push image on commit push
-- [ ] Test workflow on feature branch push
-- [ ] Build `nightly` docker image on `master` push => protect master against push (work with merges from now on)
+- [x] Test workflow on feature branch push
+- [x] Build `nightly` docker image on `master` push => protect master against push (work with merges from now on)
 
 ### Release as a public bot
 - [ ] Multiple servers setup => store message in separate documents/files for each server, with impersonators local to them
