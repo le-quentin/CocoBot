@@ -3,6 +3,7 @@ package lequentin.cocobot;
 import lequentin.cocobot.discord.DiscordChatBotService;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,7 @@ class CocoApplicationMainUnitTest {
     @SuppressWarnings("unchecked")
     @Test
     void shouldRun() {
+        Assertions.fail();
         Mono<Void> monoDisconnect = (Mono<Void>)mock(Mono.class);
         Flux<MessageCreateEvent> eventFlux = (Flux<MessageCreateEvent>)mock(Flux.class);
         when(gatewayDiscordClient.on(MessageCreateEvent.class)).thenReturn(eventFlux);
