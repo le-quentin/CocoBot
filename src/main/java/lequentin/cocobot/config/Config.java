@@ -7,12 +7,14 @@ import java.util.Scanner;
 public class Config {
 
     private Secrets secrets;
+    private Language language;
 
     public static final Scanner INPUT_SCANNER = new Scanner(System.in);
 
     private static Config instance = null;
 
     private Config() {
+        language = Language.FR;
     }
 
     public static Config get() {
@@ -40,6 +42,10 @@ public class Config {
 
     public Secrets getSecrets() {
         return secrets;
+    }
+
+    public Language getLanguage() {
+        return language;
     }
 
     @FunctionalInterface
