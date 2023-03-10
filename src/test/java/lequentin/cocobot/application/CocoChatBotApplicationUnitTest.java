@@ -2,7 +2,6 @@ package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.MessageReply;
 import lequentin.cocobot.domain.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,11 +46,11 @@ class CocoChatBotApplicationUnitTest {
     void shouldHandleCommand() {
         Message message = mock(Message.class);
         Command command = mock(Command.class);
-        MessageReply reply = mock(MessageReply.class);
+        BotMessage reply = mock(BotMessage.class);
         when(commandParser.parse(message)).thenReturn(Optional.of(command));
         when(command.apply(impersonator)).thenReturn(reply);
 
-        Optional<MessageReply> result = coco.handleMessage(message);
+        Optional<BotMessage> result = coco.handleMessage(message);
 
         assertThat(result).contains(reply);
     }
@@ -63,11 +62,11 @@ class CocoChatBotApplicationUnitTest {
         when(commandParser.parse(message)).thenReturn(Optional.of(command));
         when(command.apply(impersonator)).thenThrow(new UserNotFoundException("username"));
 
-        Optional<MessageReply> result = coco.handleMessage(message);
+        Optional<BotMessage> result = coco.handleMessage(message);
 
         assertThat(result)
                 .usingFieldByFieldValueComparator()
-                .contains(new MessageReply("Je ne connais pas l'utilisateur username"));
+                .contains(new BotMessage("Je ne connais pas l'utilisateur username"));
     }
 
     @Test
@@ -76,7 +75,7 @@ class CocoChatBotApplicationUnitTest {
         when(message.getText()).thenReturn("Random message");
         when(commandParser.parse(message)).thenReturn(Optional.empty());
 
-        Optional<MessageReply> result = coco.handleMessage(message);
+        Optional<BotMessage> result = coco.handleMessage(message);
 
         assertThat(result).isEmpty();
         verify(impersonator).addMessage(message);

@@ -1,9 +1,9 @@
-package lequentin.cocobot.domain;
+package lequentin.cocobot.application;
 
-public class MessageReply {
+public class BotMessage {
     private final String text;
 
-    public MessageReply(String text) {
+    public BotMessage(String text) {
         this.text = text;
     }
 

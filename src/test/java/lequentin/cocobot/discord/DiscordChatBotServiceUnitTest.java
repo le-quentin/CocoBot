@@ -2,7 +2,7 @@ package lequentin.cocobot.discord;
 
 import lequentin.cocobot.application.CocoChatBotApplication;
 import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.MessageReply;
+import lequentin.cocobot.application.BotMessage;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class DiscordChatBotServiceUnitTest {
         Message message = mock(Message.class);
         when(testEvent.getMessage()).thenReturn(discordMessage);
         when(converter.toDomain(discordMessage)).thenReturn(message);
-        MessageReply reply = mock(MessageReply.class);
+        BotMessage reply = mock(BotMessage.class);
         when(reply.getText()).thenReturn("the reply");
         when(coco.handleMessage(message)).thenReturn(Optional.of(reply));
 

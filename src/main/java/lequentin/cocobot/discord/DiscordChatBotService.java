@@ -1,7 +1,7 @@
 package lequentin.cocobot.discord;
 
 import lequentin.cocobot.application.ChatBot;
-import lequentin.cocobot.domain.MessageReply;
+import lequentin.cocobot.application.BotMessage;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import reactor.core.publisher.Flux;
@@ -24,7 +24,7 @@ public class DiscordChatBotService {
         eventFlux.subscribe(event -> {
             final Message message = event.getMessage();
             try {
-                Optional<MessageReply> messageReply = coco.handleMessage(converter.toDomain(message));
+                Optional<BotMessage> messageReply = coco.handleMessage(converter.toDomain(message));
                 messageReply.ifPresent(reply -> client.replyToMessage(message, reply.getText()));
             } catch(Exception ex) {
                 System.err.println("Exception while handling message: " + message.getContent());

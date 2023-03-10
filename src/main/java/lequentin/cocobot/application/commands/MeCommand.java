@@ -2,7 +2,7 @@ package lequentin.cocobot.application.commands;
 
 import lequentin.cocobot.application.Command;
 import lequentin.cocobot.domain.Impersonator;
-import lequentin.cocobot.domain.MessageReply;
+import lequentin.cocobot.application.BotMessage;
 import lequentin.cocobot.domain.User;
 
 public class MeCommand implements Command {
@@ -14,7 +14,7 @@ public class MeCommand implements Command {
     }
 
     @Override
-    public MessageReply apply(Impersonator impersonator) {
-        return new MessageReply(impersonator.impersonate(author));
+    public BotMessage apply(Impersonator impersonator) {
+        return new BotMessage(impersonator.impersonate(author));
     }
 }

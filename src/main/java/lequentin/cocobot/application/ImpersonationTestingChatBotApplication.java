@@ -4,7 +4,6 @@ import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.impersonator.LongImpersonationImpersonatorDecorator;
 import lequentin.cocobot.domain.impersonator.MarkovImpersonator;
 import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.MessageReply;
 import lequentin.cocobot.domain.impersonator.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesSource;
 import lequentin.cocobot.domain.impersonator.MultipleSentencesImpersonatorDecorator;
@@ -132,21 +131,21 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     }
 
     @Override
-    public Optional<MessageReply> handleMessage(Message message) {
+    public Optional<BotMessage> handleMessage(Message message) {
         if (message.getText().startsWith("c/sentences")) {
-            return Optional.of(new MessageReply(simpleSentencesImpersonator.impersonate(message.getAuthor())));
+            return Optional.of(new BotMessage(simpleSentencesImpersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/markov2")) {
-            return Optional.of(new MessageReply(markov2Impersonator.impersonate(message.getAuthor())));
+            return Optional.of(new BotMessage(markov2Impersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/markov3")) {
-            return Optional.of(new MessageReply(markov3Impersonator.impersonate(message.getAuthor())));
+            return Optional.of(new BotMessage(markov3Impersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/multi2")) {
-            return Optional.of(new MessageReply(multi2Impersonator.impersonate(message.getAuthor())));
+            return Optional.of(new BotMessage(multi2Impersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/multi4")) {
-            return Optional.of(new MessageReply(multi4Impersonator.impersonate(message.getAuthor())));
+            return Optional.of(new BotMessage(multi4Impersonator.impersonate(message.getAuthor())));
         }
 
         return Optional.empty();
