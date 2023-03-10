@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ConfigTest {
 
@@ -26,5 +28,15 @@ class ConfigTest {
     void shouldNotReadConfigFromEnvWhenBotTokenNotSet() {
         assertThatThrownBy(() -> Config.get().readProperties(propertyName -> ""))
                 .hasMessageContaining("BOT_TOKEN").hasMessageContaining("not set");
+    }
+
+    @Test
+    void shouldReadConfigFromEnvWithOnlyRequiredVars() {
+        Config.PropertiesProvider propertiesProvider = mock(Config.PropertiesProvider.class);
+        when(propertiesProvider.getProperty("BOT_TOKEN")).thenReturn("adummytoken");
+
+        Config.get().readProperties(propertiesProvider);
+
+        assertThat(Config.get().getSecrets().getBotToken()).isEqualTo("adummytoken");
     }
 }
