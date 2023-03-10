@@ -24,7 +24,7 @@ class ConfigTest {
 
     @Test
     void shouldNotReadConfigFromEnvWhenBotTokenNotSet() {
-        assertThatThrownBy(() -> Config.get().readFromEnv())
+        assertThatThrownBy(() -> Config.get().readProperties(propertyName -> ""))
                 .hasMessageContaining("BOT_TOKEN").hasMessageContaining("not set");
     }
 }

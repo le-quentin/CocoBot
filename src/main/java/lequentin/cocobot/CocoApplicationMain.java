@@ -129,7 +129,7 @@ public class CocoApplicationMain {
 
     private static Config loadConfig() {
         try {
-            Config.get().readFromEnv();
+            Config.get().readProperties(System::getenv);
         } catch(Exception ex) {
             System.err.println("There was an error reading config files");
             ex.printStackTrace(System.err);
