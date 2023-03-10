@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 public class Config {
 
+    private Secrets secrets;
+
     public static final Scanner INPUT_SCANNER = new Scanner(System.in);
 
     private static Config instance = null;
@@ -18,8 +20,6 @@ public class Config {
         }
         return instance;
     }
-
-    private Secrets secrets;
 
     public void readFromEnv() {
         readFromEnv(false);
