@@ -1,7 +1,6 @@
 package lequentin.cocobot.application;
 
 import lequentin.cocobot.application.commands.LikeCommand;
-import lequentin.cocobot.application.commands.MeCommand;
 import lequentin.cocobot.application.commands.UnknownCommand;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
@@ -21,7 +20,7 @@ public class CocoCommandParser {
         String[] args = text.substring(PREFIX.length()).split(" ");
 
         Command command = switch(args[0]) {
-            case "me" -> new MeCommand(message.getAuthor());
+            case "me" -> new LikeCommand(message.getAuthor());
             case "like" -> likeCommandFromArgs(args);
             default -> new UnknownCommand();
         };

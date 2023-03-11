@@ -1,7 +1,6 @@
 package lequentin.cocobot.application;
 
 import lequentin.cocobot.application.commands.LikeCommand;
-import lequentin.cocobot.application.commands.MeCommand;
 import lequentin.cocobot.application.commands.UnknownCommand;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
@@ -34,8 +33,8 @@ class CocoCommandParserUnitTest {
         Optional<Command> command = commandParser.parse(message);
 
         assertThat(command)
-                .usingFieldByFieldValueComparator()
-                .contains(new MeCommand(user));
+                .usingRecursiveComparison()
+                .isEqualTo(Optional.of(new LikeCommand(user)));
     }
 
     @Test
