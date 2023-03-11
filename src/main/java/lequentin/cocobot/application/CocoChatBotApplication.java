@@ -2,7 +2,6 @@ package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.UserNotFoundException;
 
 import java.util.Optional;
 
@@ -25,11 +24,7 @@ public class CocoChatBotApplication implements ChatBot {
             return Optional.empty();
         }
 
-        try {
-            return command.map(c -> c.apply(impersonator));
-        } catch (UserNotFoundException ex) {
-            return Optional.of(new BotMessage("Je ne connais pas l'utilisateur " + ex.getUsername()));
-        }
+        return command.map(c -> c.apply(impersonator));
     }
 
     private void handleNonCommandMessage(Message message) {

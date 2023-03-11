@@ -4,6 +4,9 @@ import lequentin.cocobot.application.Command;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.application.BotMessage;
 import lequentin.cocobot.domain.User;
+import lequentin.cocobot.domain.UserNotFoundException;
+
+import java.util.Optional;
 
 public class LikeCommand implements Command {
 
@@ -15,6 +18,10 @@ public class LikeCommand implements Command {
 
     @Override
     public BotMessage apply(Impersonator impersonator) {
-        return new BotMessage(impersonator.impersonate(author));
+        try {
+            return new BotMessage(impersonator.impersonate(author));
+        } catch (UserNotFoundException ex) {
+            return new BotMessage("Je ne connais pas l'utilisateur " + ex.getUsername());
+        }
     }
 }

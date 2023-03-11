@@ -2,7 +2,6 @@ package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +13,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CocoChatBotApplicationUnitTest {
@@ -53,20 +55,6 @@ class CocoChatBotApplicationUnitTest {
         Optional<BotMessage> result = coco.handleMessage(message);
 
         assertThat(result).contains(reply);
-    }
-
-    @Test
-    void shouldHandleCommandWhenUserNotFound() {
-        Message message = mock(Message.class);
-        Command command = mock(Command.class);
-        when(commandParser.parse(message)).thenReturn(Optional.of(command));
-        when(command.apply(impersonator)).thenThrow(new UserNotFoundException("username"));
-
-        Optional<BotMessage> result = coco.handleMessage(message);
-
-        assertThat(result)
-                .usingFieldByFieldValueComparator()
-                .contains(new BotMessage("Je ne connais pas l'utilisateur username"));
     }
 
     @Test
