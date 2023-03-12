@@ -10,24 +10,23 @@ import lequentin.cocobot.application.RemoveQuotesAndBlocksStringSanitizer;
 import lequentin.cocobot.config.Config;
 import lequentin.cocobot.discord.DiscordChatBotService;
 import lequentin.cocobot.discord.DiscordConverter;
-import lequentin.cocobot.discord.MessageClient;
 import lequentin.cocobot.domain.Impersonator;
+import lequentin.cocobot.domain.MessagesRepository;
+import lequentin.cocobot.domain.StringSanitizer;
+import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.impersonator.LongImpersonationImpersonatorDecorator;
 import lequentin.cocobot.domain.impersonator.MarkovImpersonator;
 import lequentin.cocobot.domain.impersonator.MessagesFilterImpersonatorDecorator;
-import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.impersonator.MultipleSentencesImpersonatorDecorator;
-import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
-import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
-import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
-import lequentin.cocobot.domain.StringSanitizer;
-import lequentin.cocobot.domain.StringTokenizer;
-import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.WordsTuple;
+import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
+import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
+import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
+import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
@@ -56,7 +55,6 @@ public class CocoApplicationMain {
 
         // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessageClient messageClient = new MessageClient();
 
         // storage
         // If storage file does not exist, we synchronise first
@@ -110,7 +108,7 @@ public class CocoApplicationMain {
         final CocoChatBotApplication coco = new CocoChatBotApplication(impersonator, cocoCommandParser);
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco, messageClient);
+        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco);
 
         // app
         final CocoApplicationMain app = new CocoApplicationMain(gateway, service);

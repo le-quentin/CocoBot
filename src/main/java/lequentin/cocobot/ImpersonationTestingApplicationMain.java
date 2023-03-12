@@ -7,7 +7,6 @@ import lequentin.cocobot.application.ImpersonationTestingChatBotApplication;
 import lequentin.cocobot.config.Config;
 import lequentin.cocobot.discord.DiscordChatBotService;
 import lequentin.cocobot.discord.DiscordConverter;
-import lequentin.cocobot.discord.MessageClient;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
@@ -46,13 +45,12 @@ public class ImpersonationTestingApplicationMain {
 
         // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessageClient messageClient = new MessageClient();
 
         // application
         final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication(messagesRepository);
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication, messageClient);
+        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication);
 
         // app
         final ImpersonationTestingApplicationMain app = new ImpersonationTestingApplicationMain(gateway, service);

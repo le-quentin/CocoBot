@@ -1,18 +1,14 @@
 package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.Impersonator;
-import lequentin.cocobot.domain.impersonator.LongImpersonationImpersonatorDecorator;
-import lequentin.cocobot.domain.impersonator.MarkovImpersonator;
 import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.impersonator.MessagesFilterImpersonatorDecorator;
 import lequentin.cocobot.domain.MessagesSource;
-import lequentin.cocobot.domain.impersonator.MultipleSentencesImpersonatorDecorator;
-import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
-import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
-import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
 import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.User;
-import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
+import lequentin.cocobot.domain.impersonator.LongImpersonationImpersonatorDecorator;
+import lequentin.cocobot.domain.impersonator.MarkovImpersonator;
+import lequentin.cocobot.domain.impersonator.MessagesFilterImpersonatorDecorator;
+import lequentin.cocobot.domain.impersonator.MultipleSentencesImpersonatorDecorator;
 import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
 import lequentin.cocobot.domain.markov.MarkovChains;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;
@@ -20,20 +16,23 @@ import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.MarkovWordsGenerator;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.WordsTuple;
+import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
+import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
+import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
+import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
 
 /**
  * This is my "prototyping" chat bot. I use it to try and compare different settings, and see what produces the funniest outputs!
  */
-public class ImpersonationTestingChatBotApplication implements ChatBot{
+public class ImpersonationTestingChatBotApplication implements ChatBot {
 
     private final Impersonator simpleSentencesImpersonator = null;
 
@@ -131,24 +130,23 @@ public class ImpersonationTestingChatBotApplication implements ChatBot{
     }
 
     @Override
-    public Optional<BotMessage> handleMessage(Message message) {
+    public void handleMessage(IncomingMessage incomingMessage) {
+        Message message = incomingMessage.toDomain();
         if (message.getText().startsWith("c/sentences")) {
-            return Optional.of(new BotMessage(simpleSentencesImpersonator.impersonate(message.getAuthor())));
+            incomingMessage.reply(new BotMessage(simpleSentencesImpersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/markov2")) {
-            return Optional.of(new BotMessage(markov2Impersonator.impersonate(message.getAuthor())));
+            incomingMessage.reply(new BotMessage(markov2Impersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/markov3")) {
-            return Optional.of(new BotMessage(markov3Impersonator.impersonate(message.getAuthor())));
+            incomingMessage.reply(new BotMessage(markov3Impersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/multi2")) {
-            return Optional.of(new BotMessage(multi2Impersonator.impersonate(message.getAuthor())));
+            incomingMessage.reply(new BotMessage(multi2Impersonator.impersonate(message.getAuthor())));
         }
         if (message.getText().startsWith("c/multi4")) {
-            return Optional.of(new BotMessage(multi4Impersonator.impersonate(message.getAuthor())));
+            incomingMessage.reply(new BotMessage(multi4Impersonator.impersonate(message.getAuthor())));
         }
-
-        return Optional.empty();
     }
 
     void sample() {

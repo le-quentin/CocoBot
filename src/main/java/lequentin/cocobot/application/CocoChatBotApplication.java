@@ -15,16 +15,19 @@ public class CocoChatBotApplication implements ChatBot {
         this.commandParser = commandParser;
     }
 
-    public Optional<BotMessage> handleMessage(Message message) {
+    public void handleMessage(IncomingMessage incomingMessage) {
+        Message message = incomingMessage.toDomain();
+
         Optional<Command> command = commandParser
                 .parse(message);
 
         if (command.isEmpty()) {
             handleNonCommandMessage(message);
-            return Optional.empty();
+            return;
         }
 
-        return command.map(c -> c.apply(impersonator));
+        Optional<BotMessage> response = command.map(c -> c.apply(impersonator));
+        response.ifPresent(incomingMessage::reply);
     }
 
     private void handleNonCommandMessage(Message message) {

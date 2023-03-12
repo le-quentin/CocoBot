@@ -15,7 +15,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,28 +47,32 @@ class CocoChatBotApplicationUnitTest {
     }
 
     @Test
-    void shouldHandleCommand() {
+    void shouldHandleMessageWithCommand() {
+        IncomingMessage incomingMessage = mock(IncomingMessage.class);
         Message message = mock(Message.class);
+        when(incomingMessage.toDomain()).thenReturn(message);
         Command command = mock(Command.class);
         BotMessage reply = mock(BotMessage.class);
         when(commandParser.parse(message)).thenReturn(Optional.of(command));
         when(command.apply(impersonator)).thenReturn(reply);
 
-        Optional<BotMessage> result = coco.handleMessage(message);
+        coco.handleMessage(incomingMessage);
 
-        assertThat(result).contains(reply);
+        verify(incomingMessage).reply(reply);
     }
 
     @Test
     void shouldHandleMessageWithNonCommandMessage() {
+        IncomingMessage incomingMessage = mock(IncomingMessage.class);
         Message message = mock(Message.class);
+        when(incomingMessage.toDomain()).thenReturn(message);
         when(message.getText()).thenReturn("Random message");
         when(commandParser.parse(message)).thenReturn(Optional.empty());
 
-        Optional<BotMessage> result = coco.handleMessage(message);
+        coco.handleMessage(incomingMessage);
 
-        assertThat(result).isEmpty();
         verify(impersonator).addMessage(message);
         assertThat(outputStreamCaptor.toString()).contains("Adding message to model: Random message");
+        verify(incomingMessage, never()).reply(any());
     }
 }
