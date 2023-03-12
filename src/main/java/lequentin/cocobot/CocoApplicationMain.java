@@ -104,8 +104,8 @@ public class CocoApplicationMain {
         );
 
         // application
-        final CocoCommandParser cocoCommandParser = new CocoCommandParser();
-        final CocoChatBotApplication coco = new CocoChatBotApplication(impersonator, cocoCommandParser);
+        final CocoCommandParser cocoCommandParser = new CocoCommandParser(impersonator);
+        final CocoChatBotApplication coco = new CocoChatBotApplication(cocoCommandParser);
 
         // service
         final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco);

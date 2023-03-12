@@ -6,24 +6,26 @@ import lequentin.cocobot.domain.User;
 import lequentin.cocobot.domain.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class LikeCommandTest {
+class ImpersonateCommandTest {
 
  @Test
  void shouldApply() {
   User user = mock(User.class);
   Impersonator impersonator = mock(Impersonator.class);
   when(impersonator.impersonate(user)).thenReturn("impersonation");
-  LikeCommand command = new LikeCommand(user);
+  ImpersonateCommand command = new ImpersonateCommand(impersonator, user);
 
-  BotMessage reply = command.apply(impersonator);
+  Optional<BotMessage> reply = command.apply();
 
   assertThat(reply)
           .usingRecursiveComparison()
-          .isEqualTo(new BotMessage("impersonation"));
+          .isEqualTo(Optional.of(new BotMessage("impersonation")));
  }
 
  @Test
@@ -31,12 +33,13 @@ class LikeCommandTest {
   User user = mock(User.class);
   Impersonator impersonator = mock(Impersonator.class);
   when(impersonator.impersonate(user)).thenThrow(new UserNotFoundException("username"));
-  LikeCommand command = new LikeCommand(user);
+  ImpersonateCommand command = new ImpersonateCommand(impersonator, user);
 
-  BotMessage reply = command.apply(impersonator);
+  Optional<BotMessage> reply = command.apply();
 
   assertThat(reply)
           .usingRecursiveComparison()
-          .isEqualTo(new BotMessage("Je ne connais pas l'utilisateur username"));
+          .isEqualTo(Optional.of(new BotMessage("Je ne connais pas l'utilisateur username")));
  }
+
 }

@@ -1,7 +1,9 @@
 package lequentin.cocobot.application;
 
-import lequentin.cocobot.application.commands.LikeCommand;
+import lequentin.cocobot.application.commands.ImpersonateCommand;
+import lequentin.cocobot.application.commands.RegisterMessageCommand;
 import lequentin.cocobot.application.commands.UnknownCommand;
+import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
 
@@ -13,24 +15,30 @@ public class CocoCommandParser {
 
     private static final String PREFIX = "c/";
 
+    private final Impersonator impersonator;
+
+    public CocoCommandParser(Impersonator impersonator) {
+        this.impersonator = impersonator;
+    }
+
     public Optional<Command> parse(Message message) {
         String text = message.getText();
-        if (!text.startsWith(PREFIX)) return Optional.empty();
+        if (!text.startsWith(PREFIX)) return Optional.of(new RegisterMessageCommand(impersonator, message));
 
         String[] args = text.substring(PREFIX.length()).split(" ");
 
         Command command = switch(args[0]) {
-            case "me" -> new LikeCommand(message.getAuthor());
-            case "like" -> likeCommandFromArgs(args);
+            case "me" -> new ImpersonateCommand(impersonator, message.getAuthor());
+            case "like" -> impersonateCommandFromArgs(args);
             default -> new UnknownCommand();
         };
 
         return Optional.of(command);
     }
 
-    private LikeCommand likeCommandFromArgs(String[] args) {
+    private ImpersonateCommand impersonateCommandFromArgs(String[] args) {
         String username = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
         User userToImpersonate = new User(username);
-        return new LikeCommand(userToImpersonate);
+        return new ImpersonateCommand(impersonator, userToImpersonate);
     }
 }
