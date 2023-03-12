@@ -1,9 +1,8 @@
 package lequentin.cocobot.application;
 
-import lequentin.cocobot.domain.Impersonator;
-import lequentin.cocobot.domain.MessageReply;
+import java.util.Optional;
 
 @FunctionalInterface
 public interface Command {
-    MessageReply apply(Impersonator impersonator);
+    Optional<BotMessage> apply();
 }

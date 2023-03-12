@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DirectAccessMessagesSourceUnitTest {
+class DiscordDirectAccessMessagesSourceUnitTest {
 
     private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
 
@@ -40,7 +40,7 @@ class DirectAccessMessagesSourceUnitTest {
     private Guild guild;
 
     @InjectMocks
-    private DirectAccessMessagesSource messagesSource;
+    private DiscordDirectAccessMessagesSource messagesSource;
 
     @BeforeEach
     void setUp() {

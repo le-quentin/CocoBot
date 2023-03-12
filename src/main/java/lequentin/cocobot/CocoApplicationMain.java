@@ -7,27 +7,28 @@ import lequentin.cocobot.application.CocoChatBotApplication;
 import lequentin.cocobot.application.CocoCommandParser;
 import lequentin.cocobot.application.ExcludeChatCommandsMessagesFilter;
 import lequentin.cocobot.application.RemoveQuotesAndBlocksStringSanitizer;
+import lequentin.cocobot.application.messages.ApplicationMessageProvider;
+import lequentin.cocobot.application.messages.InMemoryApplicationMessageProvider;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordChatBotService;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.discord.DiscordConverter;
-import lequentin.cocobot.discord.MessageClient;
 import lequentin.cocobot.domain.Impersonator;
+import lequentin.cocobot.domain.MessagesRepository;
+import lequentin.cocobot.domain.StringSanitizer;
+import lequentin.cocobot.domain.StringTokenizer;
 import lequentin.cocobot.domain.impersonator.LongImpersonationImpersonatorDecorator;
 import lequentin.cocobot.domain.impersonator.MarkovImpersonator;
 import lequentin.cocobot.domain.impersonator.MessagesFilterImpersonatorDecorator;
-import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.impersonator.MultipleSentencesImpersonatorDecorator;
-import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
-import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
-import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
-import lequentin.cocobot.domain.StringSanitizer;
-import lequentin.cocobot.domain.StringTokenizer;
-import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 import lequentin.cocobot.domain.markov.FindMaxOverBatchOfPathWalkerDecorator;
 import lequentin.cocobot.domain.markov.MarkovChainsWalker;
 import lequentin.cocobot.domain.markov.MarkovTokenizer;
 import lequentin.cocobot.domain.markov.SimpleMarkovChainsWalker;
 import lequentin.cocobot.domain.markov.WordsTuple;
+import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
+import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
+import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
+import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
 
@@ -40,9 +41,9 @@ public class CocoApplicationMain {
 
     public static final String MESSAGES_FILE = "./data/messages.json";
     private final GatewayDiscordClient gatewayClient;
-    private final DiscordChatBotService service;
+    private final DiscordMessageListener service;
 
-    public CocoApplicationMain(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public CocoApplicationMain(GatewayDiscordClient gatewayClient, DiscordMessageListener service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -56,7 +57,6 @@ public class CocoApplicationMain {
 
         // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessageClient messageClient = new MessageClient();
 
         // storage
         // If storage file does not exist, we synchronise first
@@ -106,11 +106,12 @@ public class CocoApplicationMain {
         );
 
         // application
-        final CocoCommandParser cocoCommandParser = new CocoCommandParser();
-        final CocoChatBotApplication coco = new CocoChatBotApplication(impersonator, cocoCommandParser);
+        final ApplicationMessageProvider applicationMessageProvider = new InMemoryApplicationMessageProvider(config.getLanguage());
+        final CocoCommandParser cocoCommandParser = new CocoCommandParser(impersonator, applicationMessageProvider);
+        final CocoChatBotApplication coco = new CocoChatBotApplication(cocoCommandParser);
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco, messageClient);
+        final DiscordMessageListener service = new DiscordMessageListener(discordConverter, coco);
 
         // app
         final CocoApplicationMain app = new CocoApplicationMain(gateway, service);
@@ -129,9 +130,9 @@ public class CocoApplicationMain {
 
     private static Config loadConfig() {
         try {
-            Config.get().readFromEnv();
+            Config.get().readProperties(System::getenv);
         } catch(Exception ex) {
-            System.err.println("There was an error reading config files");
+            System.err.println("There was an error reading config from env vars");
             ex.printStackTrace(System.err);
             System.exit(-1);
         }

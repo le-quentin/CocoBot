@@ -86,7 +86,7 @@ Running the bot is as easy as:
 > docker run -e BOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
 ```
 
-...with `<token>` obviously being your bot secret token (I recommend using an env var set in your shell startup files, to avoid printing the secret in your shell's history).
+...with `<token>` obviously being your bot secret token (I recommend using an env var set in your shell startup files, to avoid printing the secret in your shell's history). For a list of env vars for bot configuration, see [bot configuration section](#configuration)
 
 `latest` is the last stable release. If you want a specific version, checkout [releases](https://github.com/le-quentin/CocoBot/releases), every release has a matching docker image tag.
 
@@ -120,6 +120,15 @@ Thankfully, gradle wrapper makes it all too easy. Clone the repository, then fro
 
 Gradle wrapper should take care of everything, including downloading the appropriate JDK. You literally should have nothing else to do.
 
+## Configuration
+
+You can change the bot configuration with env vars. Here's the list of available vars:
+
+```
+BOT_TOKEN (required) - your bot's secret token
+LANGUAGE             - the bot's language, using the 2 chars ISO code. Values: en,fr. Default: en.
+```
+
 ## TODO list - things I might change/add
 
 ### Core
@@ -130,7 +139,7 @@ Gradle wrapper should take care of everything, including downloading the appropr
 
 ### Ergonomy
 - [ ] c/help
-- [ ] rewrite conf from env properly
+- [x] rewrite conf from env properly
 - [ ] prefix in conf
 - [ ] Proper logging with timestamp and levels
 
@@ -143,7 +152,7 @@ Gradle wrapper should take care of everything, including downloading the appropr
 
 ### Release as a public bot
 - [ ] Multiple servers setup => store message in separate documents/files for each server, with impersonators local to them
-- [ ] Support english language
+- [x] Support english language
 - [ ] Ways to dynamically setup some stuff like prefix and language
 - [ ] Test a way to erase one user's data from all documents (GDPR)
 - [ ] Monitor/logging tools should be improved

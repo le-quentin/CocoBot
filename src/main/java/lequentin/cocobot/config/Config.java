@@ -1,15 +1,24 @@
 package lequentin.cocobot.config;
 
-import java.io.InputStream;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Scanner;
 
 public class Config {
+
+    private Secrets secrets;
+    private Language language;
 
     public static final Scanner INPUT_SCANNER = new Scanner(System.in);
 
     private static Config instance = null;
 
     private Config() {
+        defaultConfig();
+    }
+
+    private void defaultConfig() {
+        language = Language.EN;
     }
 
     public static Config get() {
@@ -19,19 +28,22 @@ public class Config {
         return instance;
     }
 
-    private Secrets secrets;
-
-    public void readFromEnv() {
-        readFromEnv(false);
+    public void readProperties(PropertiesProvider propertiesProvider) {
+        readProperties(propertiesProvider, false);
     }
 
-    public void readFromEnv(boolean promptFallback) {
+    public void readProperties(PropertiesProvider propertiesProvider, boolean promptFallback) {
         secrets = new Secrets();
-        String botToken = System.getenv("BOT_TOKEN");
-        if (botToken == null) {
+        String botToken = propertiesProvider.getProperty("BOT_TOKEN");
+        if (StringUtils.isBlank(botToken)) {
             if (!promptFallback) throw new RuntimeException("BOT_TOKEN env var not set!");
             System.out.println("PLEASE PROVIDE BOT_TOKEN");
             botToken = INPUT_SCANNER.nextLine();
+        }
+
+        String languageString = propertiesProvider.getProperty("LANGUAGE");
+        if (StringUtils.isNotBlank(languageString)) {
+            language = Language.valueOf(languageString.toUpperCase());
         }
 
         secrets.setBotToken(botToken);
@@ -41,19 +53,12 @@ public class Config {
         return secrets;
     }
 
-    // get a file from the resources folder
-    // works everywhere, IDEA, unit test and JAR file.
-    private InputStream getFileFromResourceAsStream(String fileName) {
+    public Language getLanguage() {
+        return language;
+    }
 
-        // The class loader that loaded the class
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
-
-        // the stream holding the file content
-        if (inputStream == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return inputStream;
-        }
+    @FunctionalInterface
+    public interface PropertiesProvider {
+        String getProperty(String propertyName);
     }
 }

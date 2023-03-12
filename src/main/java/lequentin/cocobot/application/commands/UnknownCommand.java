@@ -1,12 +1,23 @@
 package lequentin.cocobot.application.commands;
 
+import lequentin.cocobot.application.BotMessage;
 import lequentin.cocobot.application.Command;
-import lequentin.cocobot.domain.Impersonator;
-import lequentin.cocobot.domain.MessageReply;
+import lequentin.cocobot.application.messages.ApplicationMessageProvider;
+
+import java.util.Optional;
+
+import static lequentin.cocobot.application.messages.ApplicationMessageCode.COMMAND_UNKNOWN;
 
 public class UnknownCommand implements Command {
+
+    private final ApplicationMessageProvider applicationMessageProvider;
+
+    public UnknownCommand(ApplicationMessageProvider applicationMessageProvider) {
+        this.applicationMessageProvider = applicationMessageProvider;
+    }
+
     @Override
-    public MessageReply apply(Impersonator impersonator) {
-        return new MessageReply("Je ne connais pas cette commande !");
+    public Optional<BotMessage> apply() {
+        return Optional.of(new BotMessage(applicationMessageProvider.getMessage(COMMAND_UNKNOWN)));
     }
 }

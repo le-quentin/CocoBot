@@ -5,9 +5,8 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.ImpersonationTestingChatBotApplication;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordChatBotService;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.discord.DiscordConverter;
-import lequentin.cocobot.discord.MessageClient;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
@@ -21,9 +20,9 @@ import java.nio.file.Path;
 public class ImpersonationTestingApplicationMain {
 
     private final GatewayDiscordClient gatewayClient;
-    private final DiscordChatBotService service;
+    private final DiscordMessageListener service;
 
-    public ImpersonationTestingApplicationMain(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public ImpersonationTestingApplicationMain(GatewayDiscordClient gatewayClient, DiscordMessageListener service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -46,13 +45,12 @@ public class ImpersonationTestingApplicationMain {
 
         // discord package
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessageClient messageClient = new MessageClient();
 
         // application
         final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication(messagesRepository);
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication, messageClient);
+        final DiscordMessageListener service = new DiscordMessageListener(discordConverter, impersonationTestingApplication);
 
         // app
         final ImpersonationTestingApplicationMain app = new ImpersonationTestingApplicationMain(gateway, service);
@@ -68,7 +66,7 @@ public class ImpersonationTestingApplicationMain {
 
     private static Config loadConfig() {
         try {
-            Config.get().readFromEnv();
+            Config.get().readProperties(System::getenv);
         } catch(Exception ex) {
             System.err.println("There was an error reading config files");
             ex.printStackTrace(System.err);
