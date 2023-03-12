@@ -139,7 +139,7 @@ LANGUAGE             - the bot's language, using the 2 chars ISO code. Values: e
 
 ### Ergonomy
 - [ ] c/help
-- [ ] rewrite conf from env properly
+- [x] rewrite conf from env properly
 - [ ] prefix in conf
 - [ ] Proper logging with timestamp and levels
 
@@ -152,7 +152,7 @@ LANGUAGE             - the bot's language, using the 2 chars ISO code. Values: e
 
 ### Release as a public bot
 - [ ] Multiple servers setup => store message in separate documents/files for each server, with impersonators local to them
-- [ ] Support english language
+- [x] Support english language
 - [ ] Ways to dynamically setup some stuff like prefix and language
 - [ ] Test a way to erase one user's data from all documents (GDPR)
 - [ ] Monitor/logging tools should be improved
