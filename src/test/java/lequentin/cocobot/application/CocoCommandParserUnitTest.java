@@ -3,6 +3,7 @@ package lequentin.cocobot.application;
 import lequentin.cocobot.application.commands.ImpersonateCommand;
 import lequentin.cocobot.application.commands.RegisterMessageCommand;
 import lequentin.cocobot.application.commands.UnknownCommand;
+import lequentin.cocobot.application.messages.ApplicationMessageProvider;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
@@ -19,6 +20,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CocoCommandParserUnitTest {
+
+    @Mock
+    private ApplicationMessageProvider applicationMessageProvider;
 
     @Mock
     private Impersonator impersonator;
@@ -52,7 +56,7 @@ class CocoCommandParserUnitTest {
 
         assertThat(command)
                 .usingRecursiveComparison()
-                .isEqualTo(Optional.of(new ImpersonateCommand(impersonator, user)));
+                .isEqualTo(Optional.of(new ImpersonateCommand(applicationMessageProvider, impersonator, user)));
     }
 
     @Test
@@ -63,7 +67,7 @@ class CocoCommandParserUnitTest {
 
         assertThat(command)
                 .usingFieldByFieldValueComparator()
-                .contains(new ImpersonateCommand(impersonator, new User("nick name")));
+                .contains(new ImpersonateCommand(applicationMessageProvider, impersonator, new User("nick name")));
     }
 
     @Test
@@ -74,7 +78,7 @@ class CocoCommandParserUnitTest {
 
         assertThat(command)
                 .usingFieldByFieldValueComparator()
-                .contains(new UnknownCommand());
+                .contains(new UnknownCommand(applicationMessageProvider));
     }
 
 }

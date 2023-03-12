@@ -15,4 +15,5 @@ class InMemoryApplicationMessageProviderTest {
 
         assertThat(message).contains("Je ne connais pas l'utilisateur username");
     }
+
 }
