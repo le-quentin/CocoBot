@@ -1,6 +1,6 @@
 package lequentin.cocobot;
 
-import lequentin.cocobot.discord.DiscordChatBotService;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ class CocoApplicationMainUnitTest {
     private GatewayDiscordClient gatewayDiscordClient;
 
     @Mock
-    private DiscordChatBotService service;
+    private DiscordMessageListener service;
 
     @InjectMocks
     private CocoApplicationMain app;

@@ -5,12 +5,12 @@ import discord4j.core.object.entity.Message;
 import lequentin.cocobot.application.ChatBot;
 import reactor.core.publisher.Flux;
 
-public class DiscordChatBotService {
+public class DiscordMessageListener {
 
     private final DiscordConverter converter;
     private final ChatBot coco;
 
-    public DiscordChatBotService(DiscordConverter converter, ChatBot coco) {
+    public DiscordMessageListener(DiscordConverter converter, ChatBot coco) {
         this.converter = converter;
         this.coco = coco;
     }

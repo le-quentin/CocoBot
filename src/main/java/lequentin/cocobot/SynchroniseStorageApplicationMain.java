@@ -3,7 +3,7 @@ package lequentin.cocobot;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DirectAccessMessagesSource;
+import lequentin.cocobot.discord.DiscordDirectAccessMessagesSource;
 import lequentin.cocobot.discord.DiscordConverter;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.MessagesSource;
@@ -29,7 +29,7 @@ public class SynchroniseStorageApplicationMain {
         final GatewayDiscordClient gateway = discordClient.login().block();
 
         final DiscordConverter discordConverter = new DiscordConverter();
-        final MessagesSource messagesSource = new DirectAccessMessagesSource(gateway, discordConverter);
+        final MessagesSource messagesSource = new DiscordDirectAccessMessagesSource(gateway, discordConverter);
 
         final UserMessagesJsonConverter jsonConverter = new UserMessagesJsonConverter();
         final MessagesRepository jsonStorage = new JsonFileMessagesRepository(

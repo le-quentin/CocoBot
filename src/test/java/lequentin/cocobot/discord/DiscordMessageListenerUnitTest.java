@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DiscordChatBotServiceUnitTest {
+class DiscordMessageListenerUnitTest {
 
     private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
 
@@ -41,7 +41,7 @@ class DiscordChatBotServiceUnitTest {
     private CocoChatBotApplication coco;
 
     @InjectMocks
-    private DiscordChatBotService service;
+    private DiscordMessageListener service;
 
     @BeforeEach
     public void setUp() {

@@ -10,7 +10,7 @@ import lequentin.cocobot.application.RemoveQuotesAndBlocksStringSanitizer;
 import lequentin.cocobot.application.messages.ApplicationMessageProvider;
 import lequentin.cocobot.application.messages.InMemoryApplicationMessageProvider;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordChatBotService;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.discord.DiscordConverter;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.MessagesRepository;
@@ -41,9 +41,9 @@ public class CocoApplicationMain {
 
     public static final String MESSAGES_FILE = "./data/messages.json";
     private final GatewayDiscordClient gatewayClient;
-    private final DiscordChatBotService service;
+    private final DiscordMessageListener service;
 
-    public CocoApplicationMain(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public CocoApplicationMain(GatewayDiscordClient gatewayClient, DiscordMessageListener service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -111,7 +111,7 @@ public class CocoApplicationMain {
         final CocoChatBotApplication coco = new CocoChatBotApplication(cocoCommandParser);
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, coco);
+        final DiscordMessageListener service = new DiscordMessageListener(discordConverter, coco);
 
         // app
         final CocoApplicationMain app = new CocoApplicationMain(gateway, service);

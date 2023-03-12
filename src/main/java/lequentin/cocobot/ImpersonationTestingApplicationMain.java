@@ -5,7 +5,7 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.ImpersonationTestingChatBotApplication;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordChatBotService;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.discord.DiscordConverter;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
@@ -20,9 +20,9 @@ import java.nio.file.Path;
 public class ImpersonationTestingApplicationMain {
 
     private final GatewayDiscordClient gatewayClient;
-    private final DiscordChatBotService service;
+    private final DiscordMessageListener service;
 
-    public ImpersonationTestingApplicationMain(GatewayDiscordClient gatewayClient, DiscordChatBotService service) {
+    public ImpersonationTestingApplicationMain(GatewayDiscordClient gatewayClient, DiscordMessageListener service) {
         this.gatewayClient = gatewayClient;
         this.service = service;
     }
@@ -50,7 +50,7 @@ public class ImpersonationTestingApplicationMain {
         final ImpersonationTestingChatBotApplication impersonationTestingApplication = new ImpersonationTestingChatBotApplication(messagesRepository);
 
         // service
-        final DiscordChatBotService service = new DiscordChatBotService(discordConverter, impersonationTestingApplication);
+        final DiscordMessageListener service = new DiscordMessageListener(discordConverter, impersonationTestingApplication);
 
         // app
         final ImpersonationTestingApplicationMain app = new ImpersonationTestingApplicationMain(gateway, service);

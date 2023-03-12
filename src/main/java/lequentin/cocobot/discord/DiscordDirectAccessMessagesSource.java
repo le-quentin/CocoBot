@@ -8,12 +8,12 @@ import discord4j.core.object.entity.channel.Channel.Type;
 import discord4j.core.object.entity.channel.TextChannel;
 import reactor.core.publisher.Flux;
 
-public class DirectAccessMessagesSource implements MessagesSource {
+public class DiscordDirectAccessMessagesSource implements MessagesSource {
 
     private final GatewayDiscordClient discord;
     private final DiscordConverter converter;
 
-    public DirectAccessMessagesSource(GatewayDiscordClient discord, DiscordConverter converter) {
+    public DiscordDirectAccessMessagesSource(GatewayDiscordClient discord, DiscordConverter converter) {
         this.discord = discord;
         this.converter = converter;
     }
