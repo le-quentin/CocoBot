@@ -38,5 +38,18 @@ class ConfigTest {
         Config.get().readProperties(propertiesProvider);
 
         assertThat(Config.get().getSecrets().getBotToken()).isEqualTo("adummytoken");
+        assertThat(Config.get().getLanguage()).isEqualTo(Language.FR);
+    }
+
+    @Test
+    void shouldReadConfigFromEnvWithAllVars() {
+        Config.PropertiesProvider propertiesProvider = mock(Config.PropertiesProvider.class);
+        when(propertiesProvider.getProperty("BOT_TOKEN")).thenReturn("adummytoken");
+        when(propertiesProvider.getProperty("LANGUAGE")).thenReturn("fr");
+
+        Config.get().readProperties(propertiesProvider);
+
+        assertThat(Config.get().getSecrets().getBotToken()).isEqualTo("adummytoken");
+        assertThat(Config.get().getLanguage()).isEqualTo(Language.FR);
     }
 }

@@ -37,6 +37,11 @@ public class Config {
             botToken = INPUT_SCANNER.nextLine();
         }
 
+        String languageString = propertiesProvider.getProperty("LANGUAGE");
+        if (StringUtils.isNotBlank(languageString)) {
+            language = Language.valueOf(languageString.toUpperCase());
+        }
+
         secrets.setBotToken(botToken);
     }
 
