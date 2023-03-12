@@ -1,5 +1,5 @@
 package lequentin.cocobot.config;
 
 public enum Language {
-    FR
+    EN, FR
 }

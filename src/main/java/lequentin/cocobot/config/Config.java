@@ -14,7 +14,11 @@ public class Config {
     private static Config instance = null;
 
     private Config() {
-        language = Language.FR;
+        defaultConfig();
+    }
+
+    private void defaultConfig() {
+        language = Language.EN;
     }
 
     public static Config get() {

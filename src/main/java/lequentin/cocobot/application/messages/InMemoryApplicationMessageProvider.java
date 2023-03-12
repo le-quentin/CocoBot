@@ -12,10 +12,16 @@ public class InMemoryApplicationMessageProvider implements ApplicationMessagePro
     private final Map<ApplicationMessageCode, String> messageTemplates;
 
     public InMemoryApplicationMessageProvider(Language language) {
-        messageTemplates = Map.of(
-                USER_NOT_FOUND, "Je ne connais pas l'utilisateur {}",
-                COMMAND_UNKNOWN, "Je ne connais pas cette commande !"
-        );
+        messageTemplates = switch (language) {
+            case EN -> Map.of(
+                    USER_NOT_FOUND, "I don't know the user {}",
+                    COMMAND_UNKNOWN, "I don't know this command!"
+            );
+            case FR -> Map.of(
+                    USER_NOT_FOUND, "Je ne connais pas l'utilisateur {}",
+                    COMMAND_UNKNOWN, "Je ne connais pas cette commande !"
+            );
+        };
     }
 
     @Override
