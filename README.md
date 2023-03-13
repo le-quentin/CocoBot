@@ -25,7 +25,7 @@ Gotcha! Create [a bot application](https://discord.com/developers/docs/getting-s
 You're almost there! Run the bot with:
 
 ```shell
-> docker run -e BOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
+> docker run -e COCOBOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
 ```
 
 ...give it a few minutes for the initial scraping of messages...
