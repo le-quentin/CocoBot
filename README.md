@@ -6,7 +6,7 @@
 <p align=center>Learns from your friends' messages, and impersonates them. Because nonsense is fun.</p>
 <p align=center>
 <a href="https://github.com/le-quentin/CocoBot/actions/workflows/test-and-build.yaml"><img src="https://img.shields.io/github/actions/workflow/status/le-quentin/CocoBot/test-and-build.yaml"/></a>
-<a href="https://github.com/le-quentin/CocoBot/releases"><img src="https://img.shields.io/github/v/release/le-quentin/Cocobot"/></a>
+<a href="https://github.com/le-quentin/CocoBot/releases"><img src="https://img.shields.io/github/v/release/le-quentin/CocoBot"/></a>
 </p>
 <p align=center>
 <a href="https://github.com/le-quentin/CocoBot/blob/master/LICENSE"><img src="https://img.shields.io/github/license/le-quentin/cocobot"/></a>
