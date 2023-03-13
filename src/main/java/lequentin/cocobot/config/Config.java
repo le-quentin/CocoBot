@@ -8,12 +8,14 @@ public class Config {
 
     private final Secrets secrets;
     private final Language language;
+    private final String prefix;
 
     public static final Scanner INPUT_SCANNER = new Scanner(System.in);
 
-    public Config(Secrets secrets, Language language) {
+    public Config(Secrets secrets, Language language, String prefix) {
         this.secrets = secrets;
         this.language = language;
+        this.prefix = prefix;
     }
 
     public Secrets getSecrets() {
@@ -22,6 +24,10 @@ public class Config {
 
     public Language getLanguage() {
         return language;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 
     public static Config readFromEnv(PropertiesProvider propertiesProvider) {
@@ -44,6 +50,11 @@ public class Config {
             builder.language(Language.valueOf(languageString.toUpperCase()));
         }
 
+        String prefixString = propertiesProvider.getProperty("COCOBOT_PREFIX");
+        if (StringUtils.isNotBlank(prefixString)) {
+            builder.prefix(prefixString);
+        }
+
         return builder.build();
     }
 
@@ -56,9 +67,11 @@ public class Config {
 
         private Secrets secrets;
         private Language language;
+        private String prefix;
 
         private Builder() {
             language = Language.EN;
+            prefix = "c/";
         }
 
         public Builder secrets(Secrets secrets) {
@@ -71,8 +84,14 @@ public class Config {
             return this;
         }
 
+        public Builder prefix(String prefix) {
+            this.prefix = prefix;
+            return this;
+        }
+
         public Config build() {
-            return new Config(secrets, language);
+            return new Config(secrets, language, prefix);
         }
     }
+
 }

@@ -107,7 +107,7 @@ public class CocoApplicationMain {
 
         // application
         final ApplicationMessageProvider applicationMessageProvider = new InMemoryApplicationMessageProvider(config.getLanguage());
-        final CocoCommandParser cocoCommandParser = new CocoCommandParser(impersonator, applicationMessageProvider);
+        final CocoCommandParser cocoCommandParser = new CocoCommandParser(config, impersonator, applicationMessageProvider);
         final CocoChatBotApplication coco = new CocoChatBotApplication(cocoCommandParser);
 
         // service

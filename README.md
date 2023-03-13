@@ -126,7 +126,10 @@ You can change the bot configuration with env vars. Here's the list of available
 
 ```
 COCOBOT_TOKEN (required) - your bot's secret token
-COCOBOT_LANGUAGE         - the bot's language, using the 2 chars ISO code. Values: en,fr. Default: en.
+COCOBOT_LANGUAGE         - the bot's language, using the 2 chars ISO code. Values: en,fr - Default: en
+COCOBOT_PREFIX           - the bot's prefix, that should be used before all commands. Default: c/
+                           It cannot be blank, but other than that there's no conditions on the format whatsoever.
+                           If you want the bot to work properly, pick something explicit and unambiguous, with special symbols.
 ```
 
 ## TODO list - things I might change/add
@@ -140,7 +143,7 @@ COCOBOT_LANGUAGE         - the bot's language, using the 2 chars ISO code. Value
 ### Ergonomy
 - [ ] c/help
 - [x] rewrite conf from env properly
-- [ ] prefix in conf
+- [x] prefix in conf
 - [ ] Proper logging with timestamp and levels
 
 ### Deploy | CI/CD

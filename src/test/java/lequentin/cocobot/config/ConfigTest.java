@@ -26,6 +26,7 @@ class ConfigTest {
 
         assertThat(config.getSecrets().getBotToken()).isEqualTo("adummytoken");
         assertThat(config.getLanguage()).isEqualTo(Language.EN);
+        assertThat(config.getPrefix()).isEqualTo("c/");
     }
 
     @EnumSource(value = Language.class)
@@ -34,11 +35,13 @@ class ConfigTest {
         Config.PropertiesProvider propertiesProvider = mock(Config.PropertiesProvider.class);
         when(propertiesProvider.getProperty("COCOBOT_TOKEN")).thenReturn("adummytoken");
         when(propertiesProvider.getProperty("COCOBOT_LANGUAGE")).thenReturn(language.name().toLowerCase());
+        when(propertiesProvider.getProperty("COCOBOT_PREFIX")).thenReturn("c!");
 
         Config config = Config.readFromEnv(propertiesProvider);
 
         assertThat(config.getSecrets().getBotToken()).isEqualTo("adummytoken");
         assertThat(config.getLanguage()).isEqualTo(language);
+        assertThat(config.getPrefix()).isEqualTo("c!");
     }
 
 }

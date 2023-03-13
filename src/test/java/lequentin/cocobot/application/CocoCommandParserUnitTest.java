@@ -4,9 +4,11 @@ import lequentin.cocobot.application.commands.ImpersonateCommand;
 import lequentin.cocobot.application.commands.RegisterMessageCommand;
 import lequentin.cocobot.application.commands.UnknownCommand;
 import lequentin.cocobot.application.messages.ApplicationMessageProvider;
+import lequentin.cocobot.config.Config;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +27,9 @@ class CocoCommandParserUnitTest {
     private ApplicationMessageProvider applicationMessageProvider;
 
     @Mock
+    private Config config;
+
+    @Mock
     private Impersonator impersonator;
 
     @Mock
@@ -35,6 +40,12 @@ class CocoCommandParserUnitTest {
 
     @InjectMocks
     private CocoCommandParser commandParser;
+
+    @BeforeEach
+    void setUp() {
+        when(config.getPrefix()).thenReturn("c/");
+        commandParser = new CocoCommandParser(config, impersonator, applicationMessageProvider);
+    }
 
     @Test
     void shouldParseRegisterMessageCommand() {
