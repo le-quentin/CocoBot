@@ -83,7 +83,7 @@ Then, invite the bot on your server (either with an oauth link, or simply by usi
 
 Running the bot is as easy as: 
 ```shell
-> docker run -e BOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
+> docker run -e COCOBOT_TOKEN=<token> ghcr.io/le-quentin/cocobot:latest
 ```
 
 ...with `<token>` obviously being your bot secret token (I recommend using an env var set in your shell startup files, to avoid printing the secret in your shell's history). For a list of env vars for bot configuration, see [bot configuration section](#configuration)
@@ -95,7 +95,7 @@ At the first container's startup, the bot will parse all the server's messages, 
 If you would like to be able to recreate the container (to get updated images, typically) without having to regenerate all messages every time, you can use a docker volume. Create a directory dedicated to storing the messages. Then:
 
 ```shell
-> docker run -e BOT_TOKEN=<token> -v /path/to/dedicated/dir:/app/data ghcr.io/le-quentin/cocobot:latest
+> docker run -e COCOBOT_TOKEN=<token> -v /path/to/dedicated/dir:/app/data ghcr.io/le-quentin/cocobot:latest
 ```
 
 This way, any version of the bot will start using the messages stored in `/path/to/dedicated/dir/messages.json` (and the bot will generate the file on first run, as usual). If you want to get all messages again, simpy delete the file and restart the container.
@@ -113,7 +113,7 @@ Thankfully, gradle wrapper makes it all too easy. Clone the repository, then fro
 ...to build the service (it will also run tests), and:
 
 ```shell
-> BOT_TOKEN=<token> ./gradlew run
+> COCOBOT_TOKEN=<token> ./gradlew run
 ```
 
 ...to run it. You will need to create a `data` folder under your current directory first.
@@ -125,8 +125,8 @@ Gradle wrapper should take care of everything, including downloading the appropr
 You can change the bot configuration with env vars. Here's the list of available vars:
 
 ```
-BOT_TOKEN (required) - your bot's secret token
-LANGUAGE             - the bot's language, using the 2 chars ISO code. Values: en,fr. Default: en.
+COCOBOT_TOKEN (required) - your bot's secret token
+COCOBOT_LANGUAGE         - the bot's language, using the 2 chars ISO code. Values: en,fr. Default: en.
 ```
 
 ## TODO list - things I might change/add

@@ -24,11 +24,6 @@ public class Config {
         return language;
     }
 
-    @FunctionalInterface
-    public interface PropertiesProvider {
-        String getProperty(String propertyName);
-    }
-
     public static Config readFromEnv(PropertiesProvider propertiesProvider) {
         return readFromEnv(propertiesProvider, false);
     }
@@ -36,20 +31,25 @@ public class Config {
     public static Config readFromEnv(PropertiesProvider propertiesProvider, boolean promptFallback) {
         Builder builder = new Builder();
 
-        String botToken = propertiesProvider.getProperty("BOT_TOKEN");
+        String botToken = propertiesProvider.getProperty("COCOBOT_TOKEN");
         if (StringUtils.isBlank(botToken)) {
-            if (!promptFallback) throw new RuntimeException("BOT_TOKEN env var not set!");
-            System.out.println("PLEASE PROVIDE BOT_TOKEN");
+            if (!promptFallback) throw new RuntimeException("COCOBOT_TOKEN env var not set!");
+            System.out.println("Please provide COCOBOT_TOKEN");
             botToken = INPUT_SCANNER.nextLine();
         }
         builder.secrets(new Secrets(botToken));
 
-        String languageString = propertiesProvider.getProperty("LANGUAGE");
+        String languageString = propertiesProvider.getProperty("COCOBOT_LANGUAGE");
         if (StringUtils.isNotBlank(languageString)) {
             builder.language(Language.valueOf(languageString.toUpperCase()));
         }
 
         return builder.build();
+    }
+
+    @FunctionalInterface
+    public interface PropertiesProvider {
+        String getProperty(String propertyName);
     }
 
     private static class Builder {

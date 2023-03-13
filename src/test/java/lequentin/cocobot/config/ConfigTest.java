@@ -14,13 +14,13 @@ class ConfigTest {
     @Test
     void shouldNotReadConfigFromEnvWhenBotTokenNotSet() {
         assertThatThrownBy(() -> Config.readFromEnv(propertyName -> ""))
-                .hasMessageContaining("BOT_TOKEN").hasMessageContaining("not set");
+                .hasMessageContaining("COCOBOT_TOKEN").hasMessageContaining("not set");
     }
 
     @Test
     void shouldReadConfigFromEnvWithOnlyRequiredVars() {
         Config.PropertiesProvider propertiesProvider = mock(Config.PropertiesProvider.class);
-        when(propertiesProvider.getProperty("BOT_TOKEN")).thenReturn("adummytoken");
+        when(propertiesProvider.getProperty("COCOBOT_TOKEN")).thenReturn("adummytoken");
 
         Config config = Config.readFromEnv(propertiesProvider);
 
@@ -32,8 +32,8 @@ class ConfigTest {
     @ParameterizedTest
     void shouldReadConfigFromEnvWithAllVars(Language language) {
         Config.PropertiesProvider propertiesProvider = mock(Config.PropertiesProvider.class);
-        when(propertiesProvider.getProperty("BOT_TOKEN")).thenReturn("adummytoken");
-        when(propertiesProvider.getProperty("LANGUAGE")).thenReturn(language.name().toLowerCase());
+        when(propertiesProvider.getProperty("COCOBOT_TOKEN")).thenReturn("adummytoken");
+        when(propertiesProvider.getProperty("COCOBOT_LANGUAGE")).thenReturn(language.name().toLowerCase());
 
         Config config = Config.readFromEnv(propertiesProvider);
 
