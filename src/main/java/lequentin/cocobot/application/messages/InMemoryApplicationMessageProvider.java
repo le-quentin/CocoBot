@@ -22,7 +22,7 @@ public class InMemoryApplicationMessageProvider implements ApplicationMessagePro
                     *kwaa kwaaaa* Coco is happy! Here are my commands:
                     ```
                     {prefix}me            - I impersonate you
-                    {prefix}like John Doe - I impersonate user John Doe (username, not server alias!)
+                    {prefix}like John Doe - I impersonate user `John Doe#XXXX`
                     {prefix}help          - I show this help
                     ```
                     """.replaceAll("\\{prefix}", config.getPrefix())
@@ -35,7 +35,7 @@ public class InMemoryApplicationMessageProvider implements ApplicationMessagePro
                     *cuii cuiiii* Coco est content ! Voici mes commandes :
                     ```
                     {prefix}me            - Je t'imite
-                    {prefix}like John Doe - J'imite l'utisateur John Doe (avec l'username, pas l'alias de serveur)
+                    {prefix}like John Doe - J'imite l'utisateur `John Doe#XXXX`
                     {prefix}help          - Je montre cette aide
                     ```
                     """.replaceAll("\\{prefix}", config.getPrefix())
