@@ -6,18 +6,18 @@ import lequentin.cocobot.application.messages.ApplicationMessageProvider;
 
 import java.util.Optional;
 
-import static lequentin.cocobot.application.messages.ApplicationMessageCode.COMMAND_UNKNOWN;
+import static lequentin.cocobot.application.messages.ApplicationMessageCode.HELP;
 
-public class UnknownCommand implements Command {
+public class HelpCommand implements Command {
 
     private final ApplicationMessageProvider applicationMessageProvider;
 
-    public UnknownCommand(ApplicationMessageProvider applicationMessageProvider) {
+    public HelpCommand(ApplicationMessageProvider applicationMessageProvider) {
         this.applicationMessageProvider = applicationMessageProvider;
     }
 
     @Override
     public Optional<BotMessage> execute() {
-        return Optional.of(new BotMessage(applicationMessageProvider.getMessage(COMMAND_UNKNOWN)));
+        return Optional.of(new BotMessage(applicationMessageProvider.getMessage(HELP)));
     }
 }

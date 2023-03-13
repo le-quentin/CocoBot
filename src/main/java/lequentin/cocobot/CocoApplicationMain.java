@@ -106,8 +106,8 @@ public class CocoApplicationMain {
         );
 
         // application
-        final ApplicationMessageProvider applicationMessageProvider = new InMemoryApplicationMessageProvider(config.getLanguage());
-        final CocoCommandParser cocoCommandParser = new CocoCommandParser(impersonator, applicationMessageProvider);
+        final ApplicationMessageProvider applicationMessageProvider = new InMemoryApplicationMessageProvider(config);
+        final CocoCommandParser cocoCommandParser = new CocoCommandParser(config, impersonator, applicationMessageProvider);
         final CocoChatBotApplication coco = new CocoChatBotApplication(cocoCommandParser);
 
         // service
@@ -130,12 +130,10 @@ public class CocoApplicationMain {
 
     private static Config loadConfig() {
         try {
-            Config.get().readProperties(System::getenv);
+            return Config.readFromEnv(System::getenv);
         } catch(Exception ex) {
             System.err.println("There was an error reading config from env vars");
-            ex.printStackTrace(System.err);
-            System.exit(-1);
+            throw ex;
         }
-        return Config.get();
     }
 }

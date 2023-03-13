@@ -18,7 +18,7 @@ public class RegisterMessageCommand implements Command {
     }
 
     @Override
-    public Optional<BotMessage> apply() {
+    public Optional<BotMessage> execute() {
         System.out.println("Adding message to model: " + message.getText());
         impersonator.addMessage(message);
         return Optional.empty();

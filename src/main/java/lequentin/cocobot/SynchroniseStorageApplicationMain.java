@@ -49,12 +49,9 @@ public class SynchroniseStorageApplicationMain {
 
     private static Config loadConfig() {
         try {
-            Config.get().readProperties(System::getenv, true);
-        } catch(Exception ex) {
-            System.err.println("There was an error reading config files");
-            ex.printStackTrace(System.err);
-            System.exit(-1);
+            return Config.readFromEnv(System::getenv);
+        } catch(Exception ex) { System.err.println("There was an error reading config files");
+            throw ex;
         }
-        return Config.get();
     }
 }
