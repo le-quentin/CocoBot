@@ -18,7 +18,7 @@ public class CocoChatBotApplication implements ChatBot {
         Optional<Command> command = commandParser
                 .parse(message);
 
-        Optional<BotMessage> response = command.flatMap(Command::apply);
+        Optional<BotMessage> response = command.flatMap(Command::execute);
         response.ifPresent(incomingMessage::reply);
     }
 

@@ -17,7 +17,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public Optional<BotMessage> apply() {
+    public Optional<BotMessage> execute() {
         return Optional.of(new BotMessage(applicationMessageProvider.getMessage(HELP)));
     }
 }

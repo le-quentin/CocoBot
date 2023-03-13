@@ -33,10 +33,10 @@ class ImpersonateCommandTest {
     private ImpersonateCommand command;
 
     @Test
-    void shouldApply() {
+    void shouldExecute() {
         when(impersonator.impersonate(user)).thenReturn("impersonation");
 
-        Optional<BotMessage> reply = command.apply();
+        Optional<BotMessage> reply = command.execute();
 
         assertThat(reply)
                 .usingRecursiveComparison()
@@ -44,11 +44,11 @@ class ImpersonateCommandTest {
     }
 
     @Test
-    void shouldApplyWhenUserNotFound() {
+    void shouldExecuteWhenUserNotFound() {
         when(impersonator.impersonate(user)).thenThrow(new UserNotFoundException("username"));
         when(applicationMessageProvider.getMessage(USER_NOT_FOUND, "username")).thenReturn("user not found");
 
-        Optional<BotMessage> reply = command.apply();
+        Optional<BotMessage> reply = command.execute();
 
         assertThat(reply)
                 .usingRecursiveComparison()

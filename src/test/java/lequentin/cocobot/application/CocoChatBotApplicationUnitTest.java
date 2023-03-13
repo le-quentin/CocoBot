@@ -40,7 +40,7 @@ class CocoChatBotApplicationUnitTest {
         Command command = mock(Command.class);
         BotMessage reply = mock(BotMessage.class);
         when(commandParser.parse(message)).thenReturn(Optional.of(command));
-        when(command.apply()).thenReturn(Optional.of(reply));
+        when(command.execute()).thenReturn(Optional.of(reply));
 
         coco.handleMessage(incomingMessage);
 

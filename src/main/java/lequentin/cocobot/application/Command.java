@@ -4,5 +4,5 @@ import java.util.Optional;
 
 @FunctionalInterface
 public interface Command {
-    Optional<BotMessage> apply();
+    Optional<BotMessage> execute();
 }

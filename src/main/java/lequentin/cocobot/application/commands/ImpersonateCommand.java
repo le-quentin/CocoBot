@@ -24,7 +24,7 @@ public class ImpersonateCommand implements Command {
     }
 
     @Override
-    public Optional<BotMessage> apply() {
+    public Optional<BotMessage> execute() {
         try {
             return Optional.of(new BotMessage(impersonator.impersonate(author)));
         } catch (UserNotFoundException ex) {

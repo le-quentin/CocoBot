@@ -11,17 +11,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class HelpCommandTest {
+class UnknownCommandTest {
     @Test
     void shouldExecute() {
         ApplicationMessageProvider applicationMessageProvider = mock(ApplicationMessageProvider.class);
-        when(applicationMessageProvider.getMessage(ApplicationMessageCode.HELP)).thenReturn("help message");
-        HelpCommand command = new HelpCommand(applicationMessageProvider);
+        when(applicationMessageProvider.getMessage(ApplicationMessageCode.COMMAND_UNKNOWN)).thenReturn("unknown command");
+        UnknownCommand command = new UnknownCommand(applicationMessageProvider);
 
         Optional<BotMessage> result = command.execute();
 
         assertThat(result)
                 .usingRecursiveComparison()
-                .isEqualTo(Optional.of(new BotMessage("help message")));
+                .isEqualTo(Optional.of(new BotMessage("unknown command")));
     }
 }

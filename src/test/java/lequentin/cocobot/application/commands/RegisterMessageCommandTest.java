@@ -25,13 +25,13 @@ class RegisterMessageCommandTest {
     }
 
     @Test
-    void shouldApply() {
+    void shouldExecute() {
         Message message = mock(Message.class);
         Impersonator impersonator = mock(Impersonator.class);
         when(message.getText()).thenReturn("Random message");
         RegisterMessageCommand command = new RegisterMessageCommand(impersonator, message);
 
-        Optional<BotMessage> reply = command.apply();
+        Optional<BotMessage> reply = command.execute();
 
         verify(impersonator).addMessage(message);
         assertThat(outputStreamCaptor.toString()).contains("Adding message to model: Random message");
