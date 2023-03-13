@@ -52,6 +52,7 @@ From any channel where the bot is invited:
 ```
 c/me                - the bot impersonates you
 c/like <username>   - the bot impersonates that user
+c/help              - show help about commands
 ```
 
 `<username>` should be the actual username (not the server local nickname), without the `#<digits>` part. So to impersonate `JohnDoe#1234`, do:
@@ -141,7 +142,7 @@ COCOBOT_PREFIX           - the bot's prefix, that should be used before all comm
 - [ ] Keep testing with existing impersonators to produce funnier outputs
 
 ### Ergonomy
-- [ ] c/help
+- [x] c/help
 - [x] rewrite conf from env properly
 - [x] prefix in conf
 - [ ] Proper logging with timestamp and levels
