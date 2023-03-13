@@ -1,13 +1,14 @@
 package lequentin.cocobot.config;
 
 public class Secrets {
-    private String botToken;
+    private final String botToken;
+
+    public Secrets(String botToken) {
+        this.botToken = botToken;
+    }
 
     public String getBotToken() {
         return botToken;
     }
 
-    public void setBotToken(String botToken) {
-        this.botToken = botToken;
-    }
 }
