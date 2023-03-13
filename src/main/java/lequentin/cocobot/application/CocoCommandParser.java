@@ -1,5 +1,6 @@
 package lequentin.cocobot.application;
 
+import lequentin.cocobot.application.commands.HelpCommand;
 import lequentin.cocobot.application.commands.ImpersonateCommand;
 import lequentin.cocobot.application.commands.RegisterMessageCommand;
 import lequentin.cocobot.application.commands.UnknownCommand;
@@ -34,6 +35,7 @@ public class CocoCommandParser {
         Command command = switch(args[0]) {
             case "me" -> new ImpersonateCommand(applicationMessageProvider, impersonator, message.getAuthor());
             case "like" -> impersonateCommandFromArgs(args);
+            case "help" -> new HelpCommand(applicationMessageProvider);
             default -> new UnknownCommand(applicationMessageProvider);
         };
 
