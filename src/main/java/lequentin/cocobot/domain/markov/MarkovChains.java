@@ -18,8 +18,7 @@ public class MarkovChains<T> {
     }
 
     private MarkovState<T> getOrCreateState(T value) {
-       if (!states.containsKey(value)) states.put(value, new MarkovState<>(value));
-       return states.get(value);
+       return states.computeIfAbsent(value, k -> new MarkovState<>(value));
     }
 
     public MarkovState<T> getState(T value) {
