@@ -23,8 +23,7 @@ public class MarkovState<T> {
     }
 
     public void incrementTransitionTo(MarkovState<T> otherState) {
-        int count = transitions.getOrDefault(otherState, 0);
-        transitions.put(otherState, count+1);
+        transitions.merge(otherState, 1, Integer::sum);
         totalCount++;
     }
 
