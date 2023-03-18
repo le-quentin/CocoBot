@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lequentin.cocobot.JsonMapper;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.User;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -15,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonFileMessagesRepositoryIntTest {
 
@@ -91,7 +90,4 @@ class JsonFileMessagesRepositoryIntTest {
         return Path.of(classLoader.getResource(relativePath).getPath());
     }
 
-    private Path getResourceFolderPath() {
-        return getResourcePath("storage.json").getParent();
-    }
 }

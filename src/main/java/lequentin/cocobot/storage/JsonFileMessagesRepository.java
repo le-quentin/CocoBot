@@ -42,12 +42,16 @@ public class JsonFileMessagesRepository implements MessagesRepository {
             throw new RuntimeException(e);
         }
 
-        return Flux.create(emitter -> {
-            Arrays.stream(usersJson).forEach(user -> {
-               user.getMessages().forEach(messageJson -> emitter.next(converter.toDomainMessage(user, messageJson)));
-            });
+        Flux<Message> flux = Flux.create(emitter -> {
+            Arrays.stream(usersJson)
+                .forEach(user -> {
+                    user.getMessages()
+                        .forEach(messageJson -> emitter.next(converter.toDomainMessage(user, messageJson)));
+                });
             emitter.complete();
         });
+
+        return flux;
     }
 
     @Override

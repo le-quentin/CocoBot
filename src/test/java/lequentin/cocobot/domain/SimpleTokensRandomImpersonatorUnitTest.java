@@ -50,7 +50,7 @@ class SimpleTokensRandomImpersonatorUnitTest {
         when(stringTokenizer.tokenize("content")).thenReturn(Stream.empty());
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
 
-        impersonator.addAllMessagesFromSource(messages);
+        impersonator.addAllMessagesFromSource(messages).blockLast();
         assertThatThrownBy(() -> impersonator.impersonate(user))
                 .isExactlyInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User john_doe has no messages");
@@ -66,7 +66,7 @@ class SimpleTokensRandomImpersonatorUnitTest {
         when(messages.getAllMessages()).thenReturn(Flux.just(message));
         when(random.nextInt(2)).thenReturn(1, 0, 0, 1, 1);
 
-        impersonator.addAllMessagesFromSource(messages);
+        impersonator.addAllMessagesFromSource(messages).blockLast();
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("1. 0. 0. 1. 1");
@@ -86,7 +86,7 @@ class SimpleTokensRandomImpersonatorUnitTest {
         when(messages.getAllMessages()).thenReturn(Flux.just(message1, message2));
         when(random.nextInt(3)).thenReturn(1, 2, 0, 1, 2);
 
-        impersonator.addAllMessagesFromSource(messages);
+        impersonator.addAllMessagesFromSource(messages).blockLast();
         String impersonation = impersonator.impersonate(user);
 
         assertThat(impersonation).isEqualTo("1. 2. 0. 1. 2");

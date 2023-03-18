@@ -1,6 +1,7 @@
 package lequentin.cocobot.domain;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Message {
     private final User author;
@@ -23,5 +24,18 @@ public class Message {
 
     public String getText() {
         return text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return author.equals(message.author) && createdAt.equals(message.createdAt) && text.equals(message.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, createdAt, text);
     }
 }
