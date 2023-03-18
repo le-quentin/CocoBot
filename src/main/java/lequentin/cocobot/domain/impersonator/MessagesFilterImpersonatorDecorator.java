@@ -5,6 +5,7 @@ import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.MessagesFilter;
 import lequentin.cocobot.domain.MessagesSource;
 import lequentin.cocobot.domain.User;
+import reactor.core.publisher.Flux;
 
 public class MessagesFilterImpersonatorDecorator implements Impersonator {
     private final MessagesFilter filter;
@@ -16,9 +17,9 @@ public class MessagesFilterImpersonatorDecorator implements Impersonator {
     }
 
     @Override
-    public void addAllMessagesFromSource(MessagesSource messagesSource) {
+    public Flux<Message> addAllMessagesFromSource(MessagesSource messagesSource, Runnable onComplete) {
         MessagesSource filteredSource = () -> messagesSource.getAllMessages().filter(filter::accepts);
-        impersonator.addAllMessagesFromSource(filteredSource);
+        return impersonator.addAllMessagesFromSource(filteredSource, onComplete);
     }
 
     @Override

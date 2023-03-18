@@ -1,14 +1,14 @@
 package lequentin.cocobot.domain.markov;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class MarkovChains<T> {
-    private final Map<T, MarkovState<T>> states;
+    private final ConcurrentMap<T, MarkovState<T>> states;
 
     public MarkovChains() {
-        this.states = new HashMap<>();
+        this.states = new ConcurrentHashMap<>();
     }
 
     public void addTransition(T from, T to) {

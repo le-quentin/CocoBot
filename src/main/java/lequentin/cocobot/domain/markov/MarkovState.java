@@ -1,40 +1,41 @@
 package lequentin.cocobot.domain.markov;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MarkovState<T> {
     private final T value;
 
-    private Map<MarkovState<T>, Integer> transitions;
+    private ConcurrentMap<MarkovState<T>, AtomicInteger> transitions;
 
     private int totalCount;
 
     public MarkovState(T value) {
         this.value = value;
-        this.transitions = new HashMap<>();
+        this.transitions = new ConcurrentHashMap<>();
         this.totalCount = 0;
     }
 
     public void incrementTransitionTo(MarkovState<T> otherState) {
-        transitions.merge(otherState, 1, Integer::sum);
+        transitions.compute(otherState, (k,v) -> v==null ? new AtomicInteger(1) : new AtomicInteger(v.incrementAndGet()));
         totalCount++;
     }
 
     public MarkovState<T> electNext(Random random) {
         int randomInt = random.nextInt(totalCount);
         int cumul = 0;
-        List<Entry<MarkovState<T>, Integer>> sortedStates = transitions.entrySet().stream()
-                .sorted(Entry.comparingByValue(Comparator.comparingInt(a -> -a)))
-                .collect(Collectors.toList());
+        List<Entry<MarkovState<T>, AtomicInteger>> sortedStates = transitions.entrySet().stream()
+                .sorted(Entry.comparingByValue(Comparator.comparingInt(AtomicInteger::get).reversed()))
+                .toList();
         for(var entry : sortedStates) {
-            cumul += entry.getValue();
+            cumul += entry.getValue().get();
             if (randomInt < cumul) {
                 return entry.getKey();
             }

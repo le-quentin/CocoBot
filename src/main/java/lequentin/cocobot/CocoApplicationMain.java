@@ -51,6 +51,8 @@ public class CocoApplicationMain {
     public static void main(final String[] args) {
         final Config config = loadConfig();
 
+        System.out.println("Starting CocoBot on " + Runtime.getRuntime().availableProcessors() + " cores");
+
         // Discord API
         final DiscordClient discordClient = DiscordClient.create(config.getSecrets().getBotToken());
         final GatewayDiscordClient gateway = discordClient.login().block();
@@ -117,8 +119,8 @@ public class CocoApplicationMain {
         final CocoApplicationMain app = new CocoApplicationMain(gateway, service);
 
         System.out.println("Loading all messages from repository...");
-        impersonator.addAllMessagesFromSource(messagesRepository);
-        System.out.println("All messages loaded!");
+        impersonator.addAllMessagesFromSource(messagesRepository, () -> System.out.println("All messages loaded!"))
+                .subscribe();
         app.run();
     }
 
