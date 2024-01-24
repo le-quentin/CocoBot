@@ -2,6 +2,7 @@ package lequentin.cocobot.discord;
 
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.spec.MessageCreateMono;
 import lequentin.cocobot.application.BotMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,8 @@ class DiscordIncomingMessageTest {
 
     private MessageChannel mockChannel() {
         MessageChannel channel = mock(MessageChannel.class);
-        when(channel.createMessage(anyString())).thenReturn(Mono.just(mock(Message.class)));
+        MessageCreateMono messageCreateMono = mock(MessageCreateMono.class);
+        when(channel.createMessage(anyString())).thenReturn(messageCreateMono);
         return channel;
     }
 
