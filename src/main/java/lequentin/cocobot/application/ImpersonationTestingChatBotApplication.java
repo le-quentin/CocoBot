@@ -20,6 +20,8 @@ import lequentin.cocobot.domain.sanitizer.SpacePunctuationSanitizer;
 import lequentin.cocobot.domain.tokenizer.SanitizerStringTokenizerDecorator;
 import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
 import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Comparator;
@@ -33,6 +35,8 @@ import java.util.stream.IntStream;
  * This is my "prototyping" chat bot. I use it to try and compare different settings, and see what produces the funniest outputs!
  */
 public class ImpersonationTestingChatBotApplication implements ChatBot {
+
+    private static Logger log = LoggerFactory.getLogger(ImpersonationTestingChatBotApplication.class);
 
     private final Impersonator simpleSentencesImpersonator = null;
 
@@ -170,10 +174,10 @@ public class ImpersonationTestingChatBotApplication implements ChatBot {
         );
 
         impersonators.forEach((name, impersonator) -> {
-            System.out.println(name + "\n------------------------------");
+            log.info(name + "\n------------------------------");
             authors.forEach(user -> {
-                System.out.println(user.getUsername());
-                IntStream.range(1, 6).forEach(i -> System.out.println(i + ": " + impersonator.impersonate(user)));
+                log.info(user.getUsername());
+                IntStream.range(1, 6).forEach(i -> log.info(i + ": " + impersonator.impersonate(user)));
             });
         });
     }
@@ -203,12 +207,12 @@ public class ImpersonationTestingChatBotApplication implements ChatBot {
                     .getClass()
                     .getDeclaredField("userMarkovGenerators"))
                     .get(markov);
-            System.out.println(name + "\n------------------------------");
+            log.info(name + "\n------------------------------");
             for (User user : authors) {
                 MarkovChains<WordsTuple> chains = (MarkovChains<WordsTuple>) getPrivateField(userMarkovGenerators.get(user).getClass()
                         .getDeclaredField("markovChains"))
                         .get(userMarkovGenerators.get(user));
-                System.out.println(user.getUsername() + ": " + chains.getMetadata());
+                log.info(user.getUsername() + ": " + chains.getMetadata());
             }
         }
     }

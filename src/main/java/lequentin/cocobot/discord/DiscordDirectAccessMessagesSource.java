@@ -1,14 +1,18 @@
 package lequentin.cocobot.discord;
 
-import lequentin.cocobot.domain.Message;
-import lequentin.cocobot.domain.MessagesSource;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.channel.Channel.Type;
 import discord4j.core.object.entity.channel.TextChannel;
+import lequentin.cocobot.domain.Message;
+import lequentin.cocobot.domain.MessagesSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 
 public class DiscordDirectAccessMessagesSource implements MessagesSource {
+
+    private static Logger log = LoggerFactory.getLogger(DiscordDirectAccessMessagesSource.class);
 
     private final GatewayDiscordClient discord;
     private final DiscordConverter converter;
@@ -28,7 +32,7 @@ public class DiscordDirectAccessMessagesSource implements MessagesSource {
     }
 
     private Flux<Message> allMessagesFlux(TextChannel channel) {
-        System.out.println("Fetching all messages for channel " + channel.getName());
+        log.info("Fetching all messages for channel " + channel.getName());
         return channel.getLastMessageId()
                 .map(channel::getMessagesBefore)
                 .orElseGet(() -> {

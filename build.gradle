@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     implementation 'com.discord4j:discord4j-core:3.2.6'
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1'
     implementation 'org.apache.commons:commons-lang3:3.0'

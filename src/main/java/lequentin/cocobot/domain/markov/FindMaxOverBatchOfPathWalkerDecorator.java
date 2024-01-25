@@ -28,7 +28,6 @@ public class FindMaxOverBatchOfPathWalkerDecorator<T> implements MarkovChainsWal
                 .mapToObj(i -> walker.walkFromUntil(markovChains, startingPoint, walkUntil))
                 .sorted(pathsComparator)
                 .skip(skip)
-//                .peek(path -> System.out.println(path.getNonDeterministicScore() + ": [" + getSentence((MarkovPath<WordsTuple>) path) + "]"))
                 .max(pathsComparator)
                 .orElseThrow(() -> new RuntimeException("Should never happen!"));
     }

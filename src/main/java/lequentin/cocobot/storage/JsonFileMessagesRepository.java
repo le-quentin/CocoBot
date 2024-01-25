@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lequentin.cocobot.domain.Message;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.MessagesSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class JsonFileMessagesRepository implements MessagesRepository {
+
+    private static Logger log = LoggerFactory.getLogger(JsonFileMessagesRepository.class);
 
     private final Path filePath;
     private final ObjectMapper objectMapper;
@@ -69,7 +73,7 @@ public class JsonFileMessagesRepository implements MessagesRepository {
         }
 
         try {
-            System.out.println("Writing to file...");
+            log.info("Writing to file...");
             Files.writeString(filePath, content, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);

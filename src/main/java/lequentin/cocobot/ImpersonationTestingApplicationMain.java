@@ -5,11 +5,13 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.ImpersonationTestingChatBotApplication;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.discord.DiscordConverter;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
@@ -18,6 +20,8 @@ import java.nio.file.Path;
  * @see ImpersonationTestingChatBotApplication
  */
 public class ImpersonationTestingApplicationMain {
+
+    private static Logger log = LoggerFactory.getLogger(ImpersonationTestingApplicationMain.class);
 
     private final GatewayDiscordClient gatewayClient;
     private final DiscordMessageListener service;
@@ -60,7 +64,7 @@ public class ImpersonationTestingApplicationMain {
 
     public void run() {
         service.subscribeToMessageCreateFlux(gatewayClient.on(MessageCreateEvent.class));
-        System.out.println("Listening to new messages...");
+        log.info("Listening to new messages...");
         gatewayClient.onDisconnect().block();
     }
 
