@@ -1,9 +1,11 @@
 package lequentin.cocobot.discord;
 
-import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.spec.MessageCreateSpec;
 import lequentin.cocobot.application.BotMessage;
 import lequentin.cocobot.application.IncomingMessage;
 import lequentin.cocobot.domain.Message;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 public class DiscordIncomingMessage implements IncomingMessage {
 
@@ -21,8 +23,12 @@ public class DiscordIncomingMessage implements IncomingMessage {
     }
 
     @Override
-    public void reply(BotMessage message) {
-        final MessageChannel channel = discordMessage.getChannel().block();
-        channel.createMessage(message.getText()).block();
+    public Mono<Message> reply(BotMessage message) {
+        Mono<Message> messageMono = discordMessage.getChannel()
+                .subscribeOn(Schedulers.immediate())
+                .map(channel -> channel.createMessage(MessageCreateSpec.builder().content(message.getText()).build()))
+                .flatMap(messageCreateSpec -> messageCreateSpec.map(converter::toDomain));
+        messageMono.subscribe();
+        return messageMono;
     }
 }

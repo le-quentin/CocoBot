@@ -1,8 +1,9 @@
 package lequentin.cocobot.application;
 
 import lequentin.cocobot.domain.Message;
+import reactor.core.publisher.Mono;
 
 public interface IncomingMessage {
     Message toDomain();
-    void reply(BotMessage message);
+    Mono<Message> reply(BotMessage message);
 }
