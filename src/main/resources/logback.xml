@@ -15,7 +15,7 @@
 
     <!-- Here you can set the base logger level. If DEBUG is too chatty for you, you can use INFO -->
     <!-- Possible options are: ALL, TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
-    <root level="DEBUG">
+    <root level="${COCOBOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
