@@ -10,8 +10,8 @@ import lequentin.cocobot.application.RemoveQuotesAndBlocksStringSanitizer;
 import lequentin.cocobot.application.messages.ApplicationMessageProvider;
 import lequentin.cocobot.application.messages.InMemoryApplicationMessageProvider;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.discord.DiscordConverter;
+import lequentin.cocobot.discord.DiscordMessageListener;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.StringSanitizer;
@@ -31,6 +31,8 @@ import lequentin.cocobot.domain.tokenizer.SentencesStringTokenizer;
 import lequentin.cocobot.domain.tokenizer.WordsStringTokenizer;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,6 +40,8 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class CocoApplicationMain {
+
+    private static Logger log = LoggerFactory.getLogger(CocoApplicationMain.class);
 
     public static final String MESSAGES_FILE = "./data/messages.json";
     private final GatewayDiscordClient gatewayClient;
@@ -62,7 +66,7 @@ public class CocoApplicationMain {
         // If storage file does not exist, we synchronise first
         Path messagesFilePath = Path.of(MESSAGES_FILE);
         if (!Files.exists(messagesFilePath)) {
-            System.out.println("messages.json file not found! Coco will generate it, and it will take a while");
+            log.info("messages.json file not found! Coco will generate it, and it will take a while");
             SynchroniseStorageApplicationMain.main(new String[]{});
         }
 
@@ -116,15 +120,15 @@ public class CocoApplicationMain {
         // app
         final CocoApplicationMain app = new CocoApplicationMain(gateway, service);
 
-        System.out.println("Loading all messages from repository...");
+        log.info("Loading all messages from repository...");
         impersonator.addAllMessagesFromSource(messagesRepository);
-        System.out.println("All messages loaded!");
+        log.info("All messages loaded!");
         app.run();
     }
 
     public void run() {
         service.subscribeToMessageCreateFlux(gatewayClient.on(MessageCreateEvent.class));
-        System.out.println("Listening to new messages...");
+        log.info("Listening to new messages...");
         gatewayClient.onDisconnect().block();
     }
 

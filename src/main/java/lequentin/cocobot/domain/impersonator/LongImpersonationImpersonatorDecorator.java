@@ -32,7 +32,6 @@ public class LongImpersonationImpersonatorDecorator implements Impersonator {
         for (int i = 0; i < maximumAttempts; i++) {
             String newImpersonation = impersonator.impersonate(user);
             int wordsCount = newImpersonation.split(" ").length;
-//            System.out.println(i + ": " + newImpersonation);
             if (wordsCount >= minimumWordsCount) {
                 return newImpersonation;
             }

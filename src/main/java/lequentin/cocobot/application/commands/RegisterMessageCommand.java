@@ -4,10 +4,14 @@ import lequentin.cocobot.application.BotMessage;
 import lequentin.cocobot.application.Command;
 import lequentin.cocobot.domain.Impersonator;
 import lequentin.cocobot.domain.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 public class RegisterMessageCommand implements Command {
+
+    private static Logger log = LoggerFactory.getLogger(RegisterMessageCommand.class);
 
     private final Impersonator impersonator;
     private final Message message;
@@ -19,7 +23,7 @@ public class RegisterMessageCommand implements Command {
 
     @Override
     public Optional<BotMessage> execute() {
-        System.out.println("Adding message to model: " + message.getText());
+        log.info("Adding message to model: " + message.getText());
         impersonator.addMessage(message);
         return Optional.empty();
     }

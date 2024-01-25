@@ -1,10 +1,14 @@
 package lequentin.cocobot.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
 
 public class Config {
+
+    private static Logger log = LoggerFactory.getLogger(Config.class);
 
     private final Secrets secrets;
     private final Language language;
@@ -40,7 +44,7 @@ public class Config {
         String botToken = propertiesProvider.getProperty("COCOBOT_TOKEN");
         if (StringUtils.isBlank(botToken)) {
             if (!promptFallback) throw new RuntimeException("COCOBOT_TOKEN env var not set!");
-            System.out.println("Please provide COCOBOT_TOKEN");
+            log.info("Please provide COCOBOT_TOKEN");
             botToken = INPUT_SCANNER.nextLine();
         }
         builder.secrets(new Secrets(botToken));
