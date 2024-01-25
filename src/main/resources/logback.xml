@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <!-- You can configure per-logger level at this point -->
+    <!-- This set of preconfigured loggers is good if you want to have a DEBUG level as baseline -->
+    <logger name="io.netty" level="INFO"/>
+    <logger name="reactor" level="INFO"/>
+
+    <!-- Display the logs in your console with the following format -->
+    <!-- You can learn more about this here: https://logback.qos.ch/manual/layouts.html#ClassicPatternLayout -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Here you can set the base logger level. If DEBUG is too chatty for you, you can use INFO -->
+    <!-- Possible options are: ALL, TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
