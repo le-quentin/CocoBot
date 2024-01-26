@@ -3,16 +3,20 @@ package lequentin.cocobot;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import lequentin.cocobot.config.Config;
-import lequentin.cocobot.discord.DiscordDirectAccessMessagesSource;
 import lequentin.cocobot.discord.DiscordConverter;
+import lequentin.cocobot.discord.DiscordDirectAccessMessagesSource;
 import lequentin.cocobot.domain.MessagesRepository;
 import lequentin.cocobot.domain.MessagesSource;
 import lequentin.cocobot.storage.JsonFileMessagesRepository;
 import lequentin.cocobot.storage.UserMessagesJsonConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
 public class SynchroniseStorageApplicationMain {
+
+    private static Logger log = LoggerFactory.getLogger(SynchroniseStorageApplicationMain.class);
 
     private final MessagesSource externalSource;
     private final MessagesRepository storage;
@@ -50,7 +54,7 @@ public class SynchroniseStorageApplicationMain {
     private static Config loadConfig() {
         try {
             return Config.readFromEnv(System::getenv);
-        } catch(Exception ex) { System.err.println("There was an error reading config files");
+        } catch(Exception ex) { log.error("There was an error reading config files");
             throw ex;
         }
     }

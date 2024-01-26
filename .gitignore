@@ -30,6 +30,5 @@ target/
 
 # App specific
 *secrets.yaml
-**/messages.json
 src/test/resources/build/*
 data/

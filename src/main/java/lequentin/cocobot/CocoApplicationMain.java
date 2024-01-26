@@ -136,7 +136,7 @@ public class CocoApplicationMain {
         try {
             return Config.readFromEnv(System::getenv);
         } catch(Exception ex) {
-            System.err.println("There was an error reading config from env vars");
+            log.error("There was an error reading config from env vars");
             throw ex;
         }
     }
