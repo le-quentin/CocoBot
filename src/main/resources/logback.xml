@@ -3,7 +3,8 @@
     <!-- You can configure per-logger level at this point -->
     <!-- This set of preconfigured loggers is good if you want to have a DEBUG level as baseline -->
     <logger name="io.netty" level="INFO"/>
-    <logger name="reactor" level="INFO"/>
+    <logger name="reactor" level="${COCOBOT_REACTOR_LOG_LEVEL:-INFO}"/>
+    <logger name="discord4j" level="${COCOBOT_DISCORD4J_LOG_LEVEL:-INFO}"/>
 
     <!-- Display the logs in your console with the following format -->
     <!-- You can learn more about this here: https://logback.qos.ch/manual/layouts.html#ClassicPatternLayout -->
