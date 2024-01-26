@@ -49,7 +49,7 @@ public class DiscordDirectAccessMessagesSource implements MessagesSource {
         return channel.getLastMessageId()
                 .map(channel::getMessagesBefore)
                 .orElseGet(() -> {
-                    System.err.println("Not parsing channel " + channel.getName() + " because cannot get last message id.");
+                    log.error("Not parsing channel {} because cannot get last message id.", channel.getName());
                     return Flux.empty();
                 })
                 .filter(msg -> !msg.getContent().isBlank())

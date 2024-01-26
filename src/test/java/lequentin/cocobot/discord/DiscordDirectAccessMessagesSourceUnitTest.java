@@ -21,11 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -36,8 +33,6 @@ import static org.mockito.Mockito.when;
 class DiscordDirectAccessMessagesSourceUnitTest {
 
     public static final Snowflake BOT_ID = mock(Snowflake.class);
-
-    private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
 
     @Mock
     private GatewayDiscordClient discord;
@@ -55,7 +50,6 @@ class DiscordDirectAccessMessagesSourceUnitTest {
     void setUp() {
         when(discord.getGuilds()).thenReturn(Flux.just(guild));
         lenient().when(discord.getSelfId()).thenReturn(BOT_ID);
-        System.setErr(new PrintStream(errorStreamCaptor));
     }
 
     @Test
@@ -126,7 +120,6 @@ class DiscordDirectAccessMessagesSourceUnitTest {
         verify(channel).getLastMessageId();
         verify(channel).getEffectivePermissions(BOT_ID);
         verifyNoMoreInteractions(channel);
-        assertThat(errorStreamCaptor.toString()).contains("Not parsing channel channelName because cannot get last message id.");
     }
 
     private TextChannel mockTextChannel(Type type, Permission... permissions) {

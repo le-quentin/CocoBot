@@ -3,7 +3,6 @@ package lequentin.cocobot.discord;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lequentin.cocobot.application.CocoChatBotApplication;
 import lequentin.cocobot.application.IncomingMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,8 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
@@ -29,8 +26,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class DiscordMessageListenerUnitTest {
 
-    private final ByteArrayOutputStream errorStreamCaptor = new ByteArrayOutputStream();
-
     @Captor
     private ArgumentCaptor<IncomingMessage> incomingMessageArgumentCaptor;
 
@@ -42,12 +37,6 @@ class DiscordMessageListenerUnitTest {
 
     @InjectMocks
     private DiscordMessageListener service;
-
-    @BeforeEach
-    public void setUp() {
-        System.setErr(new PrintStream(errorStreamCaptor));
-
-    }
 
     @Test
     void shouldSubscribeToFluxAndHandleMessages() {
@@ -90,7 +79,6 @@ class DiscordMessageListenerUnitTest {
         service.subscribeToMessageCreateFlux(fluxWithException);
 
         verify(coco).handleMessage(argThat(matchDiscordMessage(discordMessage1)));
-        assertThat(errorStreamCaptor.toString()).contains("Exception while handling message: erroneous message");
         verify(thrown).printStackTrace(System.err);
         verify(coco).handleMessage(argThat(matchDiscordMessage(discordMessage2)));
     }

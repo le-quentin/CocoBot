@@ -72,7 +72,7 @@ public class ImpersonationTestingApplicationMain {
         try {
             return Config.readFromEnv(System::getenv);
         } catch(Exception ex) {
-            System.err.println("There was an error reading config files");
+            log.error("There was an error reading config files");
             throw ex;
         }
     }
